@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/registro.css')}}">
+    <title>Registrar</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+{% if messages%}
+{%for message in messages%}
+<script>
+    alert('{{message}}')
+</script>
+{%endfor%}
+{%endif%}
+{%endwith%}
+<div class="Nav_Bar">
+    <button class="menu"><i class="fab fa-elementor"></i></button>
+    <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+    <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
+</div>
+<div class="nav_menu">
+    <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
+    {% if Datos['Rango'] == 'Representante' %}
+    <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+    <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Auxiliar'%}
+    <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i> - Reportes</a>
+    <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+    <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Administrador'%}
+    <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
+    <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i>  Reportes</a>
+    <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
+    <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+    <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Planeacion'%}
+    <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
+    <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+    <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Team Leader'%}
+    <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i> - Reportes</a>
+    <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
+    <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+    <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+    {%endif%}
+
+</div>
+    <div class="container"> 
+        <section>
+            
+        </section>
+    </div>
+</section>
+<script src="/static/Js/interfas.js">
+</script>
+</body>
+</html>
