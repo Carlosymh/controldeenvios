@@ -1,0 +1,229 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: #eee;
+}
+img{
+    width: 14vh;
+    padding: 0.5vh 0;
+}
+.Nav_Bar{
+    background: #fff159;
+    color: #2f3476;
+    display: flex;
+    border-bottom: 1px solid #2f3476;
+}
+
+.Nav_Bar button{
+    box-decoration-break: none;
+    background: none;
+    width: 5vh;
+    border: none;
+}
+.Nav_Bar button i{
+    font-size: 3.5vh;
+    background: none;
+    color: #2f3476;
+}
+
+.Nav_Bar span{
+    margin: auto  2vh auto auto ;
+    color:#fff;
+    background: #2f3476;
+    padding: 0.25vh;
+    border-radius: 5px;
+}
+
+.Nav_Bar select{
+   padding: 0.25vh;
+   margin: auto 2VH auto 0VH;
+   font-size: 1.5VH;
+   border-radius: 5PX;
+}
+.Nav_Bar input{
+    background: #2f3476;
+    color: #fff159;
+    padding: 0.25vh;
+    margin: 1vh 2VH 1vh 0VH;
+    align-items: center;
+    font-size: 1.5VH;
+    border-radius: 5PX;
+ }
+ .nav_menu{
+    display: block;
+    flex-direction: column;        
+    width: 20vh;
+    position: absolute;
+    background: #fff159;
+    padding: 0;
+    margin: 0;
+    height: 0;
+    transition: all 500ms;
+    margin-left: -200px;
+    }
+.nav_menu_visual{
+    display: flex;
+    grid-column: 1;
+    width: 20vh;
+    height: 50vh;
+    position: absolute;
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 0 0.5vh #000;
+    border-bottom-right-radius: 20px;
+    transition: all 500ms; 
+
+    }
+ .nav_menu_visual h3{
+     width: 100%;
+     background: #2f3476;
+     color: #fff;
+     margin: 0;
+     margin-bottom: 1vh;
+     padding: 1vh 0;
+     text-align: center;
+}
+ .nav_menu_visual a{
+     width: 80%;
+     background: rgb(247, 247, 244);
+     margin-bottom: 1vh;
+     margin-left: 1vh;
+     text-decoration: none;
+     color: rgb(108, 109, 112);
+     font-size: 2vh;
+     padding: 1vh;
+     border-bottom: #2f3476 solid 1px;
+ }
+ .nav_menu_visual i{
+     font-size: 2.5vh;
+     margin-right: 1vh;
+     color: #2f3476;
+}
+.fondo{
+    width: 100%;
+    height: 50vh;
+    background: #fff159;
+
+}
+section form{
+    width:60vh;
+    margin: -45vh auto;
+    background:#fff;
+    color: #2f3476;
+    text-align:center;
+    align-items:center;
+    padding:10px;
+    display: flex;
+    flex-direction: column;
+    grid-column: 1;
+    border-radius:20px;
+    border:2px solid #a5a6a8;
+}
+section form h2{
+    font-size: 3vh;
+}
+section form label,
+section form select,
+section form input{
+    margin: 0.5vh auto;
+    font-size: 2vh;
+}
+section form input.btn {
+    background:#fff159; 
+    color:#2f3476;
+     border-radius:10px; 
+     padding: 5px 20px; 
+     font-size:20px;
+}
+section form input.btn:hover{
+        background:#2f3476; 
+        color:#fff;
+}
+.Aviso{
+    margin:-35VH auto auto auto;
+    width: 80VH;
+    font-size: 10vh;
+    text-align: center;
+    background: #2f3476;
+    color: #fff;
+    border-radius: 25PX ;
+    border:2px solid #eee;
+}
+@media (max-width: 1400px){
+
+    .Nav_Bar span{
+        font-size: 1vh;
+    }
+    .Nav_Bar select{
+      font-size: 0.5;
+    } 
+    .Aviso{
+        margin:-35VH auto auto auto;
+        width: 60VH;
+        font-size: 7vh;
+        text-align: center;
+        background: #2f3476;
+        color: #fff;
+        border-radius: 25PX ;
+        border:2px solid #eee;
+    }
+}
+@media (max-width: 900px){
+    
+    img{
+        width: 10vh;
+        height: 5vh;
+        padding: 0.5vh 0;
+    }
+    .Nav_Bar span{
+        font-size: 0.5vh;
+    }
+    .Nav_Bar select{
+      font-size: 0.2;
+    } 
+    .Aviso{
+        margin:-35VH auto auto auto;
+        width: 50VH;
+        font-size: 6vh;
+        text-align: center;
+        background: #2f3476;
+        color: #fff;
+        border-radius: 25PX ;
+        border:2px solid #eee;
+    }
+}
+@media (max-width: 450px){
+    section form{
+        margin: -45vh auto;
+         background:#fff;
+         color: #2f3476;
+          text-align:center;
+           align-items:center;
+            width:40vh;
+             padding:10px;
+              border-radius:20px;
+               border:2px solid #fff;
+    }
+    img{
+        display: none;
+    }
+    .Nav_Bar span{
+        font-size: 0.5vh;
+    }
+    .Nav_Bar select{
+      font-size: 0.2;
+    } 
+    .Aviso{
+        margin:-35VH auto auto auto;
+        width: 40VH;
+        font-size: 5vh;
+        text-align: center;
+        background: #2f3476;
+        color: #fff;
+        border-radius: 25PX ;
+        border:2px solid #eee;
+    }
+}
