@@ -7,10 +7,10 @@ import hashlib
 app = Flask(__name__)
 
 #MySQL Connection
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'isumos'
+app.config['MYSQL_HOST'] = 'controenviosml.mysql.pythonanywhere-services.com'
+app.config['MYSQL_USER'] = 'controenviosml'
+app.config['MYSQL_PASSWORD'] = 'Yov@1747'
+app.config['MYSQL_DB'] = 'controenviosml$default'
 mysql = MySQL(app)
 
 # settings

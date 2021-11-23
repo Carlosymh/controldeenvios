@@ -699,7 +699,15 @@
             <h3 class="Aviso">Seleciona Un Formulario</h5>
             {%endif%}
         </section>
-    <script src="/static/Js/interfas.js">
+  <!-- <script src="/static/Js/interfas.js">
+    </script>--> 
+    <script>
+        const navToggle = document.querySelector(".menu")
+        const navMenu = document.querySelector(".nav_menu")
+
+        navToggle.addEventListener("click", () => {
+            navMenu.classList.toggle("nav_menu_visual");
+        });
     </script>
 
 </body>
