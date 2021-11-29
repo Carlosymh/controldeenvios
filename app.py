@@ -7,14 +7,15 @@ import hashlib
 app = Flask(__name__)
 
 #MySQL Connection
-app.config['MYSQL_HOST'] = 'controenviosml.mysql.pythonanywhere-services.com'
-app.config['MYSQL_USER'] = 'controenviosml'
-app.config['MYSQL_PASSWORD'] = 'Yov@1747'
-app.config['MYSQL_DB'] = 'controenviosml$default'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'isumos'
 mysql = MySQL(app)
 
 # settings
 app.secret_key = 'mysecretkey'
+
 #Direccion Principal 
 @app.route('/')
 def Index():
@@ -26,15 +27,14 @@ def Index():
   except:
     return render_template('index.html')
 
-
 #Valida el Acceso a la Plataforma 
 @app.route('/validar', methods=['POST'])
 def validar():
-     if request.method == 'POST':
+    if request.method == 'POST':
       usuario =  request.form['user']
       password = request.form['password']
       cur = mysql.connection.cursor()
-      cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\' LIMIT 1 '.format(usuario,password))
+      cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\' LIMIT 1 '.format(usuario))
       data = cur.fetchall()
       if len(data) > 0 :
           if check_password_hash(data[0][5],password):
@@ -50,10 +50,9 @@ def validar():
       else:
         flash('Usuario Incorrecto')
         return render_template('index.html')
+    def _create_password(password):
+        return generate_password_hash(password,'pbkdf2:sha256:30',30)     
 
-def _create_password(password):
-  return generate_password_hash(password,'pbkdf2:sha256:30',30)
-      
 #Formularios de Registro Entradas Y Salidas 
 @app.route('/form',methods=['POST','GET'])
 def form():
@@ -70,7 +69,6 @@ def form():
       else:
         session['Formulario']= None
         return render_template('form.html',Datos = session)
-        return '<a href="/logout">Salir</a>'
     else:
       flash("Inicia Secion")
       return render_template('index.html')
@@ -124,19 +122,15 @@ def registrar():
             mysql.connection.commit()
             flash("Registro Correcto")
             return render_template('registro.html')
-          
-          
         else:
           flash("Las Contraceñas no Cionciden")
           return render_template('registro.html')
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('registro.html')
+  def _create_password(password):
+   return generate_password_hash(password,'pbkdf2:sha256:30',30)
 
-
-
-def _create_password(password):
-  return generate_password_hash(password,'pbkdf2:sha256:30',30)
 #Registros de Formularios 
 @app.route('/registro_svcs_entrada',methods=['POST'])
 def registro_s_e():
@@ -166,6 +160,7 @@ def registro_s_e():
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
 
+# Registro de Salidas Service Center
 @app.route('/registro_svcs_salida',methods=['POST'])
 def registro_s_s():
   try:
@@ -189,6 +184,7 @@ def registro_s_s():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
+
 
 @app.route('/registro_prealert',methods=['POST'])
 def registro_prealert():
@@ -222,6 +218,7 @@ def registro_prealert():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
+
 
 @app.route('/registro_fcs_entrada',methods=['POST'])
 def registro_fcs_e():
@@ -280,6 +277,7 @@ def registro_fcs_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
 
+
 @app.route('/registro_fcs_tranfer',methods=['POST'])
 def registro_fcs_t():
   try:
@@ -300,6 +298,7 @@ def registro_fcs_t():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
+
 
 @app.route('/registro_fcs_recibo',methods=['POST'])
 def registro_fcs_r():
@@ -540,15 +539,22 @@ def registro_o():
 
         ticket = request.form['ticket']
         fechatiket =  request.form['fechatiket']
+        Comentario =  request.form['Comentario']
         estatus_orden = 'Pendiente'
         now = datetime.now()
         semana = now.isocalendar()
         meses= ('Null','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiempbre','Octubre','Noviebre','Diciembre')
         mes = meses[now.month]
         Responsable =  session['FullName']
-        if len(orden)>0 and len(ticket)>0 and len(fechatiket)>0:
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = \'{}\' AND estatus_orden = \'{}\' LIMIT 1 '.format(orden,estatus_orden))
+        data = cur.fetchall()
+        if len(data)>0:
+          flash("Ya Existe un Ticket Pendiente para esta Orden")
+          return render_template('form.html',Datos = session)
+        elif len(orden)>0 and len(ticket)>0 and len(fechatiket)>0:
           cur = mysql.connection.cursor()
-          cur.execute('INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, ticket, fecha_ticket, estatus_orden, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,ticket,fechatiket,estatus_orden,semana[1],mes,Responsable,now,now))
+          cur.execute('INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, ticket, fecha_ticket, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,ticket,fechatiket,estatus_orden,Comentario,semana[1],mes,Responsable,now,now))
           mysql.connection.commit() 
           flash("Registro Exitoso")
           return render_template('form.html',Datos = session)
@@ -561,7 +567,8 @@ def registro_o():
   except:
         flash("No has enviado un registro")
         return render_template('form.html',Datos = session)
-  
+
+
 @app.route('/registro_xd_entrada',methods=['POST'])
 def registro_xd_entrada():
   try:
@@ -590,6 +597,7 @@ def registro_xd_entrada():
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
 
+
 @app.route('/registro_xd_salida',methods=['POST'])
 def registro_xd_s():
   try:
@@ -605,11 +613,162 @@ def registro_xd_s():
         usuario = session['FullName']
         now = datetime.now()
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO salida_xd (Centro_de_trabajo_donde_te_encuentras, Total_tarimas, Tarima_en_buen_estado, Tarimas_en_mal_estado, Total_Gaylors, Gaylors_en_buen_estado, Gaylors_en_mal_estado, cajas, Costales, Destino_Proveniente, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Total_tarimas,Tarima_en_buen_estado,Tarimas_en_mal_estado,Total_Gaylors,Gaylors_en_buen_estado,Gaylors_en_mal_estado,Cajas,Costales,Destino_Proveniente,usuario,now,now))
+        cur.execute('INSERT INTO salida_xd (Centro_de_trabajo_donde_te_encuentras, Tarimas_Enviadas, Gaylord_Enviados, cajas, costales, Destino_de_la_carga, service_center, Fulfillment, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Tarimas_Enviadas,Gaylord_Enviados,cajas,costales,Destino_de_la_carga,Service_Center,Fulfillment,usuario,now,now))
         mysql.connection.commit() 
         flash("Registro Exitoso")
         return render_template('form.html',Datos = session)
       else:
+        flash("No has enviado un registro")
+        return render_template('form.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form.html',Datos = session)
+
+
+@app.route('/registro_planing',methods=['POST'])
+def registro_p():
+  try:
+      if request.method == 'POST':
+        Fecha_agendada = request.form['Fecha_agendada']
+        codigo_sku = int(request.form['codigo_sku'])
+        if codigo_sku == 10053:
+          descripcion = 'Caja Gaylord'
+        elif codigo_sku == 10060:
+          descripcion = 'Tarima Madera'
+        piezas_p = request.form['piezas_p']
+        unidades = request.form['unidades']
+        datos_de_la_unidad = request.form['datos_de_la_unidad']
+        operador = request.form['operador']
+        Origen = session['FcName']
+        destino = request.form['destino']
+        estatus = 'Pendiente'
+        usuario = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO planing (Fecha_agendada, codigo_sku, descripción, piezas_p, unidades, datos_de_la_unidad, operador, origen, destino,	reponsable, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,datos_de_la_unidad,operador,Origen,destino,usuario,estatus))
+        mysql.connection.commit() 
+        flash("Registro Exitoso")
+        return render_template('form.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form.html',Datos = session)
+
+
+@app.route('/a_formularios',methods=['POST'])
+def a_form():
+  try:
+      if request.method == 'POST':
+        if session['FcName']=='Cross Dock' and session['Formulario']=='planning':
+          id_planing = request.form['id_planing']
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM planing WHERE id_planing = \'{}\' LIMIT 1 '.format(id_planing))
+          data = cur.fetchall()
+          if len(data)>0:
+            id=data[0][0]
+            status ='Procesando'
+            now = datetime.now()
+            responsable=session['FullName']
+            cur = mysql.connection.cursor()
+            cur.execute("""
+            UPDATE planing
+            SET hora_inicio_de_carga = %s,
+            status = %s,
+            responsable_xd = %s
+            WHERE id_planing  = %s
+            """,(now,status,responsable,id))
+            mysql.connection.commit()
+            return render_template('actualizacion.html',Datos = session,Info = data)
+          else:
+            flash("ID Invalido")
+            return render_template('form.html',Datos = session)
+        elif session['FcName']=='Fullfilment' and session['Formulario']=='planning':
+          id_planing = request.form['id_planing']
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM planing WHERE id_planing = \'{}\' LIMIT 1 '.format(id_planing))
+          data = cur.fetchall()
+          if len(data)>0:
+            return render_template('actualizacion.html',Datos = session,Info = data)
+          else:
+            flash("ID Invalido")
+            return render_template('form.html',Datos = session)
+        elif session['FcName']=='Fullfilment' and session['Formulario']=='f_a_estatus':
+          orden = request.form['orden']
+          status = 'Pendiente'
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = \'{}\' AND estatus_orden = \'{}\' LIMIT 1 '.format(orden,status))
+          data = cur.fetchall()
+          if len(data)>0:
+            return render_template('actualizacion.html',Datos = session,Info = data)
+          else:
+            flash("Numero de Orden Invalido")
+            return render_template('form.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form.html',Datos = session)
+
+
+@app.route('/actualizar',methods=['POST'])
+def actualizacion():
+  try:
+    if request.method == 'POST':
+      if session['FcName']=='Cross Dock' and session['Formulario'] =='planning':
+        id = request.form['id']
+        marchamo =  request.form['marchamo']
+        marchamo2 =  request.form['marchamo2']
+        estatus = 'Enviado'
+        usuario = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute("""
+        UPDATE planing
+        SET hora_de_despacho = %s,
+        marchamo = %s,
+        marchamo2 = %s,
+        status = %s
+        WHERE id_planing  = %s
+        """,(now,marchamo,marchamo2,estatus,id))
+        mysql.connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form.html',Datos = session)
+      elif session['FcName']=='Fullfilment' and session['Formulario'] =='planning':
+        id =  request.form['id']
+        estatus = 'Enviado'
+        usuario = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute("""
+        UPDATE planing
+        SET status = %s,
+        arribo_a_fc_destino = %s,
+        responsable_fc = %s
+        WHERE id_planing = %s
+        """,(estatus,now,usuario,id))
+        mysql.connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form.html',Datos = session)
+      elif session['FcName']=='Fullfilment' and session['Formulario'] =='f_a_estatus':
+        id_orden =  request.form['id_orden']
+        estatus = 'Cerrado'
+        usuario = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute("""
+        UPDATE ordenes_no_procesables
+        SET estatus_orden = %s,
+        fecha_actualizacion = %s,
+        responsable_actualizacion = %s
+        WHERE id_orden  = %s
+        """,(estatus,now,usuario,id_orden))
+        mysql.connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form.html',Datos = session)
+    else:
         flash("No has enviado un registro")
         return render_template('form.html',Datos = session)
   except:
@@ -622,6 +781,42 @@ def logout():
   session.clear()
   return render_template('index.html')
 
+@app.route('/Reportes',methods=['POST','GET'])
+def Reporte():
+  # try:
+      if request.method == 'POST':
+        if session['Rango'] == 'Administrador':
+          session['FcName']= request.form['centro_de_Trabajo']
+          session['tabla']= request.form['tabla']
+          row1 = int(session['rowi'])
+          row2 = int(session['rowf'])
+          if  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada':
+            if session['valor'] == None:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              print(data)
+              return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_fc')
+              data = cur.fetchall()
+              print(data)
+              return render_template('reportes.html',Datos = session,Infos =data)
+        else:
+          session['tabla']= request.form['tabla']
+          return render_template('reportes.html',Datos = session)
+      else:
+        session['tabla']= None
+        session['filtro']= None
+        session['valor']= None
+        session['rowi']= 1
+        session['rowf']= 50
+        return render_template('reportes.html',Datos = session)
+     
+  # except:
+  #   flash("Inicia Secion")
+  #   return render_template('index.html')
 
 
 if __name__=='__main__':

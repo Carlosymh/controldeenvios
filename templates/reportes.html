@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <title>Formulario</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+    {%for message in messages%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <div class="Nav_Bar">
+        <button class="menu"><i class="fab fa-elementor"></i></button>
+         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
+        <form action="/Reportes" method="POST">
+            {% if Datos['Rango'] == 'Administrador' %}
+            <label for="centro_de_Trabajo">
+                <select name="centro_de_Trabajo" id="centro_de_Trabajo">
+                    <option value="Fullfilment">Fullfilment</option>
+                    <option value="Cross Dock">Cross Dock</option>
+                    <option value="Service Center">Service Center</option>
+                </select>
+            </label>
+            {%endif%}
+            <label for="tabla">
+                <select name="tabla" id="formulario">
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                    <option value="prealert">Prealert de Ordenes</option>
+                {% if Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Administrador' %}
+                    <option value="Entrada_Tranferencias">Entrada Tranferencias</option>
+                    <option value="recibo">Recibo</option>
+                    <option value="no_procesable">No Procesable</option>
+                    <option value="f_a_estatus">Actualizacion de Estatus</option>
+                    <option value="planning">Planning</option>
+                {% elif Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Planeacion' %}
+                    <option value="planning">Planning</option>
+                {%endif%}
+                </select>
+            </label>
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
+    <div class="nav_menu">
+        <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
+        {% if Datos['Rango'] == 'Representante' %}
+            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+        {% elif Datos['Rango'] == 'Auxiliar'%}
+            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+        {% elif Datos['Rango'] == 'Administrador'%}
+            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
+            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
+            <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+        {% elif Datos['Rango'] == 'Planeacion'%}
+            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
+            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+        {% elif Datos['Rango'] == 'Team Leader'%}
+            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
+            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
+            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+        {%endif%}
+ 
+    </div>
+    <div clas="filtros">
+        <form action="/reportes" method="post">
+        <section><option value="#">Filtros</option></section>
+        <input type="text">
+        <input type="submit" value="Buscar">
+        </form>
+    </div>
+        <div class="fondo">
+        <section>
+            {%if Datos['tabla'] != None %}
+                {%if Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Entrada' %}
+                    
+                {%elif Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Salida'%}
+                   
+                {%elif  Datos['tabla'] == 'prealert'%}
+                   
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada'%}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                ID 
+                            </th>
+                            <th>
+                                Fulfillment 
+                            </th>
+                            <th>
+                                Total Pallets 
+                            </th>
+                            <th>
+                                Pallets Aptos
+                            </th>
+                            <th>
+                                Pallets No Aptos 
+                            </th>
+                            <th>
+                                Gaylords Totales  
+                            </th>
+                            <th>
+                                Gaylords Aptos 
+                            </th>
+                            <th>
+                                Gaylords No Aptos  
+                            </th>
+                            <th>
+                                Cajas 
+                            </th>
+                            <th>
+                                Costales 
+                            </th>
+                            <th>
+                                Origen 
+                            </th>
+                            <th>
+                                Cross Dock
+                            </th>
+                            <th>
+                                Service Center
+                            </th>
+                            <th>
+                                Responsable 
+                            </th>
+                            <th>
+                                Fecha Y Hora  
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for Info in  Infos%}
+                        <tr>
+                            <td>{{Info.1}}</td>
+                        <td>{{Info.2}}</td>
+                        <td>{{Info.3}}</td>
+                        <td>
+                        <a href="/edit/{{Info.0}}">Edit</a>
+                        <a href="/delete/{{Info.0}}">Delete</a>
+                        </td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+
+                </table>
+                    
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Salida'%}
+                                   
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada_Tranferencias'%}
+                  
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'recibo'%}
+                    
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'no_procesable'%}
+                    
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'f_a_estatus'%}
+                   
+                {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'planning'%}
+                    
+                {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'Entrada'%}
+                   
+                {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'Salida'%}
+                   
+                
+                {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'planning'%}
+                   
+                
+                {%elif Datos['Rango'] == 'Planeacion' and Datos['tabla'] == 'planning' or Datos['Rango'] == 'Administrador' and Datos['Formulario'] == 'planning'%}
+                    
+                {%endif%}
+            {%else %}
+            <h3 class="Aviso">Seleciona una Tabla</h5>
+            {%endif%}
+        </section></div>
+        <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </script>
+
+</body>
+</html>
