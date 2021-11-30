@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -26,7 +26,7 @@
         <button class="menu"><i class="fab fa-elementor"></i></button>
          <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
         <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
-        <form action="/Reportes" method="POST">
+        <form action="/Reportes/0" method="POST">
             {% if Datos['Rango'] == 'Administrador' %}
             <label for="centro_de_Trabajo">
                 <select name="centro_de_Trabajo" id="centro_de_Trabajo">
@@ -80,12 +80,60 @@
         {%endif%}
  
     </div>
-    <div clas="filtros">
-        <form action="/reportes" method="post">
-        <section><option value="#">Filtros</option></section>
-        <input type="text">
-        <input type="submit" value="Buscar">
-        </form>
+    <div class="filtros">
+        {%if Datos['tabla'] != None %}
+        {%if Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Entrada' %}
+            
+        {%elif Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Salida'%}
+           
+        {%elif  Datos['tabla'] == 'prealert'%}
+           
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada'%}
+        <form action="/Reportes/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="ID_E_fc">ID</option>
+                <option value="Fulfillment">Fulfillment</option>
+                <option value="Centro_de_trabajo_origen">Centro de trabajo origen</option>
+                <option value="Cross_Dock_origen">Cross Dock origen</option>
+                <option value="Service_Center_Origen">Service Center Origen</option>
+                <option value="Responsable">Responsable</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form>  
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Salida'%}
+                           
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada_Tranferencias'%}
+          
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'recibo'%}
+            
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'no_procesable'%}
+            
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'f_a_estatus'%}
+           
+        {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'planning'%}
+            
+        {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'Entrada'%}
+           
+        {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'Salida'%}
+           
+        
+        {%elif Datos['FcName'] == 'Cross Dock' and Datos['tabla'] == 'planning'%}
+           
+        
+        {%elif Datos['Rango'] == 'Planeacion' and Datos['tabla'] == 'planning' or Datos['Rango'] == 'Administrador' and Datos['Formulario'] == 'planning'%}
+            
+        {%endif%}
+    {%else %}
+    <h3 class="Aviso">Seleciona una Tabla</h5>
+    {%endif%}
+
     </div>
         <div class="fondo">
         <section>
@@ -100,66 +148,66 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>
-                                ID 
-                            </th>
-                            <th>
-                                Fulfillment 
-                            </th>
-                            <th>
-                                Total Pallets 
-                            </th>
-                            <th>
-                                Pallets Aptos
-                            </th>
-                            <th>
-                                Pallets No Aptos 
-                            </th>
-                            <th>
-                                Gaylords Totales  
-                            </th>
-                            <th>
-                                Gaylords Aptos 
-                            </th>
-                            <th>
-                                Gaylords No Aptos  
-                            </th>
-                            <th>
-                                Cajas 
-                            </th>
-                            <th>
-                                Costales 
-                            </th>
-                            <th>
-                                Origen 
-                            </th>
-                            <th>
-                                Cross Dock
-                            </th>
-                            <th>
-                                Service Center
-                            </th>
-                            <th>
-                                Responsable 
-                            </th>
-                            <th>
-                                Fecha Y Hora  
-                            </th>
+                            <th> ID </th>
+                            <th> Fulfillment </th>
+                            <th> Total Pallets </th>
+                            <th> Pallets Aptos </th>
+                            <th> Pallets No Aptos </th>
+                            <th> Gaylords Totales  </th>
+                            <th> Gaylords Aptos </th>
+                            <th> Gaylords No Aptos </th>
+                            <th> Cajas </th>
+                            <th> Costales </th>
+                            <th> Origen </th>
+                            <th> Cross Dock </th>
+                            <th> Service Center</th>
+                            <th> Responsable </th>
+                            <th> Fecha Y Hora </th>
+                            {%if Datos['Rango']=='Administrador'%}
+                            <th> Editar </th>
+                            {%endif%}
                         </tr>
                     </thead>
                     <tbody>
                         {%for Info in  Infos%}
                         <tr>
+                            <td>{{Info.0}}</td>
                             <td>{{Info.1}}</td>
-                        <td>{{Info.2}}</td>
-                        <td>{{Info.3}}</td>
-                        <td>
-                        <a href="/edit/{{Info.0}}">Edit</a>
-                        <a href="/delete/{{Info.0}}">Delete</a>
-                        </td>
+                            <td>{{Info.2}}</td>
+                            <td>{{Info.3}}</td>
+                            <td>{{Info.4}}</td>
+                            <td>{{Info.5}}</td>
+                            <td>{{Info.6}}</td>
+                            <td>{{Info.7}}</td>
+                            <td>{{Info.8}}</td>
+                            <td>{{Info.9}}</td>
+                            <td>{{Info.10}}</td>
+                            <td>{{Info.11}}</td>
+                            <td>{{Info.12}}</td>
+                            <td>{{Info.13}}</td>
+                            <td>{{Info.15}}</td>
+                            {%if Datos['Rango']=='Administrador'%}
+                            <td>
+                                <a href="/edit/{{Info.0}}" class="edit"><i class="fas fa-edit"></i></a>
+                                <a href="/delete/{{Info.0}}"class="delete"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                            {%endif%}
                         </tr>
                         {%endfor%}
+                        <tr>
+                            <td colspan="15" class="Pag">
+                                {%if Datos['rowi']==0%}
+                                <a href="/Reportes/{{Datos['rowi']}}" class="after"><i class="fas fa-angle-double-left"></i></a>
+                                {%else%}
+                                {%set rowMenos=Datos['rowi']-50 | int%}
+                                <a href="/Reportes/{{rowMenos}}" class="after"><i class="fas fa-angle-double-left"></i></a>
+                                {%endif%}
+                                {%set rowMas=Datos['rowi']+50 | int%}
+                                <a href="/Reportes/{{rowMas}}" class="before"><i class="fas fa-angle-double-right"></i></a>
+                            </td>
+                        </tr>
                     </tbody>
+
 
                 </table>
                     

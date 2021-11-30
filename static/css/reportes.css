@@ -3,7 +3,7 @@
     padding: 0;
 }
 body{
-    background: #fff;
+    background: #eee;
 }
 img{
     width: 14vh;
@@ -51,6 +51,30 @@ img{
     font-size: 1.5VH;
     border-radius: 5PX;
  }
+ div.filtros{
+    background: #fff159;
+    padding: 1vh 0;
+    border:none;
+    border-collapse: collapse;
+
+}
+.filtros form{
+    display: inline;
+    margin-left: 2vh;
+    border:none;
+    background-color: #fff;
+    padding: 0.5VH;
+    border: 1px solid #2f3476;
+    border-radius: 15px;
+}
+.filtros form select,
+.filtros form input{
+    box-decoration-break: None;
+    background: #fff;
+    border: none;
+    font-size: 2vh;
+}
+
  .nav_menu{
     display: block;
     flex-direction: column;        
@@ -108,40 +132,6 @@ img{
     background: #eee;
 
 }
-section form{
-    width:60vh;
-    margin: -45vh auto;
-    background:#fff;
-    color: #2f3476;
-    text-align:center;
-    align-items:center;
-    padding:10px;
-    display: flex;
-    flex-direction: column;
-    grid-column: 1;
-    border-radius:20px;
-    border:2px solid #a5a6a8;
-}
-section form h2{
-    font-size: 3vh;
-}
-section form label,
-section form select,
-section form input{
-    margin: 0.5vh auto;
-    font-size: 2vh;
-}
-section form input.btn {
-    background:#fff159; 
-    color:#2f3476;
-     border-radius:10px; 
-     padding: 5px 20px; 
-     font-size:20px;
-}
-section form input.btn:hover{
-        background:#2f3476; 
-        color:#fff;
-}
 .Aviso{
     margin:0 auto auto auto;
     width: 100%;
@@ -151,6 +141,60 @@ section form input.btn:hover{
     color: #fff;
     border:2px solid #eee;
 }
+
+table{
+    width: 99%;
+    background: #fff;
+    margin:1vh auto;
+    justify-content: space-between;
+    text-align: center;
+    border-collapse: collapse;
+    box-shadow: 0 0 2px #000;
+}
+table thead{
+    background: #2f3476;
+    color: #fff;
+}
+table thead th{
+    padding: 0 0.5vh;
+}
+table tbody tr{
+    border-top: 1px solid #bbb;
+}
+table tbody tr:nth-child(even){
+    background: #eee;
+    }
+table tbody tr td{
+    padding: 0.3vh 0.7vh;
+}
+table tbody tr td .edit{
+
+    color: rgb(74, 219, 30);
+
+}
+table tbody tr td .delete{
+    color: rgb(248, 18, 10);
+
+}
+.before,
+.after,
+.Pag{
+    background: #2f3476;
+    color: #fff;
+}
+.before{
+    font-size: 3vh;
+    margin-left: 3vh;
+}
+.after{
+    font-size: 3vh;
+    margin-right: 3vh;
+}
+.after:hover,
+.before:hover{
+    color: #ccc;
+}
+
 @media (max-width: 1400px){
 
     .Nav_Bar span{

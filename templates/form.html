@@ -25,7 +25,7 @@
     <div class="Nav_Bar">
         <button class="menu"><i class="fab fa-elementor"></i></button>
          <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
-        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
+        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
         <form action="/form" method="POST">
             {% if Datos['Rango'] == 'Administrador' %}
             <label for="centro_de_Trabajo">
@@ -57,25 +57,25 @@
     </div>
     <div class="nav_menu">
         <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
-        {% if Datos['Rango'] == 'Representante' %}
-         <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Auxiliar'%}
-            <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i>  Reportes</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Administrador'%}
-            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
-            <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i>  Reportes</a>
-            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
-            <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Planeacion'%}
-            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Team Leader'%}
-            <a href='/Reportes' class='link_menu'><i class='fas fa-edit'></i> - Reportes</a>
-            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {%endif%}
+    {% if Datos['Rango'] == 'Representante' %}
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Auxiliar'%}
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Administrador'%}
+        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Planeacion'%}
+        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Team Leader'%}
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {%endif%}
  
     </div>
         <div class="fondo"></div>
@@ -86,10 +86,8 @@
                         <h2 class="titulo">Control de Entrada "Pallet/Gaylord" SVC\'s</h2>
                         <hr>
                         <h2>Materiales Recibidos</h2>
-                        <label for="Pallets_Totales_Recibidos">Pallets Totales Recibidos : <input type="number" name="Pallets_Totales_Recibidos"  placeholder="Pallets Totales Recibidos"required ></label>
                         <label for="Pallets_en_buen_estado">Pallets en buen estado : <input type="number" name="Pallets_en_buen_estado"  placeholder="Pallets en buen estado" required></label>
                         <label for="Pallets_en_mal_estado">Pallets en mal estado: <input type="nomber" name="Pallets_en_mal_estado"  placeholder="Pallets en mal estado" required></label>
-                        <label for="Gaylords_Totales_Recibidos">Gaylords Totales Recibidos : <input type="nomber" name="Gaylords_Totales_Recibidos"  placeholder="Gaylords Totales Recibidos" required></label>
                         <label for="Gaylords_en_buen_estado">Gaylords en buen estado : <input type="number" name="Gaylords_en_buen_estado"  placeholder="Gaylords en buen estado" required></label>
                         <label for="Gaylords_en_mal_estado">Gaylords en mal estado: <input type="nomber" name="Gaylords_en_mal_estado"  placeholder="Gaylords en mal estado" required></label>
                         <label for="cajas">Cajas : <input type="nomber" name="cajas"  placeholder="Cajas" required></label>
@@ -173,10 +171,8 @@
                         <h2 class="titulo">Control de Entrada "Pallet/Gaylord" FC\'s</h2>
                         <hr>
                         <h2>Materiales Recibidos</h2>
-                        <label for="Pallets_Totales_Recibidos">Pallets Totales Recibidos : <input type="number" name="Pallets_Totales_Recibidos"  placeholder="Pallets Totales Recibidos"required ></label>
                         <label for="Pallets_en_buen_estado">Pallets en buen estado : <input type="number" name="Pallets_en_buen_estado"  placeholder="Pallets en buen estado" required></label>
                         <label for="Pallets_en_mal_estado">Pallets en mal estado: <input type="nomber" name="Pallets_en_mal_estado"  placeholder="Pallets en mal estado" required></label>
-                        <label for="Gaylords_Totales_Recibidos">Gaylords Totales Recibidos : <input type="nomber" name="Gaylords_Totales_Recibidos"  placeholder="Gaylords Totales Recibidos" required></label>
                         <label for="Gaylords_en_buen_estado">Gaylords en buen estado : <input type="number" name="Gaylords_en_buen_estado"  placeholder="Gaylords en buen estado" required></label>
                         <label for="Gaylords_en_mal_estado">Gaylords en mal estado: <input type="nomber" name="Gaylords_en_mal_estado"  placeholder="Gaylords en mal estado" required></label>
                         <label for="cajas">Cajas : <input type="nomber" name="cajas"  placeholder="Cajas" required></label>
@@ -585,10 +581,8 @@
                         <h2 class="titulo">Control de Entradas "Pallet/Gaylord" XD</h2> 
                         <hr>
                         <h2>Mteriales Recibidos</h2>
-                        <label for="Total_tarimas ">Total tarimas  : <input type="number" name="Total_tarimas"  placeholder="Total tarimas"required ></label>
                         <label for="Tarima_en_buen_estado ">Tarima en buen estado  : <input type="number" name="Tarima_en_buen_estado"  placeholder="Tarima en buen estado" required></label>
                         <label for="Tarimas_en_mal_estado">Tarimas en mal estado : <input type="nomber" name="Tarimas_en_mal_estado"  placeholder="Tarimas en mal estado" required></label>
-                        <label for="Total_Gaylors">Total Gaylors : <input type="nomber" name="Total_Gaylors"  placeholder="Total Gaylors " required></label>
                         <label for="Gaylors_en_buen_estado">Gaylors en buen estado : <input type="number" name="Gaylors_en_buen_estado"  placeholder="Gaylors en buen estado " required></label>
                         <label for="Gaylors_en_mal_estado">Gaylors en mal estado : <input type="nomber" name="Gaylors_en_mal_estado"  placeholder="Gaylors en mal estado" required></label>
                         <label for="cajas">Cajas : <input type="nomber" name="cajas"  placeholder="Cajas" required></label>

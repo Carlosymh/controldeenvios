@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response 
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
@@ -137,12 +137,12 @@ def registro_s_e():
   try:
       if request.method == 'POST':
         cdt =  session['SiteName']
-        Pallets_Totales_Recibidos = request.form['Pallets_Totales_Recibidos']
         Pallets_en_buen_estado =  request.form['Pallets_en_buen_estado']
         Pallets_en_mal_estado = request.form['Pallets_en_mal_estado']
-        Gaylords_Totales_Recibidos =  request.form['Gaylords_Totales_Recibidos']
+        Pallets_Totales_Recibidos = int(Pallets_en_buen_estado)+int(Pallets_en_mal_estado)
         Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
         Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
+        Gaylords_Totales_Recibidos = int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
         cajas = request.form['cajas']
         costales =  request.form['costales']
         Centro_de_Origen = request.form['Centro_de_Origen']
@@ -225,12 +225,12 @@ def registro_fcs_e():
   try:
       if request.method == 'POST':
         cdt =  session['SiteName']
-        Pallets_Totales_Recibidos = request.form['Pallets_Totales_Recibidos']
         Pallets_en_buen_estado =  request.form['Pallets_en_buen_estado']
         Pallets_en_mal_estado = request.form['Pallets_en_mal_estado']
-        Gaylords_Totales_Recibidos =  request.form['Gaylords_Totales_Recibidos']
+        Pallets_Totales_Recibidos = int(Pallets_en_buen_estado)+int(Pallets_en_mal_estado)
         Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
         Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
+        Gaylords_Totales_Recibidos =  int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
         cajas = request.form['cajas']
         costales =  request.form['costales']
         Centro_de_trabajo_origen = request.form['Centro_de_trabajo_origen']
@@ -574,12 +574,12 @@ def registro_xd_entrada():
   try:
       if request.method == 'POST':
         cdt = session['SiteName']
-        Total_tarimas = request.form['Total_tarimas']
         Tarima_en_buen_estado = request.form['Tarima_en_buen_estado']
         Tarimas_en_mal_estado = request.form['Tarimas_en_mal_estado']
-        Total_Gaylors = request.form['Total_Gaylors']
+        Total_tarimas = int(Tarima_en_buen_estado)+int(Tarimas_en_mal_estado)
         Gaylors_en_buen_estado = request.form['Gaylors_en_buen_estado']
         Gaylors_en_mal_estado = request.form['Gaylors_en_mal_estado']
+        Total_Gaylors = int(Gaylors_en_buen_estado)+int(Gaylors_en_mal_estado)
         Cajas = request.form['cajas']
         Costales = request.form['costales']
         Destino_Proveniente = request.form['Destino_Proveniente']
@@ -781,15 +781,50 @@ def logout():
   session.clear()
   return render_template('index.html')
 
-@app.route('/Reportes',methods=['POST','GET'])
-def Reporte():
+@app.route('/Reportes/<rowi>',methods=['POST','GET'],)
+def Reporte(rowi):
   # try:
       if request.method == 'POST':
         if session['Rango'] == 'Administrador':
-          session['FcName']= request.form['centro_de_Trabajo']
-          session['tabla']= request.form['tabla']
+          if session['tabla'] != None:
+            session['FcName']= request.form['centro_de_Trabajo']
+          else:
+            session['FcName']= request.form['centro_de_Trabajo']
+            session['tabla']= request.form['tabla']
+        else:
+          if session['tabla'] == None:
+            session['tabla']= request.form['tabla']
+        if request.method == 'GET':
+          session['rowi']=rowi
           row1 = int(session['rowi'])
-          row2 = int(session['rowf'])
+          row2 = int(session['rowi'])+50
+        else:
+          row1 = int(session['rowi'])
+          row2 = int(session['rowi'])+50
+        if  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada':
+            if request.form['valor'] != None:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor'] 
+              session['inicio']=request.form['inicio']
+              session['fin']=request.form['fin']
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_fc WHERE {} = \'{}\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+      else: 
+        if session['tabla']:
+          if request.method == 'GET':
+            session['rowi']=int(rowi)
+            row1 = int(session['rowi'])
+            row2 = int(session['rowi'])+50
+          else:
+            row1 = int(session['rowi'])
+            row2 = int(session['rowi'])+50
           if  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada':
             if session['valor'] == None:
               cur = mysql.connection.cursor()
@@ -801,18 +836,19 @@ def Reporte():
               cur = mysql.connection.cursor()
               cur.execute('SELECT * FROM entrada_fc')
               data = cur.fetchall()
-              print(data)
               return render_template('reportes.html',Datos = session,Infos =data)
+          else:
+            session['tabla']= request.form['tabla']
+            return render_template('reportes.html',Datos = session)
+      
         else:
-          session['tabla']= request.form['tabla']
+          session['tabla']= None
+          session['filtro']= None
+          session['valor']= None 
+          session['inicio']= None
+          session['fin']= None
+          session['rowi']= 0
           return render_template('reportes.html',Datos = session)
-      else:
-        session['tabla']= None
-        session['filtro']= None
-        session['valor']= None
-        session['rowi']= 1
-        session['rowf']= 50
-        return render_template('reportes.html',Datos = session)
      
   # except:
   #   flash("Inicia Secion")
