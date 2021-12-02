@@ -81,13 +81,66 @@
  
     </div>
     <div class="filtros">
-        {%if Datos['tabla'] != None %}
+    {%if 'tabla' in Datos %}
         {%if Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Entrada' %}
-            
+        <form action="/Reportes/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="ID_E_svcs">ID</option>
+                <option value="Centro_de_trabajo_donde_te_encuentras">Service Center</option>
+                <option value="Centro_de_Origen">Centro de origen</option>
+                <option value="Responsable">Responsable</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form>
         {%elif Datos['FcName'] == 'Service Center' and Datos['tabla'] == 'Salida'%}
-           
+        <form action="/Reportes/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="ID_S_svcs">ID</option>
+                <option value="Centro_de_trabajo_donde_te_encuentras">Service Center</option>
+                <option value="Cross_Dock">Cross Dock</option>
+                <option value="Responsable">Responsable</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form>   
         {%elif  Datos['tabla'] == 'prealert'%}
-           
+        <form action="/Reportes/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="id_prealert">ID</option>
+                <option value="responsable">Responsable</option>
+                <option value="lugaDeTrabajo">Luga de Trabajo</option>
+                <option value="cdt">Site</option>
+                <option value="id_de_envio">ID de Envio</option>
+                <option value="Codificación">Codificación</option>
+                <option value="Metodo">Metodo</option>
+                <option value="Facility">Facility</option>
+                <option value="Transporte">Transporte</option>
+                <option value="Trasportista">Trasportista</option>
+                <option value="Placas">Placas</option>
+                <option value="Sello">Sello</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form>   
         {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada'%}
         <form action="/Reportes/0" method="post" class="form_filtros">
             <select name="filtro">
@@ -108,7 +161,24 @@
             <input type="submit" value="Buscar">
         </form>  
         {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Salida'%}
-                           
+        <form action="/Reportes/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="ID_S_fc">ID</option>
+                <option value="Fulfillment">Fulfillment</option>
+                <option value="centro_de_trabajo_Destino">Destino</option>
+                <option value="Service_Center">Service Center</option>
+                <option value="FC_Destino">Fullfilment Destino</option>
+                <option value="Responsable">Responsable</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form>                   
         {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'Entrada_Tranferencias'%}
           
         {%elif Datos['FcName'] == 'Fullfilment' and Datos['tabla'] == 'recibo'%}
@@ -130,8 +200,6 @@
         {%elif Datos['Rango'] == 'Planeacion' and Datos['tabla'] == 'planning' or Datos['Rango'] == 'Administrador' and Datos['Formulario'] == 'planning'%}
             
         {%endif%}
-    {%else %}
-    <h3 class="Aviso">Seleciona una Tabla</h5>
     {%endif%}
 
     </div>
@@ -195,16 +263,31 @@
                         </tr>
                         {%endfor%}
                         <tr>
-                            <td colspan="15" class="Pag">
-                                {%if Datos['rowi']==0%}
-                                <a href="/Reportes/{{Datos['rowi']}}" class="after"><i class="fas fa-angle-double-left"></i></a>
+                            {%if Datos['Rango']=='Administrador'%}
+                            <td colspan="16" class="Pag">
+                                {%set row= Datos['rowi'] |int%}
+                                {%if row==0%}
+                                <a href="/Reportes/0" class="after"><i class="fas fa-angle-double-left"></i></a>
                                 {%else%}
-                                {%set rowMenos=Datos['rowi']-50 | int%}
+                                {%set rowMenos=row-50 | int%}
                                 <a href="/Reportes/{{rowMenos}}" class="after"><i class="fas fa-angle-double-left"></i></a>
                                 {%endif%}
-                                {%set rowMas=Datos['rowi']+50 | int%}
+                                {%set rowMas=row+50 | int%}
                                 <a href="/Reportes/{{rowMas}}" class="before"><i class="fas fa-angle-double-right"></i></a>
                             </td>
+                            {%else%}
+                            <td colspan="15" class="Pag">
+                                {%set row= Datos['rowi'] |int%}
+                                {%if row==0%}
+                                <a href="/Reportes/0" class="after"><i class="fas fa-angle-double-left"></i></a>
+                                {%else%}
+                                {%set rowMenos=row-50 | int%}
+                                <a href="/Reportes/{{rowMenos}}" class="after"><i class="fas fa-angle-double-left"></i></a>
+                                {%endif%}
+                                {%set rowMas=row+50 | int%}
+                                <a href="/Reportes/{{rowMas}}" class="before"><i class="fas fa-angle-double-right"></i></a>
+                            </td>
+                            {%endif%}
                         </tr>
                     </tbody>
 

@@ -70,11 +70,14 @@ img{
 .filtros form select,
 .filtros form input{
     box-decoration-break: None;
-    background: #fff;
+    background: none;
     border: none;
     font-size: 2vh;
 }
-
+.filtros form input:focus{
+    text-align: center;
+    outline:none;
+}
  .nav_menu{
     display: block;
     flex-direction: column;        
