@@ -49,9 +49,7 @@ def validar():
             return render_template('index.html')
       else:
         flash('Usuario Incorrecto')
-        return render_template('index.html')
-    def _create_password(password):
-        return generate_password_hash(password,'pbkdf2:sha256:30',30)     
+        return render_template('index.html')    
 
 #Formularios de Registro Entradas Y Salidas 
 @app.route('/form',methods=['POST','GET'])
@@ -128,7 +126,7 @@ def registrar():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('registro.html')
-  def _create_password(password):
+def _create_password(password):
    return generate_password_hash(password,'pbkdf2:sha256:30',30)
 
 #Registros de Formularios 
@@ -779,7 +777,9 @@ def actualizacion():
 @app.route('/logout')
 def logout():
   session.clear()
+  flash("Sesion Finalizada")
   return render_template('index.html')
+
 
 @app.route('/Reportes/<rowi>',methods=['POST','GET'],)
 def Reporte(rowi):
@@ -791,13 +791,14 @@ def Reporte(rowi):
             session['tabla']= request.form['tabla']
         if 'tabla' in request.form:  
           session['tabla']= request.form['tabla']
+
         if request.method == 'GET':
           session['rowi']=rowi
           row1 = int(session['rowi'])
-          row2 = 50
+          row2 = 100
         else:
             row1 = int(session['rowi'])
-            row2 =50
+            row2 =100
 
         # Inicio de Tabla Entradas Fulfilment    
         if  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada':
@@ -891,8 +892,917 @@ def Reporte(rowi):
             data = cur.fetchall()
             return render_template('reportes.html',Datos = session,Infos =data)
         # Inicio de Tabla SalidaS Fulfilment        
+        elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='Salida':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Transfer Fulfilment 
+        elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada_Tranferencias':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Recibo Fulfilment 
+        elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='recibo':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla No Procesable Fulfilment 
+        elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='no_procesable':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Prealert 
+        elif  session['tabla'] =='prealert':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Entradas  Service Center 
+        elif  session['FcName'] == 'Service Center' and session['tabla'] =='Entrada':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla SalidaS Service Senter 
+        elif  session['FcName'] == 'Service Center' and session['tabla'] =='Salida':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Entradas  Cross Dock 
+        elif  session['FcName'] == 'Cross Dock' and session['tabla'] =='Entrada':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla SalidaS Cross Dock 
+        elif  session['FcName'] == 'Cross Dock' and session['tabla'] =='Salida':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
+        # Inicio de Tabla Planning
+        elif  session['tabla'] =='planning':
+          if  'valor' in session:
+            if 'valor' in request.form:
+              if len(request.form['valor'])>0:
+                session['filtro']=request.form['filtro']
+                session['valor']=request.form['valor']
+                if len(request.form['inicio'])>0:
+                  session['inicio']=request.form['inicio']
+                  if len(request.form['fin'])>0:
+                    session['fin']=request.form['fin']
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              if 'inicio' in session:
+                if len(session['inicio'])>0:
+                  if 'fin' in session:
+                    if len(session['fin'])>0:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                      cur = mysql.connection.cursor()
+                      cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                      data = cur.fetchall()
+                      return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)  
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+          elif 'valor' in request.form:
+            if len(request.form['valor'])>0:
+              session['filtro']=request.form['filtro']
+              session['valor']=request.form['valor']
+              if len(request.form['inicio'])>0:
+                session['inicio']=request.form['inicio']
+                if len(request.form['fin'])>0:
+                  session['fin']=request.form['fin']
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data) 
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes.html',Datos = session,Infos =data)
         else:
-                return render_template('reportes.html',Datos = session,Infos =data)  
+            return render_template('reportes.html',Datos = session)
       else: 
         if 'tabla' in session:
           if request.method == 'GET':
@@ -944,15 +1854,432 @@ def Reporte(rowi):
               cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
               data = cur.fetchall()
               return render_template('reportes.html',Datos = session,Infos =data)
-          #iNICIO DE tABLA sALIDAS fULFILMENT    
+          # Inicio de Tabla SalidaS Fulfilment        
+          elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='Salida':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Transfer Fulfilment 
+          elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada_Tranferencias':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Recibo Fulfilment 
+          elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='recibo':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla No Procesable Fulfilment 
+          elif  session['FcName'] == 'Fullfilment' and session['tabla'] =='no_procesable':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Prealert 
+          elif  session['tabla'] =='prealert':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Entradas  Service Center 
+          elif  session['FcName'] == 'Service Center' and session['tabla'] =='Entrada':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla SalidaS Service Senter 
+          elif  session['FcName'] == 'Service Center' and session['tabla'] =='Salida':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Entradas  Cross Dock 
+          elif  session['FcName'] == 'Cross Dock' and session['tabla'] =='Entrada':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla SalidaS Cross Dock 
+          elif  session['FcName'] == 'Cross Dock' and session['tabla'] =='Salida':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
+          # Inicio de Tabla Planning
+          elif  session['tabla'] =='planning':
+            if 'valor' in session:
+              if len(session['valor'])>0:
+                if 'inicio' in session:
+                  if len(session['inicio'])>0:
+                    if 'fin' in session:
+                      if len(session['fin'])>0:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],session['fin'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                      else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                    else:
+                        cur = mysql.connection.cursor()
+                        cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro'],session['valor'],session['inicio'],row1,row2))
+                        data = cur.fetchall()
+                        return render_template('reportes.html',Datos = session,Infos =data)
+                  else:
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes.html',Datos = session,Infos =data)  
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro'],session['valor'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes.html',Datos = session,Infos =data)
           else:
-            return render_template('reportes.html',Datos = session) 
+            return render_template('reportes.html',Datos = session)
         else:
           session['tabla']= None
           session['rowi']= 0  
           return render_template('reportes.html',Datos = session)
-          
-     
   # except:
   #   flash("Inicia Secion")
   #   return render_template('index.html')
