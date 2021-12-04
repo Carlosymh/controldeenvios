@@ -45,7 +45,6 @@
                     <option value="Entrada_Tranferencias">Entrada Tranferencias</option>
                     <option value="recibo">Recibo</option>
                     <option value="no_procesable">No Procesable</option>
-                    <option value="f_a_estatus">Actualizacion de Estatus</option>
                     <option value="planning">Planning</option>
                 {% elif Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Planeacion' %}
                     <option value="planning">Planning</option>
@@ -535,7 +534,7 @@
                         {%endfor%}
                         <tr>
                             {%if Datos['Rango']=='Administrador'%}
-                            <td colspan="13" class="Pag">
+                            <td colspan="14" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -556,7 +555,7 @@
                                 </a>
                             </td>
                             {%else%}
-                            <td colspan="12" class="Pag">
+                            <td colspan="13" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -721,7 +720,7 @@
                         {%endfor%}
                         <tr>
                             {%if Datos['Rango']=='Administrador'%}
-                            <td colspan="11" class="Pag">
+                            <td colspan="12" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -742,7 +741,7 @@
                                 </a>
                             </td>
                             {%else%}
-                            <td colspan="10" class="Pag">
+                            <td colspan="11" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -887,7 +886,7 @@
                         {%endfor%}
                         <tr>
                             {%if Datos['Rango']=='Administrador'%}
-                            <td colspan="10" class="Pag">
+                            <td colspan="11" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -908,7 +907,7 @@
                                 </a>
                             </td>
                             {%else%}
-                            <td colspan="9" class="Pag">
+                            <td colspan="10" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -1079,7 +1078,7 @@
                         {%endfor%}
                         <tr>
                             {%if Datos['Rango']=='Administrador'%}
-                            <td colspan="13" class="Pag">
+                            <td colspan="14" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -1100,7 +1099,7 @@
                                 </a>
                             </td>
                             {%else%}
-                            <td colspan="12" class="Pag">
+                            <td colspan="13" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -1168,7 +1167,7 @@
                         {%endfor%}
                         <tr>
                             {%if Datos['Rango']=='Administrador'%}
-                            <td colspan="11" class="Pag">
+                            <td colspan="12" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">
@@ -1189,7 +1188,7 @@
                                 </a>
                             </td>
                             {%else%}
-                            <td colspan="10" class="Pag">
+                            <td colspan="11" class="Pag">
                                 {%set row= Datos['rowi'] |int%}
                                 {%if row==0%}
                                 <a href="/Reportes/0" class="after">

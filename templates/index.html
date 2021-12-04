@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +22,7 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <section class="titulo"><h1>Control de Envíos </h1></section>
+    <section class="titulo"><img src="/static/img/Logo.png" alt=""><h1>Control de Envíos </h1></section>
     <div class="container"> 
         <form action="/validar" method="POST">
             <H2>Inicia Sesión</H2>
