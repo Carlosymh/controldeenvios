@@ -4,8 +4,6 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Harabara';
-    font-family: 'Harabara';
 
     
 }
@@ -30,6 +28,7 @@ section h1{
     text-align: center;
     margin-left: 0.5VH;
     margin-top: 2vh;
+    font-family: 'Harabara';
 }
 
 .container{
@@ -47,22 +46,23 @@ section h1{
 }
 
 form{
-    width: 40vh;
     display: grid;
     margin: auto;
-    padding: 1vh;
     align-items: center;
     justify-content: center;
 
 }
 
 form h2{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 5vh;
     color: #2f3476;
 
 }
 
 form label{
+    
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2vh;
     color: rgb(95, 92, 92);
 }
@@ -111,7 +111,7 @@ p{
     position: relative;
     background-color: aquamarine;
     margin: auto;
-    margin-bottom: -3.1vh;
+    margin-bottom: -3.1vw;
     margin-top: 0;
     padding:0 0.2vh  0.2vh  0.2vh;
     font-size: 2vh;
@@ -132,74 +132,4 @@ p a.alert:hover{
     color: #fff;
     font-size: 2.2vh;
     border-radius: 25px;
-}
-
-@media (max-width: 1450px){
-    section{
-        font-size: 8vh;
-    }
-    section h1{
-        text-shadow:0vh 0vh 0.5vh  #fff;
-    }
-
-    .container{
-        width: 50VH;
-        height: 40VH;
-        padding: 5PX;
-        justify-content: center;
-        align-items: center;
-        margin: auto;
-        margin-top: -20vh;
-    }
-    form{
-        width: 40vh;
-        display: grid;
-        margin: auto;
-        align-items: center;
-        justify-content: center;
-    
-    }
-    form h2{
-        font-size: 5vh;
-        color: #2f3476;
-        font-family: 'Khula', sans-serif;
-    
-    }
-    
-    
-}
-
-@media (max-width: 950px){
-    section{
-        font-size: 5vh;
-    }
-    section h1{
-        text-shadow:0vh 0vh 0.5vh  #fff;
-    }
-
-    .container{
-        width: 40VH;
-        height: 35VH;
-        padding: 5PX;
-        justify-content: center;
-        align-items: center;
-        margin: auto;
-        margin-top: -15vh;
-    }
-    form{
-        width: 30vh;
-        display: grid;
-        margin: auto;
-        align-items: center;
-        justify-content: center;
-    
-    }
-    form h2{
-        font-size: 3.5vh;
-        color: #2f3476;
-        font-family: 'Khula', sans-serif;
-    
-    }
-    
-    
 }

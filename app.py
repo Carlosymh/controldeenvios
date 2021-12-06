@@ -183,7 +183,7 @@ def registro_s_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form.html',Datos = session)
 
-
+# Registro de Salidas Service Center
 @app.route('/registro_prealert',methods=['POST'])
 def registro_prealert():
   try:
