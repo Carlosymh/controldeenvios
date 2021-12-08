@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <title>Formulario</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+    {%for message in messages%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <div class="Nav_Bar">
+        <button class="menu"><i class="fab fa-elementor"></i></button>
+         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
+    
+    </div>
+    <div class="nav_menu">
+        <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
+    {% if Datos['Rango'] == 'Representante' %}
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Auxiliar'%}
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Administrador'%}
+        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Planeacion'%}
+        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {% elif Datos['Rango'] == 'Team Leader'%}
+        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
+        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
+    {%endif%}
+ 
+    </div>
+        <div class="fondo"></div>
+        <section>
+            <form action="/registro_fcs_recibo" method="POST" >
+                <h2 class="titulo">Entregas no efectivas</h2>
+                <hr>
+                <label for="paquetera">Paquetera: </label>
+                <select name="paquetera" required>
+                    <option value="Mercado Envíos">Mercado Envíos</option>
+                    <option value="DHL">DHL</option>
+                    <option value="Estafeta">Estafeta</option>
+                    <option value="Paquetexpress">Paquetexpress</option>
+                    <option value="FedEx">FedEx</option>
+                    <option value="99 minutos">99 minutos</option>
+                </select>
+                <label for="no_gia">No. de Guia: <input type="number" name="no_gia"   required></label>
+                <label for="no_paquete">No. Paquete: <input type="number" name="no_paquete"  required ></label>
+                <label for="tipo_paquete">Tipo de Paquete: </label>
+                <select name="tipo_paquete" required>
+                    <option value="Reotorno">Reotorno</option>
+                    <option value="Devolcuión">Devolcuión</option>
+                </select>
+                <label for="estatus">Estatus: </label>
+                <select name="estatus" required>
+                    <option value="Aceptado">Aceptado</option>
+                    <option value="Rechazado">Rechazado</option>
+                </select>
+                <label for="razon_rechazo">Razon de Rechazo: </label>
+                <select name="razon_rechazo" required>
+                    <option value="N/A">N/A</option>
+                    <option value="Dañado">Dañado</option>
+                    <option value="Extracción">Extracción</option>
+                    <option value="Otro FC">Otro FC</option>
+                    <option value="Drop off / cross dosck">Drop off / cross dosck</option>
+                </select>
+                <input type="submit" class="btn" name="enviar" value="enviar" >
+            </form>
+        </section>
+        <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </script>
+
+</body>
+</html>

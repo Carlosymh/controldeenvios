@@ -21,7 +21,7 @@ app.secret_key = 'mysecretkey'
 def Index():
   try:
     if session['FullName'] != None:
-      return redirect('/form')
+      return redirect('/Reportes/0')
     else:
       return render_template('index.html')
   except:
@@ -52,27 +52,54 @@ def validar():
         return render_template('index.html')    
 
 #Formularios de Registro Entradas Y Salidas 
-@app.route('/form',methods=['POST','GET'])
-def form():
-  try:
-    if session['FullName'] != None:
-      if request.method == 'POST':
-        if session['Rango'] == 'Administrador':
-          session['FcName']= request.form['centro_de_Trabajo']
-          session['Formulario']= request.form['formulario']
-          return render_template('form.html',Datos = session)
-        else:
-          session['Formulario']= request.form['formulario']
-          return render_template('form.html',Datos = session)
-      else:
-        session['Formulario']= None
-        return render_template('form.html',Datos = session)
-    else:
-      flash("Inicia Secion")
-      return render_template('index.html')
-  except:
-    flash("Inicia Secion")
+@app.route('/f_e_f',methods=['POST','GET'])
+def entradas_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_e_f.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
     return render_template('index.html')
+
+@app.route('/f_s_f',methods=['POST','GET'])
+def Salidas_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_s_f.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/f_r_f',methods=['POST','GET'])
+def Recibo_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_r_f.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/f_p',methods=['POST','GET'])
+def Prealert_form():
+  if 'FullName' in session:
+    return render_template('form/f_p.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/f_p_f',methods=['POST','GET'])
+def Planning_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_p_f.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/f_n_p',methods=['POST','GET'])
+def No_procesable_form():
+  if 'FullName' in session:
+    return render_template('form/f_n_p.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
 
 #Redirigie a el Formulario de Registro de Usuarios 
 @app.route('/registro')
@@ -240,13 +267,13 @@ def registro_fcs_e():
         cur.execute('INSERT INTO entrada_fc (Fulfillment, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_trabajo_origen, Cross_Dock_origen, Service_Center_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_trabajo_origen,Cross_Dock_origen,Service_Center_Origen,usuario,now,now))
         mysql.connection.commit() 
         flash("Registro Exitoso")
-        return render_template('form.html',Datos = session)
+        return render_template('form/f_e_f.html',Datos = session)
       else:
         flash("No has enviado un registro")
-        return render_template('form.html',Datos = session)
+        return render_template('form/f_e_f.html',Datos = session)
   except:
     flash("Llena todos los Campos Correctamente")
-    return render_template('form.html',Datos = session)
+    return render_template('form/f_e_f.html',Datos = session)
 
 
 @app.route('/registro_fcs_salida',methods=['POST'])
@@ -799,7 +826,6 @@ def Reporte(rowi):
         else:
             row1 = int(session['rowi'])
             row2 =100
-
         # Inicio de Tabla Entradas Fulfilment    
         if  session['FcName'] == 'Fullfilment' and session['tabla'] =='Entrada':
           if 'valor' in request.form:

@@ -67,7 +67,7 @@ img{
     display: flex;
     grid-column: 1;
     width: 20vh;
-    height: 50vh;
+    height: 100%;
     position: absolute;
     background: #fff;
     padding: 0;
@@ -152,78 +152,47 @@ section form input.btn:hover{
     color: #fff;
     border:2px solid #eee;
 }
-@media (max-width: 1400px){
+.accordion {
+    background-color: #2f3476;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    text-align: center;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+  }
+  
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .nav_menu_visual i:hover,
+  .nav_menu_visual a:hover,
+  .active,
+  .accordion:hover {
+    background-color: #6871f1;
+  }
+  
+  /* Style the accordion panel. Note: hidden by default */
+  .panel {
+    padding: 20px 0;
+    background-color: white;
+    display: none;
+    transition: max-height 0.2s ease-out;
+  }
+  .accordion:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }
+  
+  .active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }
 
-    .Nav_Bar span{
-        font-size: 1vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.5;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 60VH;
-        font-size: 7vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}
-@media (max-width: 900px){
-    
-    img{
-        width: 10vh;
-        height: 5vh;
-        padding: 0.5vh 0;
-    }
-    .Nav_Bar span{
-        font-size: 0.5vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.2;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 50VH;
-        font-size: 6vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}
-@media (max-width: 450px){
-    section form{
-        margin: -45vh auto;
-         background:#fff;
-         color: #2f3476;
-          text-align:center;
-           align-items:center;
-            width:40vh;
-             padding:10px;
-              border-radius:20px;
-               border:2px solid #fff;
-    }
-    img{
-        display: none;
-    }
-    .Nav_Bar span{
-        font-size: 0.5vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.2;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 40VH;
-        font-size: 5vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}

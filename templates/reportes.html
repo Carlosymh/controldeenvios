@@ -55,28 +55,107 @@
         </form>
     </div>
     <div class="nav_menu">
-        <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
-        {% if Datos['Rango'] == 'Representante' %}
-            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Auxiliar'%}
-            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Administrador'%}
-            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
-            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
-            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
-            <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Planeacion'%}
-            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
-            <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i>  Planning</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-        {% elif Datos['Rango'] == 'Team Leader'%}
-            <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Formulario</a>
-            <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i>  Dashboard</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+        <button class="accordion"><i class="fas fa-book"></i> formularios</button>
+        <div class="panel">
+        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+            <button class="accordion">Fulfillment</button>
+            <div class="panel">
+                <a href='/f_e_f' class='link_menu'> Entradas</a>
+                <a href='/f_s_f' class='link_menu'> Salidas</a>
+                <a href='/f_r_f' class='link_menu'>  Recibo</a>
+                <a href='/f_p' class='link_menu'>  Prealert</a>
+                <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
+                <a href='/f_p_f' class='link_menu'>  Planning</a>
+            </div>
         {%endif%}
+        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
+            <button class="accordion">Cross Dock</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+        
+        {%endif%}
+        {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+            <button class="accordion">Service Center</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+            </div>
+        {%endif%}
+        {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+                <button class="accordion">Planning</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+        {%endif%}
+        </div>
+        <button class="accordion"><i class='fas fa-edit'></i> Reportes</button>
+        <div class="panel">
+            <button class="accordion">Fullfilment</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Recivo</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Realert</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  No Prosesable</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+            <button class="accordion">Cross Dock</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+            <button class="accordion">Service Center</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+            </div>
+            <button class="accordion">Planning</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+        </div>
+        <button class="accordion"><i class="fas fa-chart-pie"></i> Dashboard</button>
+        <div class="panel">
+            <button class="accordion">Fulfillment</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Recivo</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Realert</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  No Prosesable</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+            <button class="accordion">Cross Dock</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+            <button class="accordion">Service Center</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Entradas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Salidas</a>
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Prealert</a>
+            </div>
+            <button class="accordion">Planning</button>
+            <div class="panel">
+                <a href='/form' class='link_menu'><i class="fas fa-book"></i>  Planning</a>
+            </div>
+        </div>
+        <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
+
+        
+
  
     </div>
     <div class="filtros">

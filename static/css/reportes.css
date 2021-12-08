@@ -32,12 +32,12 @@ img{
     margin: auto  2vh auto auto ;
     color:#fff;
     background: #2f3476;
-    padding: 0.25vh;
+    padding: 0.25vh 0;
     border-radius: 5px;
 }
 
 .Nav_Bar select{
-   padding: 0.25vh;
+   padding: 0.25vh 0;
    margin: auto 2VH auto 0VH;
    font-size: 1.5VH;
    border-radius: 5PX;
@@ -45,7 +45,7 @@ img{
 .Nav_Bar input{
     background: #2f3476;
     color: #fff159;
-    padding: 0.25vh;
+    padding: 0.25vh 0 ;
     margin: 1vh 2VH 1vh 0VH;
     align-items: center;
     font-size: 1.5VH;
@@ -93,14 +93,13 @@ img{
 .nav_menu_visual{
     display: flex;
     grid-column: 1;
-    width: 20vh;
-    height: 50vh;
+    width: 22vh;
+    height: 100%;
     position: absolute;
     background: #fff;
     padding: 0;
     margin: 0;
     box-shadow: 0 0 0.5vh #000;
-    border-bottom-right-radius: 20px;
     transition: all 500ms; 
 
     }
@@ -114,20 +113,21 @@ img{
      text-align: center;
 }
  .nav_menu_visual a{
+     display: flex;
      width: 80%;
-     background: rgb(247, 247, 244);
-     margin-bottom: 1vh;
+     margin-bottom: 2vh;
      margin-left: 1vh;
+     padding: 1vh 0;
      text-decoration: none;
-     color: rgb(108, 109, 112);
+     background-color: #2f3476;
+     color: #fff;
      font-size: 2vh;
-     padding: 1vh;
      border-bottom: #2f3476 solid 1px;
  }
  .nav_menu_visual i{
      font-size: 2.5vh;
-     margin-right: 1vh;
-     color: #2f3476;
+     margin: auto 0.5vh auto 1vh;
+     color: #fff;
 }
 .fondo{
     width: 100%;
@@ -198,78 +198,47 @@ table tbody tr td .delete{
     color: #ccc;
 }
 
-@media (max-width: 1400px){
-
-    .Nav_Bar span{
-        font-size: 1vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.5;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 60VH;
-        font-size: 7vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}
-@media (max-width: 900px){
-    
-    img{
-        width: 10vh;
-        height: 5vh;
-        padding: 0.5vh 0;
-    }
-    .Nav_Bar span{
-        font-size: 0.5vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.2;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 50VH;
-        font-size: 6vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}
-@media (max-width: 450px){
-    section form{
-        margin: -45vh auto;
-         background:#fff;
-         color: #2f3476;
-          text-align:center;
-           align-items:center;
-            width:40vh;
-             padding:10px;
-              border-radius:20px;
-               border:2px solid #fff;
-    }
-    img{
-        display: none;
-    }
-    .Nav_Bar span{
-        font-size: 0.5vh;
-    }
-    .Nav_Bar select{
-      font-size: 0.2;
-    } 
-    .Aviso{
-        margin:-35VH auto auto auto;
-        width: 40VH;
-        font-size: 5vh;
-        text-align: center;
-        background: #2f3476;
-        color: #fff;
-        border-radius: 25PX ;
-        border:2px solid #eee;
-    }
-}
+.accordion {
+    background-color: #2f3476;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    text-align: center;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+  }
+  
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .nav_menu_visual i:hover,
+  .nav_menu_visual a:hover,
+  .active,
+  .accordion:hover {
+    background-color: #bebfe2;
+    color: #2f3476;
+  }
+  
+  /* Style the accordion panel. Note: hidden by default */
+  .panel {
+    padding: 20px 0;
+    background-color: white;
+    display: none;
+    transition: max-height 0.2s ease-out;
+  }
+  .accordion:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }
+  
+  .active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }
