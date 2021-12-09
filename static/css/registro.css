@@ -126,38 +126,28 @@ img{
     padding:  0.25vh 0.4vh;
     border-radius: 5px;
 }
-
- .nav_menu{
+.nav_menu{
     display: block;
     flex-direction: column;        
     width: 20vh;
     position: absolute;
-    background: #eee;
+    background: #fff159;
     padding: 0;
     margin: 0;
     height: 0;
     transition: all 500ms;
     margin-left: -200px;
     }
-.nav_menu i,
-.nav_menu h3{
-    background: #eee;
-}
-.nav_menu a{
-    text-decoration: none;
-    background: #eee;
-}
 .nav_menu_visual{
     display: flex;
     grid-column: 1;
-    width: 20vh;
-    height: 60vh;
+    width: 22vh;
+    height: 100%;
     position: absolute;
     background: #fff;
     padding: 0;
     margin: 0;
     box-shadow: 0 0 0.5vh #000;
-    border-bottom-right-radius: 20px;
     transition: all 500ms; 
 
     }
@@ -171,74 +161,67 @@ img{
      text-align: center;
 }
  .nav_menu_visual a{
+     display: flex;
      width: 80%;
-     background: rgb(247, 247, 244);
-     margin-bottom: 1vh;
-     margin-left: 1vh;
+     margin: 1vh auto 1vh auto;
+     padding: 1vh 0.5vh;
      text-decoration: none;
-     color: rgb(108, 109, 112);
+     text-align: center;
+     background-color: #2f3476;
+     color: #fff;
      font-size: 2vh;
-     padding: 1vh;
      border-bottom: #2f3476 solid 1px;
  }
  .nav_menu_visual i{
      font-size: 2.5vh;
-     margin-right: 1vh;
-     color: #2f3476;
+     margin: auto 0.5vh auto 1vh;
+     color: #fff;
 }
 form h5{
     color: rgb(129, 126, 126);
 }
 
-@media (max-width: 1450px){
-    section{
-        font-size: 2vh;
-    }
-    section h1{
-        text-shadow:0vh 0vh 0.5vh  #fff;
-    }
-
+.accordion {
+    background-color: #2f3476;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    text-align: center;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+  }
   
-    form{
-        width: 40vh;
-        display: grid;
-        margin: auto;
-        align-items: center;
-        justify-content: center;
-    
-    }
-    form h2{
-        font-size: 5vh;
-        color: #2f3476;
-        font-family: 'Khula', sans-serif;
-    
-    }
-    
-    
-}
-
-@media (max-width: 950px){
-    section{
-        font-size: 2vh;
-    }
-    section h1{
-        text-shadow:0vh 0vh 0.5vh  #fff;
-    }
-
-    form{
-        width: 30vh;
-        display: grid;
-        margin: auto;
-        align-items: center;
-        justify-content: center;
-    
-    }
-    form h2{
-        font-size: 3.5vh;
-        color: #2f3476;
-        font-family: 'Khula', sans-serif;
-    
-    }
-    
-    
-}
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .nav_menu_visual i:hover,
+  .nav_menu_visual a:hover,
+  .active,
+  .accordion:hover {
+    background-color: #bebfe2;
+    color: #2f3476;
+  }
+  
+  /* Style the accordion panel. Note: hidden by default */
+  .panel {
+    padding: 20px 0;
+    background-color: white;
+    display: none;
+    transition: max-height 0.2s ease-out;
+  }
+  .accordion:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }
+  
+  .active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+    font-size: 13px;
+    color: #fff;
+    float: right;
+    margin-left: 5px;
+  }

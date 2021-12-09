@@ -66,14 +66,13 @@ img{
 .nav_menu_visual{
     display: flex;
     grid-column: 1;
-    width: 20vh;
+    width: 22vh;
     height: 100%;
     position: absolute;
     background: #fff;
     padding: 0;
     margin: 0;
     box-shadow: 0 0 0.5vh #000;
-    border-bottom-right-radius: 20px;
     transition: all 500ms; 
 
     }
@@ -85,23 +84,23 @@ img{
      margin-bottom: 1vh;
      padding: 1vh 0;
      text-align: center;
-     font-size: 2vh;
 }
  .nav_menu_visual a{
+     display: flex;
      width: 80%;
-     background: rgb(247, 247, 244);
-     margin-bottom: 1vh;
-     margin-left: 1vh;
+     margin: 1vh auto 1vh auto;
+     padding: 1vh 0.5vh;
      text-decoration: none;
-     color: rgb(108, 109, 112);
+     text-align: center;
+     background-color: #2f3476;
+     color: #fff;
      font-size: 2vh;
-     padding: 1vh;
      border-bottom: #2f3476 solid 1px;
  }
  .nav_menu_visual i{
      font-size: 2.5vh;
-     margin-right: 1vh;
-     color: #2f3476;
+     margin: auto 0.5vh auto 1vh;
+     color: #fff;
 }
 .fondo{
     width: 100%;
@@ -143,15 +142,26 @@ section form input.btn:hover{
         background:#2f3476; 
         color:#fff;
 }
-.Aviso{
-    margin:0 auto auto auto;
-    width: 100%;
-    font-size: 5vh;
-    text-align: center;
+
+.before,
+.after,
+.Pag{
     background: #2f3476;
     color: #fff;
-    border:2px solid #eee;
 }
+.before{
+    font-size: 3vh;
+    margin-left: 3vh;
+}
+.after{
+    font-size: 3vh;
+    margin-right: 3vh;
+}
+.after:hover,
+.before:hover{
+    color: #ccc;
+}
+
 .accordion {
     background-color: #2f3476;
     color: #fff;
@@ -170,7 +180,8 @@ section form input.btn:hover{
   .nav_menu_visual a:hover,
   .active,
   .accordion:hover {
-    background-color: #6871f1;
+    background-color: #bebfe2;
+    color: #2f3476;
   }
   
   /* Style the accordion panel. Note: hidden by default */

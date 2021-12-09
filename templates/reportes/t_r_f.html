@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -25,8 +25,7 @@
     <div class="Nav_Bar">
         <button class="menu"><i class="fab fa-elementor"></i></button>
          <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
-        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
-    
+        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
     </div>
     <div class="nav_menu">
         <button class="accordion"><i class="fas fa-book"></i> formularios</button>
@@ -125,55 +124,120 @@
             {%endif%}
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
-        <div class="fondo"></div>
+    <div class="filtros">
+        <form action="/t_r_f/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="id_recibo">ID</option>
+                <option value="Fulfillment">Fulfillment</option>
+                <option value="responsable">Responsable</option>
+                <option value="paquetera">Paquetera</option>
+                <option value="no_gia"># de Gia</option>
+                <option value="no_paquete"># de Paquete</option>
+                <option value="tipo_paquete">Tipo Paquete</option>
+                <option value="estatus">Estatus</option>
+                <option value="razon_rechazo">Razon Rechazo</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form> 
+    </div>
+        <div class="fondo">
         <section>
-            <form action="/registro_prealert" method="POST" >
-                <h2>Prealert de ordenes</h2>
-                <hr>
-                    <label for="id_de_envio">ID de envío</label>
-                    <input type="text" name="id_de_envio" placeholder="Ingresa el numero de orden"/> 
-                    <label for="Codificación">Se codifico como Retorno o Devolución</label>
-                    <select name="Codificación">
-                        <option value="Si">Si</option>
-                        <option value="No">No</option>
-                    </select>
-                    <label for="Metodo">Metodo de envíos de Retorno</label>
-                    <select name="Metodo">
-                        <option value="Paqueteria (no unidad de LH)">Paqueteria (no unidad de LH)</option>
-                        <option value="Red LH">Red LH</option>
-                    </select> 
-                    <label for="Facility">Facility origen de salida</label>
-                    <select name="Facility">
-                        <option value="MXXEM1">MXXEM1</option>
-                        <option value="MXXGD1">MXXGD1</option>
-                        <option value="MXXMT1">MXXMT1</option>
-                        <option value="MXXQR1">MXXQR1</option>
-                        <option value="MXXMD1">MXXMD1</option>
-                        <option value="MXXHM1">MXXHM1</option>
-                        <option value="MXXCH1">MXXCH1</option>
-                        <option value="FCD01">FCD01</option>
-                        <option value="FCD02">FCD02</option>
-                        <option value="FCD03">FCD03</option>
-                        <option value="FCD04">FCD04</option>
-                        <option value="FCJC01">FCJC01</option>
-                        <option value="FCNL01">FCNL01</option>
-                    </select> 
-                    <label for="Transporte">Empresa transportista</label>
-                    <select name="Transporte">
-                        <option value="TMS">TMS</option>
-                        <option value="Eurologistics">Eurologistics</option>
-                    </select>    
-                    <label for="Trasportista">Nombre del transportista</label>
-                    <input type="text" name="Trasportista" placeholder="Ingresa el nombre"/>
-                    <label for="Placas">Placas del tracto</label>
-                    <input type="text" name="Placas" placeholder="Ingresa el numero de Placas"/> 
-                    <label for="Sello">Numero de marchamo</label>
-                    <input type="text" name="Sello" placeholder="Ingresa el numero del marchamo"/>
-                <input type="submit" class="btn" name="enviar" value="enviar" >
-            </form>
+            <table>
+                <thead>
+                    <tr>
+                        <th> ID </th>
+                        <th> Fulfillment </th>
+                        <th> Responsable </th>
+                        <th> Paquetera </th>
+                        <th> # de Gia </th>
+                        <th> # de Paquete </th>
+                        <th> Tipo Paquete </th>
+                        <th> Estatus </th>
+                        <th> Razon Rechazo </th>
+                        <th> Fecha Y Hora </th>
+                        {%if Datos['Rango']=='Administrador'%}
+                        <th> Editar </th>
+                        {%endif%}
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for Info in  Infos%}
+                    <tr>
+                        <td>{{Info.0}}</td>
+                        <td>{{Info.1}}</td>
+                        <td>{{Info.2}}</td>
+                        <td>{{Info.3}}</td>
+                        <td>{{Info.4}}</td>
+                        <td>{{Info.5}}</td>
+                        <td>{{Info.6}}</td>
+                        <td>{{Info.7}}</td>
+                        <td>{{Info.8}}</td>
+                        <td>{{Info.9}}</td>
+                        {%if Datos['Rango']=='Administrador'%}
+                        <td>
+                            <a href="/edit/{{Info.0}}" class="edit"><i class="fas fa-edit"></i></a>
+                            <a href="/delete/{{Info.0}}"class="delete"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                        {%endif%}
+                    </tr>
+                    {%endfor%}
+                    <tr>
+                        {%if Datos['Rango']=='Administrador'%}
+                        <td colspan="11" class="Pag">
+                            {%set row= Datos['rowi'] |int%}
+                            {%if row==0%}
+                            <a href="/t_r_f/0" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%else%}
+                            {%set rowMenos=row-50 | int%}
+                            <a href="/t_r_f/{{rowMenos}}" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%endif%}
+                            {%set rowMas=row+50 | int%}
+                            <a href="/t_r_f/{{rowMas}}" class="before">
+                                <i class="fas fa-angle-double-right">
+                                </i>
+                            </a>
+                        </td>
+                        {%else%}
+                        <td colspan="10" class="Pag">
+                            {%set row= Datos['rowi'] |int%}
+                            {%if row==0%}
+                            <a href="/t_r_f/0" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%else%}
+                            {%set rowMenos=row-50 | int%}
+                            <a href="/t_r_f/{{rowMenos}}" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%endif%}
+                            {%set rowMas=row+50 | int%}
+                            <a href="/t_r_f/{{rowMas}}" class="before">
+                                <i class="fas fa-angle-double-right">
+                                </i>
+                            </a>
+                        </td>
+                        {%endif%}
+                    </tr>
+                </tbody>
+            </table>    
         </section>
-        <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </div>
+    <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
-
 </body>
 </html>

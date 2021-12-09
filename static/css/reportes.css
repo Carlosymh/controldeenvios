@@ -52,7 +52,7 @@ img{
     border-radius: 5PX;
  }
  div.filtros{
-    background: #fff159;
+    background: #eee;
     padding: 1vh 0;
     border:none;
     border-collapse: collapse;
@@ -115,10 +115,10 @@ img{
  .nav_menu_visual a{
      display: flex;
      width: 80%;
-     margin-bottom: 2vh;
-     margin-left: 1vh;
-     padding: 1vh 0;
+     margin: 1vh auto 1vh auto;
+     padding: 1vh 0.5vh;
      text-decoration: none;
+     text-align: center;
      background-color: #2f3476;
      color: #fff;
      font-size: 2vh;
@@ -152,23 +152,23 @@ table{
     justify-content: space-between;
     text-align: center;
     border-collapse: collapse;
-    box-shadow: 0 0 2px #000;
 }
 table thead{
-    background: #2f3476;
-    color: #fff;
+    background: #ddd;
+    color: rgb(36, 35, 35);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.8vh;
 }
 table thead th{
-    padding: 0 0.5vh;
+    padding: 0.5vh 0.3vh;
 }
 table tbody tr{
-    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #ddd;
 }
-table tbody tr:nth-child(even){
-    background: #eee;
-    }
 table tbody tr td{
-    padding: 0.3vh 0.7vh;
+    padding: 0.5vh 0.3vh;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.85vh;
 }
 table tbody tr td .edit{
 
@@ -182,20 +182,26 @@ table tbody tr td .delete{
 .before,
 .after,
 .Pag{
-    background: #2f3476;
-    color: #fff;
+    background: #fff;
+    color: #2f3476;
 }
 .before{
     font-size: 3vh;
     margin-left: 3vh;
+    padding:0.25vh 0.5vh ;
+    background: #eee;
+    border: 1px solid #ddd;
 }
 .after{
     font-size: 3vh;
     margin-right: 3vh;
+    padding:0.25vh 0.5vh ;
+    background: #eee;
+    border: 1px solid #ddd;
 }
 .after:hover,
 .before:hover{
-    color: #ccc;
+    color: #bebfe2;
 }
 
 .accordion {
