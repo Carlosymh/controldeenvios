@@ -958,6 +958,8 @@ def Reporte_tranfer_full(rowi):
           row1 = int(session['rowi'])
           row2 = 50
         else:
+            row1 = int(session['rowi'])
+            row2 =100
         if 'valor' in session:
           if len(session['valor'])>0:
             if 'inicio' in session:
