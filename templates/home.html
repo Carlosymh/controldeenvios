@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -22,6 +22,11 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
+    <div class="Nav_Bar">
+        <button class="menu"><i class="fab fa-elementor"></i></button>
+         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
+    </div>
     <div class="nav_menu">
         <button class="accordion"><i class="fas fa-book"></i> formularios</button>
         <div class="panel">
@@ -119,32 +124,13 @@
             {%endif%}
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
-    <div class="nav_menu">
-        <h3 class="t_menu">! Hola {{Datos['FullName']}} ¡</h3>
-    {% if Datos['Rango'] == 'Representante' %}
-        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-    {% elif Datos['Rango'] == 'Auxiliar'%}
-        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
-        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-    {% elif Datos['Rango'] == 'Administrador'%}
-        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
-        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
-        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
-        <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-    {% elif Datos['Rango'] == 'Planeacion'%}
-        <a href='/planeacion' class='link_menu'><i class="fas fa-project-diagram"></i> Planning</a>
-        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-    {% elif Datos['Rango'] == 'Team Leader'%}
-        <a href='/Reportes/0' class='link_menu'><i class='fas fa-edit'></i> Reportes</a>
-        <a href='/dashboard' class='link_menu'><i class="fas fa-chart-pie"></i> Dashboard</a>
-        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i> Cerar sesion</a>
-    {%endif%}
- 
-    </div>
-        <div class="fondo"></div>
+        <div class="fondo">
+            
+        </div>
         <section>
-            Proxima Mente...
+            <div class="user"><i class="far fa-user"></i>
+                <h1>Bienvenido </h1><h3>{{Datos['FullName']}}</h3>
+                </div>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>

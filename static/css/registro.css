@@ -95,9 +95,8 @@ select{
     color: rgb(132, 181, 255);
 }
 img{
-    width: 14vh;
-    padding: 0.5vh 0;
-    height: 3vh;
+    width: 17vh;
+    padding: 1vh 0;
 }
 .Nav_Bar{
     background: #fff159;
@@ -109,11 +108,11 @@ img{
 .Nav_Bar button{
     box-decoration-break: none;
     background: none;
-    width: 5vh;
+    width: 6vh;
     border: none;
 }
 .Nav_Bar button i{
-    font-size: 3.5vh;
+    font-size: 5vh;
     background: none;
     color: #2f3476;
 }

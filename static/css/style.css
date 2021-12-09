@@ -28,7 +28,7 @@ section h1{
     text-align: center;
     margin-left: 0.5VH;
     margin-top: 2vh;
-    font-family: 'Harabara';
+    font-family: 'Harabara',Verdana, Arial;
 }
 
 .container{
