@@ -92,6 +92,14 @@ def Prealert_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
+@app.route('/f_p_s',methods=['POST','GET'])
+def Prealert_service_form():
+  if 'FullName' in session:
+    return render_template('form/f_p_s.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
 @app.route('/f_p_f',methods=['POST','GET'])
 def Planning_full_form():
   if 'FullName' in session:
@@ -1951,6 +1959,31 @@ def Reporte_salidas_cross(rowi):
   except:
     flash("Inicia Secion")
     return render_template('index.html')
+
+
+@app.route('/validacion_recibo',methods=['Post'])
+def Verificacion_orden_recibo():
+  try:
+      if request.method == 'POST':
+        Orden = request.form['Orden']
+        Pallet = int(request.form['Pallet'])
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now))
+        mysql.connection.commit() 
+        flash("Registro Exitoso")
+        return render_template('form/f_e_s.html',Datos = session)
+        
+        if len(data)>0:
+          return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
+        else:
+          flash("Numero de Orden Invalido")
+          return render_template('home.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('home.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('home.html',Datos = session)
 
 
 if __name__=='__main__':

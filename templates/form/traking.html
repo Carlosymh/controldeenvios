@@ -127,39 +127,10 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/registro_planing" class="form" method="POST" >
-                <h2 class="titule" > Planeación </h2>
-                <label for="Fecha_agendada">Fecha agendada : 
-                    <input type="date" name="Fecha_agendada"  required >
-                </label>
-                <label for="codigo_sku">Codigo sku :
-                    <select name="codigo_sku" required>
-                        <option value="10053">10053 -> Caja Gaylord</option>
-                        <option value="10060">10060 -> Tarima Madera</option>
-                    </select>
-                </label>
-                <label for="piezas_p">Piezas programadas :
-                    <input type="number" name="piezas_p"  required >
-                </label>
-                <label for="unidades">Cantidad de unidades :
-                    <input type="number" name="unidades"  required >
-                </label>
-                <label for="datos_de_la_unidad ">Datos de la unidad  :
-                    <input type="text" name="datos_de_la_unidad" placeholder="Datos de la unidad" required >
-                </label>
-                <label for="operador">Operador  :
-                    <input type="text" name="operador" placeholder="operador"  required >
-                </label>
-                <label for="destino">Destino  : 
-                    <select name="destino" required>
-                        <option value="Prologis">Prologis</option>
-                        <option value="Odonnell">O'Donnell</option>
-                        <option value="Mega Park">Mega Park</option>
-                        <option value="CPA Logistics Center">CPA Logistics Center</option>
-                        <option value="Guadalajara">Guadalajara</option>
-                        <option value="Monterrey">Monterrey</option>
-                    </select>
-                </label>
+            <form action="/r_a_p_f" method="POST" >
+                <hr>
+                <h2 class="titulo">Panning | Fullfilment</h2>
+                <label for="id_planing">ID Planning : <input type="nomber" name="id_planing"  required></label>
                 <input type="submit" class="btn" name="enviar" value="enviar" >
             </form>
         </section>

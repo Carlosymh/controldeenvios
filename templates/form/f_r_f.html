@@ -127,7 +127,7 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/registro_fcs_recibo" method="POST" >
+            <!-- <form action="/registro_fcs_recibo" method="POST" >
                 <h2 class="titulo">Entregas no efectivas</h2>
                 <hr>
                 <label for="paquetera">Paquetera: </label>
@@ -160,6 +160,11 @@
                     <option value="Drop off / cross dosck">Drop off / cross dosck</option>
                 </select>
                 <input type="submit" class="btn" name="enviar" value="enviar" >
+            </form> -->
+            <form action="/validacion_recibo" method="POST" >
+                <h2 class="titulo">Entregas no efectivas</h2>
+                <label for="Pallet">Pallet: <input type="number" name="no_paquete"  required ></label>
+                <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">

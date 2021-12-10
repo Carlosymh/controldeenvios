@@ -27,6 +27,7 @@ img{
     background: none;
     color: #2f3476;
 }
+
 .Nav_Bar span{
     margin: auto  2vh auto auto ;
     color:#fff;
@@ -35,21 +36,6 @@ img{
     border-radius: 5px;
 }
 
-.Nav_Bar select{
-   padding: 0.25vh;
-   margin: auto 2VH auto 0VH;
-   font-size: 1.5VH;
-   border-radius: 5PX;
-}
-.Nav_Bar input{
-    background: #2f3476;
-    color: #fff159;
-    padding: 0.25vh;
-    margin: 1vh 2VH 1vh 0VH;
-    align-items: center;
-    font-size: 1.5VH;
-    border-radius: 5PX;
- }
  .nav_menu{
     display: block;
     flex-direction: column;        
@@ -205,4 +191,31 @@ section form input.btn:hover{
     float: right;
     margin-left: 5px;
   }
+
+  div.user{
+      margin: -33vh auto auto auto ;
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+      color: #2f3476;
+  }
+  .user i{
+      background: #fff159;
+      padding: 3vh;
+      color: #2f3476;
+      margin: auto;
+      font-size: 4vw;
+      border-radius: 50%;
+}
+.user h1{
+    color: #2f314e;
+    margin: auto;
+    font-size: 1.5vw;
+}
+.user h3{
+    color: #2f314e;
+    margin: auto;
+    font-size: 1vw;
+}
 

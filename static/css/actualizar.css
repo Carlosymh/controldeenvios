@@ -116,13 +116,11 @@ img{
     background: none;
     color: #2f3476;
 }
-
 .Nav_Bar span{
-    margin: 1vh  auto;
-    margin-right: 2vh;
+    margin: auto  2vh auto auto ;
     color:#fff;
     background: #2f3476;
-    padding:  0.25vh 0.4vh;
+    padding: 0.25vh;
     border-radius: 5px;
 }
 

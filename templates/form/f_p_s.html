@@ -59,7 +59,7 @@
             <div class="panel">
                 <a href='/f_e_s' class='link_menu'>  Entradas</a>
                 <a href='/f_s_s' class='link_menu'> Salidas</a>
-                <a href='/f_p' class='link_menu'>  Prealert</a>
+                <a href='/f_p_s' class='link_menu'>  Prealert</a>
             </div>
         {%endif%}
         {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
@@ -127,40 +127,28 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/registro_planing" class="form" method="POST" >
-                <h2 class="titule" > Planeación </h2>
-                <label for="Fecha_agendada">Fecha agendada : 
-                    <input type="date" name="Fecha_agendada"  required >
-                </label>
-                <label for="codigo_sku">Codigo sku :
-                    <select name="codigo_sku" required>
-                        <option value="10053">10053 -> Caja Gaylord</option>
-                        <option value="10060">10060 -> Tarima Madera</option>
-                    </select>
-                </label>
-                <label for="piezas_p">Piezas programadas :
-                    <input type="number" name="piezas_p"  required >
-                </label>
-                <label for="unidades">Cantidad de unidades :
-                    <input type="number" name="unidades"  required >
-                </label>
-                <label for="datos_de_la_unidad ">Datos de la unidad  :
-                    <input type="text" name="datos_de_la_unidad" placeholder="Datos de la unidad" required >
-                </label>
-                <label for="operador">Operador  :
-                    <input type="text" name="operador" placeholder="operador"  required >
-                </label>
-                <label for="destino">Destino  : 
-                    <select name="destino" required>
-                        <option value="Prologis">Prologis</option>
-                        <option value="Odonnell">O'Donnell</option>
-                        <option value="Mega Park">Mega Park</option>
-                        <option value="CPA Logistics Center">CPA Logistics Center</option>
-                        <option value="Guadalajara">Guadalajara</option>
-                        <option value="Monterrey">Monterrey</option>
-                    </select>
-                </label>
-                <input type="submit" class="btn" name="enviar" value="enviar" >
+            <form action="/registro_prealert_service" method="POST" >
+                <h2>Prealert de ordenes</h2>
+                    <label for="Facility">Facility origen de salida</label>
+                    <select name="Facility">
+                        <option value="MXXEM1">MXXEM1</option>
+                        <option value="MXXGD1">MXXGD1</option>
+                        <option value="MXXMT1">MXXMT1</option>
+                        <option value="MXXQR1">MXXQR1</option>
+                        <option value="MXXMD1">MXXMD1</option>
+                        <option value="MXXHM1">MXXHM1</option>
+                        <option value="MXXCH1">MXXCH1</option>
+                    </select> 
+                    <label for="Transporte">Empresa transportista</label>
+                    <select name="Transporte">
+                        <option value="TMS">TMS</option>
+                        <option value="Eurologistics">Eurologistics</option>
+                    </select>    
+                    <label for="Trasportista">Nombre del transportista</label>
+                    <input type="text" name="Trasportista" placeholder="Ingresa el nombre"/>
+                    <label for="Placas">Placas del tracto</label>
+                    <input type="text" name="Placas" placeholder="Ingresa el numero de Placas"/> 
+                <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">

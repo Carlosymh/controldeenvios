@@ -127,103 +127,33 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <div class="nav_menu">
-                <button class="accordion"><i class="fas fa-book"></i> formularios</button>
-                <div class="panel">
-                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                    <button class="accordion">Fulfillment</button>
-                    <div class="panel">
-                        <a href='/f_e_f' class='link_menu'> Entradas</a>
-                        <a href='/f_s_f' class='link_menu'> Salidas</a>
-                        <a href='/f_r_f' class='link_menu'>  Recibo</a>
-                        <a href='/f_t_f' class='link_menu'>  Transfer</a>
-                        <a href='/f_p' class='link_menu'>  Prealert</a>
-                        <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
-                        <a href='/f_a_o' class='link_menu'>  Actualizacion N/P</a>
-                        <a href='/f_p_f' class='link_menu'>  Planning</a>
-                    </div>
-                {%endif%}
-                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                    <button class="accordion">Cross Dock</button>
-                    <div class="panel">
-                        <a href='/f_e_xd' class='link_menu'> Entradas</a>
-                        <a href='/f_s_xd' class='link_menu'>  Salidas</a>
-                        <a href='/f_p' class='link_menu'> Prealert</a>
-                        <a href='/f_p_xd' class='link_menu'>  Planning</a>
-                    </div>
-                
-                {%endif%}
-                {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                    <button class="accordion">Service Center</button>
-                    <div class="panel">
-                        <a href='/f_e_s' class='link_menu'>  Entradas</a>
-                        <a href='/f_s_s' class='link_menu'> Salidas</a>
-                        <a href='/f_p' class='link_menu'>  Prealert</a>
-                    </div>
-                {%endif%}
-                {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                        <button class="accordion">Planning</button>
-                    <div class="panel">
-                        <a href='/f_planning' class='link_menu'> Planning</a>
-                    </div>
-                {%endif%}
-                </div>
-                <button class="accordion"><i class='fas fa-edit'></i> Reportes</button>
-                <div class="panel">
-                    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                        <button class="accordion">Fulfillment</button>
-                        <div class="panel">
-                            <a href='/t_e_f' class='link_menu'> Entradas</a>
-                            <a href='/t_s_f' class='link_menu'> Salidas</a>
-                            <a href='/t_r_f' class='link_menu'>  Recibo</a>
-                            <a href='/t_t_f' class='link_menu'>  Transfer</a>
-                            <a href='/t_p' class='link_menu'>  Prealert</a>
-                            <a href='/t_n_p' class='link_menu'>  No Prosesable</a>
-                        </div>
-                    {%endif%}
-                    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                        <button class="accordion">Cross Dock</button>
-                        <div class="panel">
-                            <a href='/f_e_xd' class='link_menu'>  Entradas</a>
-                            <a href='/f_s_xd' class='link_menu'>  Salidas</a>
-                            <a href='/f_p' class='link_menu'>  Prealert</a>
-                        </div>
-                    {%endif%}
-                    {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                        <button class="accordion">Service Center</button>
-                        <div class="panel">
-                            <a href='/f_e_s' class='link_menu'>  Entradas</a>
-                            <a href='/f_s_s' class='link_menu'>  Salidas</a>
-                            <a href='/f_p' class='link_menu'> Prealert</a>
-                        </div>
-                    {%endif%}
-                    {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                            <button class="accordion">Planning</button>
-                        <div class="panel">
-                            <a href='/f_planning' class='link_menu'>  Planning</a>
-                        </div>
-                    {%endif%}
-                    </div>
-                <button class="accordion"><i class="fas fa-chart-pie"></i> Dashboard</button>
-                <div class="panel">
-                    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/g_f' class='link_menu'> Fullfilment</a>
-                    {%endif%}
-                    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/g_xd' class='link_menu'> Cross Dock</a>
-                    {%endif%}
-                    {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/g_s' class='link_menu'> Service Center</a>
-                    {%endif%}
-                    {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/g_p' class='link_menu'> Planning</a>
-                    {%endif%}
-                    </div>
-                    {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-                    {%endif%}
-                        <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-            </div>
+            <form action="/registro_xd_entrada" method="POST" >
+                <h2 class="titulo">Control de Entradas "Pallet/Gaylord" XD</h2>
+                <label for="Centro_de_trabajo_donde_te_encuentras">Centro de trabajo donde te encuentras :</label>
+                <select name="Centro_de_trabajo_donde_te_encuentras" required>
+                <option value="México MXXEM1">Mexico MXXEM1</option>
+                <option value="Monterrey MXXMT1">Monterrey MXXMT1</option>
+                <option value="Guadalajara MXXGD1">Guadalajara MXXGD1</option>
+                <option value="Mérida MXXMD1">Mérida MXXMD1</option>
+                <option value="Culiacán MXXCU1">Culiacán MXXCU1</option>
+                </select>
+                <h2>Materiales Recibidos</h2>
+                <label for="Total_tarimas ">Total tarimas  : <input type="number" name="Total_tarimas"  placeholder="Total tarimas"required ></label>
+                <label for="Tarima_en_buen_estado ">Tarima en buen estado  : <input type="number" name="Tarima_en_buen_estado"  placeholder="Tarima en buen estado" required></label>
+                <label for="Tarimas_en_mal_estado">Tarimas en mal estado : <input type="nomber" name="Tarimas_en_mal_estado"  placeholder="Tarimas en mal estado" required></label>
+                <label for="Total_Gaylors">Total Gaylors : <input type="nomber" name="Total_Gaylors"  placeholder="Total Gaylors " required></label>
+                <label for="Gaylors_en_buen_estado">Gaylors en buen estado : <input type="number" name="Gaylors_en_buen_estado"  placeholder="Gaylors en buen estado " required></label>
+                <label for="Gaylors_en_mal_estado">Gaylors en mal estado : <input type="nomber" name="Gaylors_en_mal_estado"  placeholder="Gaylors en mal estado" required></label>
+                <label for="cajas">Cajas : <input type="nomber" name="cajas"  placeholder="Cajas" required></label>
+                <label for="costales">Costales : <input type="nomber" name="costales"  placeholder="Costales" required></label>
+                                <h2 class="titulo">Destino Proveniente</h2>
+                <label for="Destino_Proveniente">Destino Proveniente :</label>
+                <select name="Destino_Proveniente" required>
+                <option value="Service Center">Service Center</option>
+                <option value="Cross Dock">Cross Dock</option>
+                </select>
+                <input type="submit" class="btn" name="enviar" value="enviar">
+                </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
