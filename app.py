@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response 
+from fpdf import FPDF
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
@@ -284,31 +285,89 @@ def registro_s_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_s_s.html',Datos = session)
 # Registro de Salidas Service Center
-@app.route('/registro_prealert',methods=['POST'])
-def registro_prealert():
+@app.route('/registro_prealert/',methods=['POST'])
+def registroPrealert():
   try:
       if request.method == 'POST':
-        fc =  session['FcName']
-        cdt =  session['SiteName']
-        id_de_envio = request.form['id_de_envio']
-        Codificación =  request.form['Codificación']
-        Metodo = request.form['Metodo']
-        Facility =  request.form['Facility']
-        Transporte = request.form['Transporte']
-        Trasportista =  request.form['Trasportista']
-        Placas = request.form['Placas']
-        Sello = request.form['Sello']
-        usuario =  session['FullName']
+        key_pa = session['key_pa']
+        OrigenFc = session['FcName']
+        OrigenSite = session['SiteName']
+        destinoPrealert = session['destinoPrealert'] 
+        SiteDestinoPrealert = session['SiteDestinoPrealert']
+        TransportePrealert = session['TransportePrealert']
+        TrasportistaPrealert = session['TrasportistaPrealert']
+        PlacasPrealert = session['PlacasPrealert']
+        Orden = request.form['Orden']
+        Paquetera = request.form['Paquetera']
+        reponsable = session['FullName']
         now = datetime.now()
-        
-        if len(Trasportista)>0 and len(Placas)>0 and len(Sello)>0:
-          cur = mysql.connection.cursor()
-          cur.execute('INSERT INTO prealert (responsable, lugaDeTrabajo, cdt, id_de_envio, Codificación, Metodo, Facility, Transporte	, Trasportista, Placas, Sello, dia, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(usuario,fc,cdt,id_de_envio,Codificación,Metodo,Facility,Transporte,Trasportista,Placas,Sello,now,now))
-          mysql.connection.commit() 
-          flash("Registro Exitoso")
-          return render_template('form/f_p.html',Datos = session)
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Destino, SiteName_Destino, EmpresaTransporte, Transportista, Placas, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, OrigenFc, OrigenSite, destinoPrealert, SiteDestinoPrealert, TransportePrealert, TrasportistaPrealert, PlacasPrealert, Orden, Paquetera, reponsable, now, now))
+        mysql.connection.commit() 
+        flash("Registro Exitoso")
+        return render_template('form/f_prealert.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/home.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/home.html',Datos = session)
+
+@app.route('/registro_prealert_service',methods=['POST'])
+def resgitroPrealertService():
+  try:
+      if request.method == 'POST':
+        now1 = datetime.now()
+        prealert_key = "CE"+str(now1)+"P"
+        key = prealert_key.replace(" ","")
+        key_ = key.replace(":","")
+        key_p = key_.replace(".","")
+        key_pa = key_p.replace("-","")
+        session['key_pa']= key_pa
+        session['destinoPrealert'] = "Cross Dock"
+        session['SiteDestinoPrealert'] = request.form['Facility']
+        session['TransportePrealert'] = request.form['Transporte']
+        session['TrasportistaPrealert'] =  request.form['Trasportista']
+        session['PlacasPrealert'] = request.form['Placas']
+        return render_template('form/f_prealert.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_p_s.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_p_s.html',Datos = session)
+
+@app.route("/FinalizarPrealert")
+def finalizarPallet():
+  try:
+    if 'FullName' in session:
+      return render_template("form/finalizar.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
+
+
+@app.route('/prealert',methods=['POST'])
+def Prealert():
+  try:
+      if request.method == 'POST':
+        Key =  request.form['key_pa']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' LIMIT 1 '.format(Key))
+        data = cur.fetchall()
+        if len(data) > 0 :
+          session['key_pa']= request.form['key_pa']
+          Facility=request.form['Facility']
+          if Facility[0:2]=="MX":
+            session['destinoPrealert'] = "Cross Dock"
+          else:
+            session['destinoPrealert'] = "Fullfilment"
+          session['SiteDestinoPrealert'] = request.form['Facility']
+          session['TransportePrealert'] = request.form['Transporte']
+          session['TrasportistaPrealert'] =  request.form['Trasportista']
+          session['PlacasPrealert'] = request.form['Placas']
+          return render_template('form/f_prealert.html',Datos = session)
         else:
-          flash("Llenan todoos los Campos ")
+          flash("Prealert Key Incorrecta")
           return render_template('form/f_p.html',Datos = session)
       else:
         flash("No has enviado un registro")
@@ -1960,7 +2019,6 @@ def Reporte_salidas_cross(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
 @app.route('/validacion_recibo',methods=['Post'])
 def Verificacion_orden_recibo():
   try:
@@ -1984,6 +2042,17 @@ def Verificacion_orden_recibo():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
+
+@app.route('/pdf')
+def pdf_template():
+  pdf=FPDF(orientation = 'p', unit='mm', format='A4')
+  pdf.add_page()
+  pdf.set_font('Arial', '', 18)
+  pdf.text(x = 60, y = 50, txt = 'Hola Mundo')
+
+  pdf.output('hoja.pdf')
+
+
 
 
 if __name__=='__main__':

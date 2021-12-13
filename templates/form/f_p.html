@@ -127,21 +127,11 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/registro_prealert" method="POST" >
+            <form action="/prealert" method="POST" >
                 <h2>Prealert de ordenes</h2>
-                    <label for="id_de_envio">ID de envío</label>
-                    <input type="text" name="id_de_envio" placeholder="Ingresa el numero de orden"/> 
-                    <label for="Codificación">Se codifico como Retorno o Devolución</label>
-                    <select name="Codificación">
-                        <option value="Si">Si</option>
-                        <option value="No">No</option>
-                    </select>
-                    <label for="Metodo">Metodo de envíos de Retorno</label>
-                    <select name="Metodo">
-                        <option value="Paqueteria (no unidad de LH)">Paqueteria (no unidad de LH)</option>
-                        <option value="Red LH">Red LH</option>
-                    </select> 
-                    <label for="Facility">Facility origen de salida</label>
+                    <label for="key_pa">Prealert Key</label>
+                    <input type="text" name="key_pa" placeholder="Ingresa el numero de orden"/> 
+                    <label for="Facility">Facility Destino</label>
                     <select name="Facility">
                         <option value="MXXEM1">MXXEM1</option>
                         <option value="MXXGD1">MXXGD1</option>
@@ -150,12 +140,6 @@
                         <option value="MXXMD1">MXXMD1</option>
                         <option value="MXXHM1">MXXHM1</option>
                         <option value="MXXCH1">MXXCH1</option>
-                        <option value="FCD01">FCD01</option>
-                        <option value="FCD02">FCD02</option>
-                        <option value="FCD03">FCD03</option>
-                        <option value="FCD04">FCD04</option>
-                        <option value="FCJC01">FCJC01</option>
-                        <option value="FCNL01">FCNL01</option>
                     </select> 
                     <label for="Transporte">Empresa transportista</label>
                     <select name="Transporte">
@@ -166,13 +150,10 @@
                     <input type="text" name="Trasportista" placeholder="Ingresa el nombre"/>
                     <label for="Placas">Placas del tracto</label>
                     <input type="text" name="Placas" placeholder="Ingresa el numero de Placas"/> 
-                    <label for="Sello">Numero de marchamo</label>
-                    <input type="text" name="Sello" placeholder="Ingresa el numero del marchamo"/>
-                <input type="submit" class="btn" name="enviar" value="enviar" >
+                <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
-
 </body>
 </html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <title>Formulario</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+    {%for message in messages%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <div class="Nav_Bar">
+         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
+    
+    </div>
+        <div class="fondo"></div>
+        <section>
+            <form action="/registro_prealert/" method="POST" >
+                <h2>Prealert de ordenes</h2>
+                    <h3>ID de envío:  {{Datos['key_pa']}}</h3>
+                    <label for="Orden">Orden: </label>
+                    <input type="number" name="Orden" placeholder="Numero de Orden"/> 
+                    <label for="Paquetera">Paquetera: </label>
+                    <select name="Paquetera" required>
+                        <option value="Mercado Envíos">Mercado Envíos</option>
+                        <option value="DHL">DHL</option>
+                        <option value="Estafeta">Estafeta</option>
+                        <option value="Paquetexpress">Paquetexpress</option>
+                        <option value="FedEx">FedEx</option>
+                        <option value="99 minutos">99 minutos</option>
+                    </select>
+                <input type="submit" class="btn" name="enviar" value="Continuar" >
+                <a href="/FinalizarPrealert">Cerrar Pallet</a>
+            </form>
+        </section>
+        <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </script>
+</body>
+</html>

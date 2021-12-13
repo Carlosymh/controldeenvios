@@ -184,39 +184,11 @@
                         <td>{{Info.9}}</td>
                         <td>{{Info.10}}</td>
                         <td>{{Info.11}}</td>
-                        {%if Datos['Rango']=='Administrador'%}
-                        <td>
-                            <a href="/edit/{{Info.0}}" class="edit"><i class="fas fa-edit"></i></a>
-                            <a href="/delete/{{Info.0}}"class="delete"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                        {%endif%}
                     </tr>
                     {%endfor%}
                     <tr>
-                        {%if Datos['Rango']=='Administrador'%}
-                        <td colspan="13" class="Pag">
-                            {%set row= Datos['rowi'] |int%}
-                            {%if row==0%}
-                            <a href="/t_planning/0" class="after">
-                                <i class="fas fa-angle-double-left">
-                                </i>
-                            </a>
-                            {%else%}
-                            {%set rowMenos=row-50 | int%}
-                            <a href="/t_planning/{{rowMenos}}" class="after">
-                                <i class="fas fa-angle-double-left">
-                                </i>
-                            </a>
-                            {%endif%}
-                            {%set rowMas=row+50 | int%}
-                            <a href="/t_planning/{{rowMas}}" class="before">
-                                <i class="fas fa-angle-double-right">
-                                </i>
-                            </a>
-                        </td>
-                        {%else%}
                         <td colspan="12" class="Pag">
-                            {%set row= Datos['rowi'] |int%}
+                            {%set row= Datos['rowi_t_planning'] |int%}
                             {%if row==0%}
                             <a href="/t_planning/0" class="after">
                                 <i class="fas fa-angle-double-left">
@@ -235,7 +207,6 @@
                                 </i>
                             </a>
                         </td>
-                        {%endif%}
                     </tr>
                 </tbody>
             </table>
