@@ -29,13 +29,15 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/pdf" method="POST" >
+            <form action="/finalizar" method="POST" >
                 <h2>Prealert de ordenes</h2>
-                    <h3>Marchamo:</h3>
-                    <label for="Marchamo">Orden: </label>
-                    <input type="number" name="Marchamo" placeholder="# Marchamo"/> 
+                    <label for="Marchamo">Marchamo: </label>
+                    <input type="text" name="Marchamo" placeholder="# Marchamo" required> 
                 <input type="submit" class="btn" name="enviar" value="Cerrar" >
+                
+            <a href="/pdf" target="_blank" rel="noopener noreferrer" class="btn"> Descargar PDF</a>
             </form>
+            
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>

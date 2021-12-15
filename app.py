@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response 
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, Response
 from fpdf import FPDF
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 import hashlib
+import qrcode 
 
 app = Flask(__name__)
 
@@ -24,10 +25,10 @@ def Index():
     if 'FullName' in session:
       return redirect('/home')
     else:
-      fash("Inicia Sesion")
+      flash("Inicia Sesion")
       return render_template('index.html')
   except:
-      fash("Inicia Sesion")
+      flash("Inicia Sesion")
       return render_template('index.html')
 #Valida el Acceso a la Plataforma 
 @app.route('/validar', methods=['POST'])
@@ -181,7 +182,7 @@ def Tranfer_full_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 #Redirigie a el Formulario de Registro de Usuarios 
-@app.route('/registro')
+@app.route('/registro',methods=['POST','GET'])
 def registro():
   try:
     if 'FullName' in session:
@@ -285,7 +286,7 @@ def registro_s_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_s_s.html',Datos = session)
 # Registro de Salidas Service Center
-@app.route('/registro_prealert/',methods=['POST'])
+@app.route('/registro_prealert',methods=['POST'])
 def registroPrealert():
   try:
       if request.method == 'POST':
@@ -308,7 +309,11 @@ def registroPrealert():
         return render_template('form/f_prealert.html',Datos = session)
       else:
         flash("No has enviado un registro")
-        return render_template('form/home.html',Datos = session)
+        if session['FcName'] == 'Service Center':
+          return render_template('form/f_p_s.html',Datos = session)
+        else:
+          return render_template('form/f_p.html',Datos = session)
+
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/home.html',Datos = session)
@@ -337,7 +342,7 @@ def resgitroPrealertService():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_p_s.html',Datos = session)
 
-@app.route("/FinalizarPrealert")
+@app.route("/FinalizarPrealert",methods=['POST','GET'])
 def finalizarPallet():
   try:
     if 'FullName' in session:
@@ -345,6 +350,27 @@ def finalizarPallet():
   except:  
     return render_template("home.html",Datos=session)
 
+@app.route('/finalizar',methods=['POST'])
+def finalizar():
+  # try:
+      if request.method == 'POST':
+          key = session['key_pa']
+          Marchamo = request.form['Marchamo']
+          siteName = session['SiteName']
+          cur = mysql.connection.cursor()
+          cur.execute("""UPDATE prealert SET Marchamo = %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s AND Fecha = CURDATE() """,(Marchamo, key, siteName))
+          mysql.connection.commit()
+          flash("Pallet Finalizado")
+          if session['FcName'] == 'Service Center':
+            return render_template('form/f_p_s.html',Datos = session)
+          else:
+            return render_template('form/f_p.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/finalizar.html',Datos = session)
+  # except:
+  #   flash("No has enviado un registro")
+  #   return render_template('form/finalizar.html',Datos = session)
 
 @app.route('/prealert',methods=['POST'])
 def Prealert():
@@ -966,7 +992,7 @@ def Cerrar_session():
   flash("Sesion Finalizada")
   return render_template('index.html')
 
-@app.route('/t_t_f/<rowi>',methods=['POST','GET'],)
+@app.route('/t_t_f/<rowi>',methods=['POST','GET'])
 def Reporte_tranfer_full(rowi):
   try:
       if request.method == 'POST':
@@ -1061,7 +1087,7 @@ def Reporte_tranfer_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_e_f/<rowi>',methods=['POST','GET'],)
+@app.route('/t_e_f/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_full(rowi):
   try:
       if request.method == 'POST':
@@ -1158,7 +1184,7 @@ def Reporte_entradas_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_e_s/<rowi>',methods=['POST','GET'],)
+@app.route('/t_e_s/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_service(rowi):
   try:
       if request.method == 'POST':
@@ -1254,7 +1280,7 @@ def Reporte_entradas_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_e_xd/<rowi>',methods=['POST','GET'],)
+@app.route('/t_e_xd/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_cross(rowi):
   try:
       if request.method == 'POST':
@@ -1351,7 +1377,7 @@ def Reporte_entradas_cross(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_n_p/<rowi>',methods=['POST','GET'],)
+@app.route('/t_n_p/<rowi>',methods=['POST','GET'])
 def Reporte_ordenes_no_procesables(rowi):
   try:
       if request.method == 'POST':
@@ -1447,7 +1473,7 @@ def Reporte_ordenes_no_procesables(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_p/<rowi>',methods=['POST','GET'],)
+@app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
   try:
       if request.method == 'POST':
@@ -1542,7 +1568,7 @@ def Reporte_prealert(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_planning/<rowi>',methods=['POST','GET'],)
+@app.route('/t_planning/<rowi>',methods=['POST','GET'])
 def Reporte_planning(rowi):
   try:
       if request.method == 'POST':
@@ -1637,7 +1663,7 @@ def Reporte_planning(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_r_f/<rowi>',methods=['POST','GET'],)
+@app.route('/t_r_f/<rowi>',methods=['POST','GET'])
 def Reporte_recibo_full(rowi):
   try:
       if request.method == 'POST':
@@ -1732,7 +1758,7 @@ def Reporte_recibo_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_s_f/<rowi>',methods=['POST','GET'],)
+@app.route('/t_s_f/<rowi>',methods=['POST','GET'])
 def Reporte_salidas_full(rowi):
   try:
       if request.method == 'POST':
@@ -1828,7 +1854,7 @@ def Reporte_salidas_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_s_s/<rowi>',methods=['POST','GET'],)
+@app.route('/t_s_s/<rowi>',methods=['POST','GET'])
 def Reporte_salida_service(rowi):
   try:
       if request.method == 'POST':
@@ -1924,7 +1950,7 @@ def Reporte_salida_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_s_xd/<rowi>',methods=['POST','GET'],)
+@app.route('/t_s_xd/<rowi>',methods=['POST','GET'])
 def Reporte_salidas_cross(rowi):
   try:
       if request.method == 'POST':
@@ -2043,14 +2069,98 @@ def Verificacion_orden_recibo():
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
 
-@app.route('/pdf')
+@app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
-  pdf=FPDF(orientation = 'p', unit='mm', format='A4')
-  pdf.add_page()
-  pdf.set_font('Arial', '', 18)
-  pdf.text(x = 60, y = 50, txt = 'Hola Mundo')
+  
+        Key =  session['key_pa']
+        img =qrcode.make(Key)
+        file =open('qr.png','wb')
+        img.save(file)
+        lugar = 'De: '+session['FcName']+' | '+session['SiteName']
+        Destino = ' a: '+session['destinoPrealert']+' | '+session['SiteDestinoPrealert']
+        DatosdelaUnidad = " Empresa Transporte: "+session['TransportePrealert'] +" |  Transportista: " + session['TrasportistaPrealert']+" |  Placas: "+ session['PlacasPrealert']
+        facility = session['FcName']
+        site = session['SiteName']
+        today= datetime.today()
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
+        result = cur.fetchall()
+ 
+        pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
+        pdf.add_page()
+         
+        page_width = pdf.w - 2 * pdf.l_margin
+         
+        pdf.ln(5)
+        pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 10, w=60, h = 25, link="https://www.linkedin.com/in/carlos-yovani-munoz-hernandez/")
+        pdf.set_font('Arial','B',45) 
+        pdf.text(x = 70, y = 20 ,txt =  "Control de Envios" )
+        pdf.ln(45)
+        
+        pdf.image('qr.png', x= 70, y = 23, w=30, h = 30)
 
-  pdf.output('hoja.pdf')
+        pdf.set_font('Times','B',18) 
+        pdf.text( x= 110, y = 35, txt = "Pre-Alert Key:")
+        pdf.text( x= 110, y = 45, txt = Key)
+
+        col_widt3 = page_width/2
+
+
+        pdf.set_font('Times','B',18) 
+        pdf.cell(col_widt3, 0.0, lugar, align='C')
+        pdf.cell(col_widt3, 0.0, Destino, align='C')
+         
+        pdf.ln(10)
+
+
+        pdf.set_font('Times','B',18) 
+        pdf.cell(page_width, 0.0, DatosdelaUnidad, align='C')
+ 
+
+        pdf.set_font('Courier', 'B', 11)
+        col_widt2 = page_width/30
+        col_widt1 = page_width/7
+        col_width = page_width/6
+         
+        pdf.ln(10)
+        
+        th = pdf.font_size
+         
+        pdf.cell(col_widt2, th,"ID", border=1)
+        pdf.cell(col_widt1, th,"Tranporte", border=1)
+        pdf.cell(col_width, th,"Transportista", border=1)
+        pdf.cell(col_width, th,"Placas", border=1)
+        pdf.cell(col_width, th,"Orden", border=1)
+        pdf.cell(col_width, th, "Paquetera", border=1)
+        pdf.cell(col_width, th, "Fecha", border=1)
+        pdf.ln(th)
+
+
+        pdf.set_font('Courier', '', 10)
+        col_widt2 = page_width/30
+        col_widt1 = page_width/3
+        col_width = page_width/6
+         
+        th = pdf.font_size
+         
+        for row in result:
+            pdf.cell(col_widt2, th, str(row[0]), border=1)
+            pdf.cell(col_width, th, str(row[9]), border=1)
+            pdf.cell(col_width, th, row[10], border=1)
+            pdf.cell(col_width, th, str(row[11]), border=1)
+            pdf.cell(col_widt1, th, str(row[12]), border=1)
+            pdf.cell(col_width, th, str(row[13]), border=1)
+            pdf.ln(th)
+         
+        pdf.ln(20)
+         
+        pdf.set_font('Times','',8.0) 
+        pdf.cell(page_width, 8.0, '______________________________________', align='C')
+         
+        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=employee_report.pdf'})
+    
+
+
 
 
 
