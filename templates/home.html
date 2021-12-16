@@ -24,7 +24,7 @@
     {%endwith%}
     <div class="Nav_Bar">
         <button class="menu"><i class="fab fa-elementor"></i></button>
-         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <a href="/home"> <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo"></a>
         <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
     </div>
     <div class="nav_menu">
@@ -37,7 +37,6 @@
                 <a href='/f_s_f' class='link_menu'> Salidas</a>
                 <a href='/f_r_f' class='link_menu'>  Recibo</a>
                 <a href='/f_t_f' class='link_menu'>  Transfer</a>
-                <a href='/f_p' class='link_menu'>  Prealert</a>
                 <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
                 <a href='/f_a_o' class='link_menu'>  Actualizacion N/P</a>
                 <a href='/f_p_f' class='link_menu'>  Planning</a>
@@ -122,6 +121,8 @@
             {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
                 <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
             {%endif%}
+            
+                <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
         <div class="fondo">

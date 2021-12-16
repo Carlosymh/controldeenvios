@@ -125,17 +125,23 @@
                 <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
-        <div class="fondo"></div>
+        <div class="fondo">
+            
+        </div>
         <section>
-            <form action="/a_o_np" method="POST" >
-                <h2> Actualizacion de Estatus Ordenes no procesables</h2>
-                    <label for="orden">Orden de compra</label>
-                    <input type="text" name="orden" placeholder="Ingresa el numero de orden">
-                <input type="submit" class="btn" name="enviar" value="enviar" >
-            </form>
+            <div class="pdf">
+                
+            <h1>Hola {{Datos['FullName']}}</h1>
+            <h2>Terminaste el Registro de Pre-Alert </h2>
+            <h3> Pre-Alert Key: {{Datos['key_pa']}}</h3>
+            <h4>Descarga el Documento PDF</h4>
+                
+            <a href="/pdf" target="_blank" rel="noopener noreferrer" class="btn"> Descargar PDF</a>
+            </div>
+            
+            
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
-
 </body>
 </html>

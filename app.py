@@ -361,10 +361,7 @@ def finalizar():
           cur.execute("""UPDATE prealert SET Marchamo = %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s AND Fecha = CURDATE() """,(Marchamo, key, siteName))
           mysql.connection.commit()
           flash("Pallet Finalizado")
-          if session['FcName'] == 'Service Center':
-            return render_template('form/f_p_s.html',Datos = session)
-          else:
-            return render_template('form/f_p.html',Datos = session)
+          return render_template('actualizacion/finalizado.html',Datos = session)
       else:
         flash("No has enviado un registro")
         return render_template('form/finalizar.html',Datos = session)
@@ -2049,25 +2046,44 @@ def Reporte_salidas_cross(rowi):
 def Verificacion_orden_recibo():
   try:
       if request.method == 'POST':
-        Orden = request.form['Orden']
-        Pallet = int(request.form['Pallet'])
+        session['key_pa'] = request.form['prealertkey']
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_e_s.html',Datos = session)
-        
+        cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' limit 1'.format(session['key_pa']))
+        data = cur.fetchall()
         if len(data)>0:
-          return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
+          return render_template('form/f_recibo.html',Datos = session,Info = data)
         else:
           flash("Numero de Orden Invalido")
-          return render_template('home.html',Datos = session)
+          return render_template('form/f_r_f.html',Datos = session)
       else:
         flash("No has enviado un registro")
-        return render_template('home.html',Datos = session)
+        return render_template('form/f_r_f.html',Datos = session)
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
+
+@app.route('/registro_recibo',methods=['POST'])
+def registroRecibo():
+  # try:
+      if request.method == 'POST':
+        key_pa = session['key_pa']
+        facility = session['FcName']
+        siteName = session['SiteName']
+        Orden = request.form['Orden']
+        Paquetera = request.form['Paquetera']
+        reponsable = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, Orden, Paquetera, facility, siteName, reponsable, now, now))
+        mysql.connection.commit() 
+        flash("Registro Exitoso")
+        return render_template('form/f_recibo.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_f.html',Datos = session)
+  # except:
+  #   flash("Llena todos los Campos Correctamente")
+  #   return render_template('form/f_r_f.html',Datos = session)
 
 @app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
@@ -2078,13 +2094,17 @@ def pdf_template():
         img.save(file)
         lugar = 'De: '+session['FcName']+' | '+session['SiteName']
         Destino = ' a: '+session['destinoPrealert']+' | '+session['SiteDestinoPrealert']
-        DatosdelaUnidad = " Empresa Transporte: "+session['TransportePrealert'] +" |  Transportista: " + session['TrasportistaPrealert']+" |  Placas: "+ session['PlacasPrealert']
+        EmpresaTransporte = " Empresa Transporte: "+session['TransportePrealert'] 
+        Transportista = "  Transportista: " + session['TrasportistaPrealert']
+        Placas = "  Placas: "+ session['PlacasPrealert'].upper()
+        Responsable = session['FullName']
         facility = session['FcName']
         site = session['SiteName']
         today= datetime.today()
         cur = mysql.connection.cursor()
         cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
         result = cur.fetchall()
+        Marchamo = " Marchamo:  "+ str(result[0][11])
  
         pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
         pdf.add_page()
@@ -2092,75 +2112,111 @@ def pdf_template():
         page_width = pdf.w - 2 * pdf.l_margin
          
         pdf.ln(5)
-        pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 10, w=60, h = 25, link="https://www.linkedin.com/in/carlos-yovani-munoz-hernandez/")
-        pdf.set_font('Arial','B',45) 
-        pdf.text(x = 70, y = 20 ,txt =  "Control de Envios" )
-        pdf.ln(45)
+        pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=60, h = 25, link="https://www.linkedin.com/in/carlos-yovani-munoz-hernandez/")
+        pdf.set_font('Arial','B',50) 
+        pdf.text(x = 90, y = 20 ,txt =  "Control de" )
+        pdf.set_font('Arial','B',50) 
+        pdf.text(x = 90, y = 35 ,txt =  "Envios")
+        pdf.ln(80)
         
-        pdf.image('qr.png', x= 70, y = 23, w=30, h = 30)
+        pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
 
-        pdf.set_font('Times','B',18) 
-        pdf.text( x= 110, y = 35, txt = "Pre-Alert Key:")
-        pdf.text( x= 110, y = 45, txt = Key)
+        pdf.set_font('Times','B',16) 
+        
+        pdf.text( x= 70, y = 57, txt = str(today))
+        pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
+        pdf.text( x= 70, y = 77, txt = Key)
 
         col_widt3 = page_width/2
 
 
-        pdf.set_font('Times','B',18) 
+        pdf.set_font('Times','B',16) 
         pdf.cell(col_widt3, 0.0, lugar, align='C')
         pdf.cell(col_widt3, 0.0, Destino, align='C')
          
         pdf.ln(10)
 
 
-        pdf.set_font('Times','B',18) 
-        pdf.cell(page_width, 0.0, DatosdelaUnidad, align='C')
- 
-
-        pdf.set_font('Courier', 'B', 11)
-        col_widt2 = page_width/30
-        col_widt1 = page_width/7
-        col_width = page_width/6
-         
+        pdf.set_font('Times','B',16) 
+        pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
         pdf.ln(10)
+
+        pdf.set_font('Times','B',16) 
+        pdf.cell(page_width, 0.0, Transportista, align='C')
+        pdf.ln(10)
+
+        pdf.set_font('Times','B',16) 
+        pdf.cell(page_width, 0.0, Placas, align='C')
+        pdf.ln(10)
+
+
+        pdf.set_font('Times', 'B', 16)
+        col_widt2 = page_width/3
+        col_widt1 = page_width/3
+        col_width = page_width/3
+        
         
         th = pdf.font_size
          
-        pdf.cell(col_widt2, th,"ID", border=1)
-        pdf.cell(col_widt1, th,"Tranporte", border=1)
-        pdf.cell(col_width, th,"Transportista", border=1)
-        pdf.cell(col_width, th,"Placas", border=1)
-        pdf.cell(col_width, th,"Orden", border=1)
-        pdf.cell(col_width, th, "Paquetera", border=1)
-        pdf.cell(col_width, th, "Fecha", border=1)
+        pdf.cell(col_widt2, th,"ID", align='C')
+        pdf.cell(col_width, th,"Orden",align='C')
+        pdf.cell(col_width, th, "Paquetera", align='C')
         pdf.ln(th)
 
 
-        pdf.set_font('Courier', '', 10)
-        col_widt2 = page_width/30
+        pdf.set_font('Times', '', 16)
+        col_widt2 = page_width/3
         col_widt1 = page_width/3
-        col_width = page_width/6
+        col_width = page_width/3
          
         th = pdf.font_size
          
         for row in result:
-            pdf.cell(col_widt2, th, str(row[0]), border=1)
-            pdf.cell(col_width, th, str(row[9]), border=1)
-            pdf.cell(col_width, th, row[10], border=1)
-            pdf.cell(col_width, th, str(row[11]), border=1)
-            pdf.cell(col_widt1, th, str(row[12]), border=1)
-            pdf.cell(col_width, th, str(row[13]), border=1)
+            pdf.cell(col_widt2, th, str(row[0]), align='C')
+            pdf.cell(col_width, th, str(row[9]), align='C')
+            pdf.cell(col_width, th, row[10], align='C')
             pdf.ln(th)
          
-        pdf.ln(20)
+        pdf.ln(10)
+
+        pdf.set_font('Times','B',16)
+        pdf.cell(page_width, 8.0, Marchamo, align='C')
+        
+        pdf.ln(15)
          
-        pdf.set_font('Times','',8.0) 
-        pdf.cell(page_width, 8.0, '______________________________________', align='C')
+        pdf.set_font('Times','B',16) 
+        pdf.cell(page_width, 8.0, Responsable, align='C')
          
-        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=employee_report.pdf'})
+        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'Atachment;filename=Prealert'+Key+'.pdf'})
     
+@app.route("/FinalizarRecibo",methods=['POST','GET'])
+def finalizarRecibo():
+  try:
+    if 'FullName' in session:
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT count(Orden) FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Cross Dock\''.format(session['key_pa']))
+      numOrdenCross = cur.fetchall()
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT count(Orden) FROM recibo_fc WHERE  ID_Envio_Prealert = \'{}\' '.format(session['key_pa']))
+      numOrdenFull = cur.fetchall()
+      print(numOrdenCross)
+      print(numOrdenFull)
+      result = numOrdenCross[0][0]-numOrdenFull[0][0]
+      if result>0:
+        return render_template("actualizacion/confirmacion.html", Datos =session, faltante= result)
+      else:
+        flash("Recibo Finalizado")
+        return render_template("form/f_r_f.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
 
-
+@app.route("/trackin",methods=['POST','GET'])
+def Track_In():
+  try:
+    if 'FullName' in session:
+        return render_template("form/trackin.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
 
 
 

@@ -70,7 +70,7 @@ select{
     color: #2f3476;
     border:none;
     border-radius: 5px;
-    margin: auto;
+    margin:  3px auto 3px auto;
 }
 
 .btn:hover{
@@ -81,7 +81,6 @@ select{
     color: #fff;
     border:none;
     border-radius: 5px;
-    margin: auto;
 }
 
 .link_link{

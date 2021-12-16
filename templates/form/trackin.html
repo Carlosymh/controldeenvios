@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios_trackin.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -127,11 +127,15 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/a_o_np" method="POST" >
-                <h2> Actualizacion de Estatus Ordenes no procesables</h2>
-                    <label for="orden">Orden de compra</label>
-                    <input type="text" name="orden" placeholder="Ingresa el numero de orden">
-                <input type="submit" class="btn" name="enviar" value="enviar" >
+            <form action="/validacion_recibo" method="POST" >
+                <h2 class="titulo">Track In de Pre-Alert Key</h2>
+                <label for="prealertkey">Pre-alert Key: <input type="text" name="prealertkey"  required ></label>
+                <input type="submit" class="btn" name="enviar" value="Buscar" >
+            </form>
+            <form action="/validacion_recibo" method="POST" >
+                <h2 class="titulo">Track In de Ordenes</h2>
+                <label for="Orden">Orden: <input type="text" name="Orden"  required ></label>
+                <input type="submit" class="btn" name="enviar" value="Buscar" >
             </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">

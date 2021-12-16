@@ -22,7 +22,7 @@
 {%endwith%}
 <div class="Nav_Bar">
     <button class="menu"><i class="fab fa-elementor"></i></button>
-     <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+    <a href="/home"> <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo"></a>
     <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
 </div>
 <div class="nav_menu">
@@ -56,7 +56,7 @@
         <div class="panel">
             <a href='/f_e_s' class='link_menu'>  Entradas</a>
             <a href='/f_s_s' class='link_menu'> Salidas</a>
-            <a href='/f_p' class='link_menu'>  Prealert</a>
+            <a href='/f_p_s' class='link_menu'>  Prealert</a>
         </div>
     {%endif%}
     {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
@@ -75,7 +75,6 @@
                 <a href='/t_s_f/0' class='link_menu'> Salidas</a>
                 <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
                 <a href='/t_t_f/0' class='link_menu'>  Transfer</a>
-                <a href='/t_p/0' class='link_menu'>  Prealert</a>
                 <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
             </div>
         {%endif%}
@@ -120,6 +119,8 @@
         {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
             <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
         {%endif%}
+        
+            <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
             <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
 </div>
     <div class="container"> 

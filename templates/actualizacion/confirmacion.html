@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/actualizar.css')}}">
+    <title>Registrar</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+    {%for message in messages%}
+        <script>
+            alert('{{message}}')
+        </script>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    <div class="Nav_Bar">
+        <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
+        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
+    </div>
+    <div class="container"> 
+        <section>
+            <form action="/validacion_recibo" method="post">
+                <h5>Te faltan {{faltante}} órdenes por escanear para finalizar tu pallet, deseas cerrarlo así?</h5>
+                <input type="text" name="prealertkey" value="{{Datos['key_pa']}}">
+                <input type="submit" class="btn" value="Continuar">
+                <a href="/f_r_f" class="btn"> Cerrar</a>
+
+                </label>
+            </form>
+        </section>
+    </div>
+</section>
+</body>
+</html>

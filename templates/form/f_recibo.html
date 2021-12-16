@@ -29,13 +29,23 @@
     </div>
         <div class="fondo"></div>
         <section>
-            <form action="/finalizar" method="POST" >
+            <form action="/registro_recibo" method="POST" >
                 <h2>Prealert de ordenes</h2>
-                    <label for="Marchamo">Marchamo: </label>
-                    <input type="text" name="Marchamo" placeholder="# Marchamo" required> 
-                <input type="submit" class="btn" name="enviar" value="Cerrar" >
+                    <h3>ID de envío:  {{Datos['key_pa']}}</h3>
+                    <label for="Orden">Orden: </label>
+                    <input type="number" name="Orden" placeholder="Numero de Orden"/> 
+                    <label for="Paquetera">Paquetera: </label>
+                    <select name="Paquetera" required>
+                        <option value="Mercado Envíos">Mercado Envíos</option>
+                        <option value="DHL">DHL</option>
+                        <option value="Estafeta">Estafeta</option>
+                        <option value="Paquetexpress">Paquetexpress</option>
+                        <option value="FedEx">FedEx</option>
+                        <option value="99 minutos">99 minutos</option>
+                    </select>
+                <input type="submit" class="btn" name="enviar" value="Continuar" >
+                <a href="/FinalizarRecibo" class="btn">Cerrar Pallet</a>
             </form>
-            
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>

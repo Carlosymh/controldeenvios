@@ -24,9 +24,8 @@
     {%endwith%}
     <div class="Nav_Bar">
         <button class="menu"><i class="fab fa-elementor"></i></button>
-         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
-        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
-    
+        <a href="/home"> <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo"></a>
+        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
     </div>
     <div class="nav_menu">
         <button class="accordion"><i class="fas fa-book"></i> formularios</button>
@@ -59,7 +58,7 @@
             <div class="panel">
                 <a href='/f_e_s' class='link_menu'>  Entradas</a>
                 <a href='/f_s_s' class='link_menu'> Salidas</a>
-                <a href='/f_p' class='link_menu'>  Prealert</a>
+                <a href='/f_p_s' class='link_menu'>  Prealert</a>
             </div>
         {%endif%}
         {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
@@ -78,7 +77,6 @@
                     <a href='/t_s_f/0' class='link_menu'> Salidas</a>
                     <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
                     <a href='/t_t_f/0' class='link_menu'>  Transfer</a>
-                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
                     <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
                 </div>
             {%endif%}
@@ -123,47 +121,15 @@
             {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
                 <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
             {%endif%}
+            
+                <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
         <div class="fondo"></div>
         <section>
-            <!-- <form action="/registro_fcs_recibo" method="POST" >
-                <h2 class="titulo">Entregas no efectivas</h2>
-                <hr>
-                <label for="paquetera">Paquetera: </label>
-                <select name="paquetera" required>
-                    <option value="Mercado Envíos">Mercado Envíos</option>
-                    <option value="DHL">DHL</option>
-                    <option value="Estafeta">Estafeta</option>
-                    <option value="Paquetexpress">Paquetexpress</option>
-                    <option value="FedEx">FedEx</option>
-                    <option value="99 minutos">99 minutos</option>
-                </select>
-                <label for="no_gia">No. de Guia: <input type="number" name="no_gia"   required></label>
-                <label for="no_paquete">No. Paquete: <input type="number" name="no_paquete"  required ></label>
-                <label for="tipo_paquete">Tipo de Paquete: </label>
-                <select name="tipo_paquete" required>
-                    <option value="Reotorno">Reotorno</option>
-                    <option value="Devolcuión">Devolcuión</option>
-                </select>
-                <label for="estatus">Estatus: </label>
-                <select name="estatus" required>
-                    <option value="Aceptado">Aceptado</option>
-                    <option value="Rechazado">Rechazado</option>
-                </select>
-                <label for="razon_rechazo">Razon de Rechazo: </label>
-                <select name="razon_rechazo" required>
-                    <option value="N/A">N/A</option>
-                    <option value="Dañado">Dañado</option>
-                    <option value="Extracción">Extracción</option>
-                    <option value="Otro FC">Otro FC</option>
-                    <option value="Drop off / cross dosck">Drop off / cross dosck</option>
-                </select>
-                <input type="submit" class="btn" name="enviar" value="enviar" >
-            </form> -->
             <form action="/validacion_recibo" method="POST" >
                 <h2 class="titulo">Entregas no efectivas</h2>
-                <label for="Pallet">Pallet: <input type="number" name="no_paquete"  required ></label>
+                <label for="prealertkey">Pre-alert Key: <input type="text" name="prealertkey"  required ></label>
                 <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
         </section>
