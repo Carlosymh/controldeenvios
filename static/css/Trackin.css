@@ -3,7 +3,7 @@
     padding: 0;
 }
 body{
-    background: #fff;
+    background: #eee;
 }
 img{
     width: 17vh;
@@ -107,84 +107,6 @@ img{
     background: #eee;
 
 }
-section{
-    width:40vh;
-    margin: -35vh auto;
-    background:#fff;
-    color: #2f3476;
-    text-align:center;
-    align-items:center;
-    padding:10px;
-    display: flex;
-    flex-direction: column;
-    grid-column: 1;
-    border-radius:20px;
-    border:2px solid #a5a6a8;
-}
-
-section form {
-    margin-bottom: 4vh;
-    background: rgba(230, 227, 227, 0.795);
-    padding:5px;
-    border-radius:20px;
-}
-section form h2{
-    font-size: 3vh;
-}
-section form label,
-section form select,
-section form input{
-    margin: 0.5vh auto;
-    font-size: 2vh;
-}
-a.btn{
-    margin-top: 3px;
-    background:#fff159; 
-    color:#2f3476;
-    border-radius:10px; 
-    padding: 2px 3px; 
-    font-size:20px;
-    border: 1px solid #2f3476;
-    text-decoration: none;
-
-}
-section form input.btn {
-    background:#fff159; 
-    color:#2f3476;
-    border-radius:10px; 
-    padding: 5px 20px; 
-    font-size:20px;
-}
-
-a.btn:hover{
-    margin-top: 3px;
-    background:#2f3476; 
-    color:#fff;
-    border: 1px solid #a5a6a8;
-}
-section form input.btn:hover{
-        background:#2f3476; 
-        color:#fff;
-}
-
-.before,
-.after,
-.Pag{
-    background: #2f3476;
-    color: #fff;
-}
-.before{
-    font-size: 3vh;
-    margin-left: 3vh;
-}
-.after{
-    font-size: 3vh;
-    margin-right: 3vh;
-}
-.after:hover,
-.before:hover{
-    color: #ccc;
-}
 
 .accordion {
     background-color: #2f3476;
@@ -230,3 +152,29 @@ section form input.btn:hover{
     float: right;
     margin-left: 5px;
   }
+div.Cross-Invalido,
+div.Full-Invalido,
+div.Service-Invalido,
+div.Cross-valido,
+div.Full-valido,
+div.Service-valido{
+    width: 60vh;
+    min-height: 10vh;
+    margin: 2vh auto;
+    padding:5px;
+    color: #2f3476;
+    border-radius: 25px;
+    background: #fff;
+    border:1px solid #000;
+}
+div.Cross-valido i,
+div.Full-valido i,
+div.Service-valido i{
+    color: rgb(40, 212, 155);
+}
+
+div.Cross-Invalido i,
+div.Full-Invalido i,
+div.Service-Invalido i{
+    color: rgb(110, 110, 110);
+}

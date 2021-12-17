@@ -43,6 +43,15 @@
                         <option value="FedEx">FedEx</option>
                         <option value="99 minutos">99 minutos</option>
                     </select>
+                    <label for="status">Estatus: </label>
+                    <select name="status" required>
+                        <option value="Rechazado">Rechazado</option>
+                        <option value="Aceptado">Aceptado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <label for="comentario">comentario: </label>
+                    <input type="text" name="comentario" placeholder="Comentario"  /> 
                 <input type="submit" class="btn" name="enviar" value="Continuar" >
                 <a href="/FinalizarRecibo" class="btn">Cerrar Pallet</a>
             </form>

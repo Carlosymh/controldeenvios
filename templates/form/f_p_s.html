@@ -37,7 +37,6 @@
                 <a href='/f_s_f' class='link_menu'> Salidas</a>
                 <a href='/f_r_f' class='link_menu'>  Recibo</a>
                 <a href='/f_t_f' class='link_menu'>  Transfer</a>
-                <a href='/f_p' class='link_menu'>  Prealert</a>
                 <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
                 <a href='/f_a_o' class='link_menu'>  Actualizacion N/P</a>
                 <a href='/f_p_f' class='link_menu'>  Planning</a>
@@ -77,6 +76,7 @@
                     <a href='/t_s_f/0' class='link_menu'> Salidas</a>
                     <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
                     <a href='/t_t_f/0' class='link_menu'>  Transfer</a>
+                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
                     <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
                 </div>
             {%endif%}
@@ -118,11 +118,14 @@
                 <a href='/g_p' class='link_menu'> Planning</a>
             {%endif%}
             </div>
+            <button class="accordion"><i class="fas fa-route"></i> Track In</button>
+            <div class="panel">
+                <a href='/trackinOrden' class='link_menu'> Ordenes</a>
+                <a href='/trackinPrealert' class='link_menu'> Pre-Alert</a>
+            </div>
             {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
                 <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
             {%endif%}
-            
-                <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
         <div class="fondo"></div>
@@ -138,12 +141,6 @@
                         <option value="MXXMD1">MXXMD1</option>
                         <option value="MXXHM1">MXXHM1</option>
                         <option value="MXXCH1">MXXCH1</option>
-                        <option value="FCD01">FCD01</option>
-                        <option value="FCD02">FCD02</option>
-                        <option value="FCD03">FCD03</option>
-                        <option value="FCD04">FCD04</option>
-                        <option value="FCJC01">FCJC01</option>
-                        <option value="FCNL01">FCNL01</option>
                     </select> 
                     <label for="Transporte">Empresa transportista</label>
                     <select name="Transporte">

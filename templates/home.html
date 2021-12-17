@@ -118,11 +118,14 @@
                 <a href='/g_p' class='link_menu'> Planning</a>
             {%endif%}
             </div>
+            <button class="accordion"><i class="fas fa-route"></i> Track In</button>
+            <div class="panel">
+                <a href='/trackinOrden' class='link_menu'> Ordenes</a>
+                <a href='/trackinPrealert' class='link_menu'> Pre-Alert</a>
+            </div>
             {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
                 <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
             {%endif%}
-            
-                <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
                 <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
     </div>
         <div class="fondo">

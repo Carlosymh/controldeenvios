@@ -218,19 +218,19 @@ def registrar():
           data = cur.fetchall()
           if len(data) > 0:
             flash("El Usuario Ya Existe")
-            return render_template('registro.html')
+            return render_template('registro.html',Datos =session)
           else:
             cur = mysql.connection.cursor()
             cur.execute('INSERT INTO `usuarios` (Nombre, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s)',(nombre,usuario,ltrabajo,cdt,password,rango))
             mysql.connection.commit()
             flash("Registro Correcto")
-            return render_template('registro.html')
+            return render_template('registro.html',Datos =session)
         else:
           flash("Las Contraceñas no Cionciden")
-          return render_template('registro.html')
+          return render_template('registro.html',Datos =session)
   except:
     flash("Llena todos los Campos Correctamente")
-    return render_template('registro.html')
+    return render_template('registro.html',Datos =session)
 def _create_password(password):
    return generate_password_hash(password,'pbkdf2:sha256:30',30)
 #Registros de Formularios 
@@ -2071,10 +2071,12 @@ def registroRecibo():
         siteName = session['SiteName']
         Orden = request.form['Orden']
         Paquetera = request.form['Paquetera']
+        status = request.form['status']
+        comentario = request.form['comentario']
         reponsable = session['FullName']
         now = datetime.now()
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, Orden, Paquetera, facility, siteName, reponsable, now, now))
+        cur.execute('INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, Orden, Paquetera, status, comentario, facility, siteName, reponsable, now, now))
         mysql.connection.commit() 
         flash("Registro Exitoso")
         return render_template('form/f_recibo.html',Datos = session)
@@ -2199,8 +2201,6 @@ def finalizarRecibo():
       cur = mysql.connection.cursor()
       cur.execute('SELECT count(Orden) FROM recibo_fc WHERE  ID_Envio_Prealert = \'{}\' '.format(session['key_pa']))
       numOrdenFull = cur.fetchall()
-      print(numOrdenCross)
-      print(numOrdenFull)
       result = numOrdenCross[0][0]-numOrdenFull[0][0]
       if result>0:
         return render_template("actualizacion/confirmacion.html", Datos =session, faltante= result)
@@ -2210,15 +2210,57 @@ def finalizarRecibo():
   except:  
     return render_template("home.html",Datos=session)
 
-@app.route("/trackin",methods=['POST','GET'])
-def Track_In():
+@app.route("/trackinOrden",methods=['POST','GET'])
+def Track_Inorden():
   try:
     if 'FullName' in session:
-        return render_template("form/trackin.html", Datos =session)
+        return render_template("form/trackinorden.html", Datos =session)
   except:  
     return render_template("home.html",Datos=session)
 
+@app.route("/trackinPrealert",methods=['POST','GET'])
+def Track_In():
+  try:
+    if 'FullName' in session:
+        return render_template("form/trackinprealert.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
+@app.route("/Trackin_ordenes",methods=['POST','GET'])
+def Track_in_ordenes():
+  try:
+    if 'FullName' in session:
+      Orden= request.form['Orden']
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM prealert WHERE  Orden = \'{}\' And Origen = \'Service Center\''.format(Orden))
+      Servicedata = cur.fetchall()
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM prealert WHERE  Orden = \'{}\' And Origen = \'Cross Dock\''.format(Orden))
+      Crossdata = cur.fetchall()
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM recibo_fc WHERE  Orden = \'{}\' '.format(Orden))
+      Fulldata = cur.fetchall()
+      return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata)
+  except:  
+    return render_template("form/trackin.html",Datos=session)
 
+
+@app.route("/Trackin_prealetkey",methods=['POST','GET'])
+def Track_in_prealert():
+  # try:
+    if 'FullName' in session:
+      key= request.form['prealertkey']
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Service Center\''.format(key))
+      Servicedata = cur.fetchall()
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Cross Dock\''.format(key))
+      Crossdata = cur.fetchall()
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM recibo_fc WHERE  ID_Envio_Prealert = \'{}\' '.format(key))
+      Fulldata = cur.fetchall()
+      return render_template("actualizacion/trackin_prealert.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata)
+  # except:  
+  #   return render_template("form/trackin.html",Datos=session)
 
 
 if __name__=='__main__':
