@@ -31,8 +31,23 @@ def Index():
       flash("Inicia Sesion")
       return render_template('index.html')
 #Valida el Acceso a la Plataforma 
-@app.route('/validar', methods=['POST'])
-def validar():
+@app.route('/validar_usuario', methods=['POST'])
+def validarusuaro():
+    if request.method == 'POST':
+      usuario =  request.form['user']
+      cur = mysql.connection.cursor()
+      cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\' LIMIT 1 '.format(usuario))
+      data = cur.fetchall()
+      if len(data) > 0 :
+        username = data[0][1]
+        user = data[0][2]
+        return render_template('inicio.html',username=username,user=user)
+      else:
+        flash('Usuario Incorrecto')
+        return render_template('index.html')    
+
+@app.route('/validar_contrasena', methods=['POST'])
+def validarcontrasena():
     if request.method == 'POST':
       usuario =  request.form['user']
       password = request.form['password']
@@ -52,7 +67,8 @@ def validar():
             return render_template('index.html')
       else:
         flash('Usuario Incorrecto')
-        return render_template('index.html')    
+        return render_template('index.html')   
+
 #Formularios de Registro Entradas Y Salidas 
 @app.route('/f_e_f',methods=['POST','GET'])
 def entradas_full_form():
@@ -61,6 +77,7 @@ def entradas_full_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 
 @app.route('/home',methods=['POST','GET'])
 def home():

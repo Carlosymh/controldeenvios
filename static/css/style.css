@@ -4,6 +4,7 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
+    text-align: center;
 
     
 }
@@ -15,37 +16,39 @@ section{
     color: #2f3476;
     height: 40vh;
     display: flex;
+    justify-content: center;
 }
 section img{
-    width: 12vh;
-    height: 9vh;
-    text-align: center;
-    margin-left: 2VH;
-    margin-top: 2vh;
+    width: 15vh;
+    height: 10vh;
+    margin-top: 8vh;
+    right: 1vh;
 }
 section h1{
-    width: 10%;
-    text-align: center;
-    margin-left: 0.5VH;
-    margin-top: 2vh;
-    font-family: 'Harabara',Verdana, Arial;
+    text-align: left;
+    width: 80%;
+    font-size: 9vh;
+    margin-top: 8vh;
+    margin-left: 1vh;
+    font-family: 'Harabara',Verdana;
 }
 
 .container{
     position: relative;
     margin: auto;
-    margin-top: -10vh;
+    margin-top: -15vh;
     background: #fff;
-    width: 50VH;
-    height: 40VH;
-    padding: 5PX;
+    width: 60VH;
+    height: 43VH;
     display:flexbox;
-    border-radius: 15px;
-    box-shadow: 0 0.5vh 0.5vh rgb(49, 51, 49);
+    box-shadow: 0 0 0.2vh  #000;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
     text-align: center;
 }
 
 form{
+    width: 80%;
     display: grid;
     margin: auto;
     align-items: center;
@@ -53,15 +56,14 @@ form{
 
 }
 
-form h2{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 5vh;
-    color: #2f3476;
+form p{
+    font-family: Verdana, Tahoma, sans-serif;
+    font-size: 3vh;
+    color: #000;
 
 }
 
 form label{
-    
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2vh;
     color: rgb(95, 92, 92);
@@ -73,65 +75,97 @@ input{
     font-size: 2vh;
 }
 
-
-.btn{
+input.user_inicio{
+    margin-bottom: 2.5vh;
+    margin-top: 1vh;
     font-size: 2vh;
-    width: 25vh;
-    padding: 0.5vh;
-    background: #fff159;
-    color: #2f3476;
+    padding: 2vh;
+    border-radius: 5px;
+    border:none;
+    outline: none;
+    box-shadow: 0 0 0.2vh #000;
+}
+input.user_inicio:focus{
+    box-shadow: 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa, 0 0 0.5vh #3483fa;
+}
+.btn{
+    font-family: Verdana, Tahoma, sans-serif;
+    width: 100%;
+    font-size: 2vh;
+    padding:2vh 1vh;
+    background: #3483fa;
+    color: #fff;
+    font-weight: bolder;
     border:none;
     border-radius: 5px;
     margin: auto;
     margin-bottom: 2vh;
+    transition: 0.5s;
 }
 
 .btn:hover{
+    font-family: Verdana, Tahoma, sans-serif;
+    width: 100%;
     font-size: 2vh;
-    width: 25vh;
-    padding: 0.5vh;
-    background: #2f3476;
+    font-weight: bolder;
+    background: #256ad3;
     color: #fff;
-    border:none;
-    border-radius: 5px;
-    margin: auto;
-    margin-bottom: 2vh;
+    transition: 0.5s;
 }
 
-a{
+a.linkedin{
+    font-family: 'Harabara',Verdana;
     text-decoration: none;
     color: rgb(214, 206, 206);
     font-size: 1.5vh;
-    margin: 5vh auto  auto auto ;
-}
-a:hover{
-    text-decoration: none;
-    color: rgb(132, 181, 255);
-}
-p{
-    width: 100%;
-    position: relative;
-    background-color: aquamarine;
+    margin-top: 4vh;
     margin: auto;
-    margin-bottom: -3.1vw;
-    margin-top: 0;
-    padding:0 0.2vh  0.2vh  0.2vh;
+    transition: 0.5s;
+}
+a.linkedin:hover{
+    font-family: 'Harabara',Verdana;
+    color: rgb(132, 181, 255);
+    transition: 0.5s;
+}
+a.crearcuenta{
+    font-family: Verdana, Tahoma, sans-serif;
+    text-decoration: none;
+    width: 100%;
     font-size: 2vh;
+    padding:2vh 1vh;
+    background: none;
+    color: #3483fa;
+    font-weight: bolder;
     border-radius: 5px;
-    
+    margin: auto;
+    margin-bottom: 2vh;
+    transition: 0.5s;
 }
-
-p a.alert{
+a.crearcuenta:hover{
+    background: #3483fa1a;
+    transition: 0.5s;
+}
+a.help{
+    display: block;
+    width: 60VH;
+    height: 2VH;
+    font-family: Verdana, Tahoma, sans-serif;
     text-decoration: none;
-    margin-left: 15vh;
-    color: rgb(16, 173, 10);
     font-size: 2vh;
-    border-radius: 25px;
+    position: relative;
+    margin: auto;
+    margin-top: 0;
+    color: #3483fa;
+    font-weight: bolder;
+    padding: 4vh 0;
+    background: #fff;
+    box-shadow: 0 0 0.2vh  #000;
+    text-align: center;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    transition: 0.5s;
 }
-p a.alert:hover{
-    text-decoration: none;
-    margin-left: 15vh;
-    color: #fff;
-    font-size: 2.2vh;
-    border-radius: 25px;
+a.help:hover{
+    background: rgba(238, 238, 238, 0.521);
+    transition: 0.5s;
 }
