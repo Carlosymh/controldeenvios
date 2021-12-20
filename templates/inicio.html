@@ -23,13 +23,14 @@
     {%endif%}
     {%endwith%}
     <section class="titulo"><img src="/static/img/Logo.png" alt=""><h1>Receiving Log. Inversa Paquete e Insumo  </h1></section>
-    <div class="container"> 
-        <form action="/validar/user" method="POST">
+    <div class="container-contraseña"> 
+        <form action="/validar_contrasena/{{user}}" method="POST">
             <p>¡Hola, {{username}}, ingresa tu contraseña</p>
-            <div><i class="fas fa-user-tie"></i><p>{{user}}</p><a href="/" class="userlink">X</a></div>
+            <div class="user_content"><i class="fas fa-user-tie"></i> <p> {{user}} </p> <a href="/" class="userlink">X</a></div>
             <label for="user"> Ingresa tu Contraseña <i class="fas fa-unlock-alt"></i> </label>
             <input type="password" name="password" id="password" class="user_inicio" required>
             <input type="submit"  class="btn" value="Continuar">
+            <a href="http://" class="crearcuenta">Crear cuenta</a>
         </form>
 
         <a href="https://www.linkedin.com/in/carlos-yovani-munoz-hernandez/" target="_back" class="linkedin"><span><i class="fas fa-code"></i> Powered By &copy; YovHer </span></a> 

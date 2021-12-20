@@ -46,10 +46,10 @@ def validarusuaro():
         flash('Usuario Incorrecto')
         return render_template('index.html')    
 
-@app.route('/validar_contrasena', methods=['POST'])
-def validarcontrasena():
+@app.route('/validar_contrasena/<user>', methods=['POST'])
+def validarcontrasena(user):
     if request.method == 'POST':
-      usuario =  request.form['user']
+      usuario =  user
       password = request.form['password']
       cur = mysql.connection.cursor()
       cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\' LIMIT 1 '.format(usuario))
