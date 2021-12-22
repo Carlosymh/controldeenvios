@@ -1,16 +1,20 @@
+{% extends 'nav.html'%}
+{% block cabezera%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="icon" type="image" href="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg"> 
     <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
+    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <title>Formulario</title>
+    <title>Home</title>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -22,122 +26,37 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <div class="Nav_Bar">
-        <button class="menu"><i class="fab fa-elementor"></i></button>
-        <a href="/home"> <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo"></a>
-        <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
-    </div>
-    <div class="nav_menu">
-        <button class="accordion"><i class="fas fa-book"></i> formularios</button>
-        <div class="panel">
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Fulfillment</button>
-            <div class="panel">
-                <a href='/f_e_f' class='link_menu'> Entradas</a>
-                <a href='/f_s_f' class='link_menu'> Salidas</a>
-                <a href='/f_r_f' class='link_menu'>  Recibo</a>
-                <a href='/f_t_f' class='link_menu'>  Transfer</a>
-                <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
-                <a href='/f_a_o' class='link_menu'>  Actualizacion N/P</a>
-                <a href='/f_p_f' class='link_menu'>  Planning</a>
-            </div>
-        {%endif%}
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Cross Dock</button>
-            <div class="panel">
-                <a href='/f_e_xd' class='link_menu'> Entradas</a>
-                <a href='/f_s_xd' class='link_menu'>  Salidas</a>
-                <a href='/f_p' class='link_menu'> Prealert</a>
-                <a href='/f_p_xd' class='link_menu'>  Planning</a>
-            </div>
-        
-        {%endif%}
-        {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Service Center</button>
-            <div class="panel">
-                <a href='/f_e_s' class='link_menu'>  Entradas</a>
-                <a href='/f_s_s' class='link_menu'> Salidas</a>
-                <a href='/f_p_s' class='link_menu'>  Prealert</a>
-            </div>
-        {%endif%}
-        {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                <button class="accordion">Planning</button>
-            <div class="panel">
-                <a href='/f_planning' class='link_menu'> Planning</a>
-            </div>
-        {%endif%}
-        </div>
-        <button class="accordion"><i class='fas fa-edit'></i> Reportes</button>
-        <div class="panel">
-            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                <button class="accordion">Fulfillment</button>
-                <div class="panel">
-                    <a href='/t_e_f/0' class='link_menu'> Entradas</a>
-                    <a href='/t_s_f/0' class='link_menu'> Salidas</a>
-                    <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
-                    <a href='/t_t_f/0' class='link_menu'>  Transfer</a>
-                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
-                    <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
-                </div>
-            {%endif%}
-            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                <button class="accordion">Cross Dock</button>
-                <div class="panel">
-                    <a href='/t_e_xd/0' class='link_menu'>  Entradas</a>
-                    <a href='/t_s_xd/0' class='link_menu'>  Salidas</a>
-                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
-                </div>
-            {%endif%}
-            {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                <button class="accordion">Service Center</button>
-                <div class="panel">
-                    <a href='/t_e_s/0' class='link_menu'>  Entradas</a>
-                    <a href='/t_s_s/0' class='link_menu'>  Salidas</a>
-                    <a href='/t_p/0' class='link_menu'> Prealert</a>
-                </div>
-            {%endif%}
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                    <button class="accordion">Planning</button>
-                <div class="panel">
-                    <a href='/t_planning/0' class='link_menu'>  Planning</a>
-                </div>
-            {%endif%}
-            </div>
-        <button class="accordion"><i class="fas fa-chart-pie"></i> Dashboard</button>
-        <div class="panel">
-            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/g_f' class='link_menu'> Fullfilment</a>
-            {%endif%}
-            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/g_xd' class='link_menu'> Cross Dock</a>
-            {%endif%}
-            {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/g_s' class='link_menu'> Service Center</a>
-            {%endif%}
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/g_p' class='link_menu'> Planning</a>
-            {%endif%}
-            </div>
-            <button class="accordion"><i class="fas fa-route"></i> Track In</button>
-            <div class="panel">
-                <a href='/trackinOrden' class='link_menu'> Ordenes</a>
-                <a href='/trackinPrealert' class='link_menu'> Pre-Alert</a>
-            </div>
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-            {%endif%}
-                <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-    </div>
+    {% endblock %}
+    {% block body%}
         <div class="fondo">
-            
-        </div>
         <section>
             <div class="user"><i class="far fa-user"></i>
-                <h1>Bienvenido </h1><h3>{{Datos['FullName']}}</h3>
+                <h1>¡Hola! </h1><h3>{{Datos['FullName']}}</h3>
                 </div>
         </section>
-        <script src="{{url_for('static', filename='js/interfas.js')}}">
-    </script>
-
+        <div class="container_form">
+                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_r_f' class='Proces_link'><i class="fas fa-truck-loading"></i> Recibo</a>
+                        <a href='/f_n_p' class='Proces_link'><i class="fas fa-exclamation"></i>  No Prosesable</a>
+                        <a href='/f_a_o' class='Proces_link'><i class="far fa-edit"></i>  Actualizacion N/P</a>
+                        <a href='/f_p_f' class='Proces_link'><i class="far fa-calendar-alt"></i>  Planning Full </a>
+                {%endif%}
+                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_p' class='Proces_link'><i class="far fa-bell"></i> Prealert Cross</a>
+                        <a href='/f_p_xd' class='Proces_link'><i class="far fa-calendar-alt"></i>  Planning Cross</a>
+                {%endif%}
+                {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_e_s' class='Proces_link'><i class="fas fa-pallet"></i>  Recibo Insumos </a>
+                        <a href='/f_s_s' class='Proces_link'><i class="fas fa-boxes"></i> Salida Insumos</a>
+                        <a href='/f_p_s' class='Proces_link'><i class="far fa-bell"></i> Prealert Service</a>
+                {%endif%}
+                {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_planning' class='Proces_link'><i class="far fa-calendar-alt"></i> Planning</a>
+                {%endif%}
+        </div>
+    </div>
 </body>
+<script src="{{url_for('static', filename='js/interfas.js')}}">
+</script>
 </html>
+{% endblock %}

@@ -28,7 +28,6 @@ def Index():
       flash("Inicia Sesion")
       return render_template('index.html')
   except:
-      flash("Inicia Sesion")
       return render_template('index.html')
 #Valida el Acceso a la Plataforma 
 @app.route('/validar_usuario', methods=['POST'])
@@ -40,10 +39,9 @@ def validarusuaro():
       data = cur.fetchall()
       if len(data) > 0 :
         username = data[0][1]
-        user = data[0][2]
+        user = data[0][3]
         return render_template('inicio.html',username=username,user=user)
       else:
-        flash('Usuario Incorrecto')
         return render_template('index.html')    
 
 @app.route('/validar_contrasena/<user>', methods=['POST'])
@@ -55,42 +53,24 @@ def validarcontrasena(user):
       cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\' LIMIT 1 '.format(usuario))
       data = cur.fetchall()
       if len(data) > 0 :
-          if check_password_hash(data[0][5],password):
-            session['FullName'] = data[0][1]
-            session['UserName'] = data[0][2]
-            session['FcName'] = data[0][3]
-            session['SiteName'] = data[0][4]
-            session['Rango'] = data[0][6]
+          if check_password_hash(data[0][6],password):
+            session['UserName'] = data[0][1]
+            session['FullName'] = data[0][1] + data[0][2]
+            session['User'] = data[0][3]
+            session['FcName'] = data[0][4]
+            session['SiteName'] = data[0][5]
+            session['Rango'] = data[0][7]
             return redirect('/home')
           else:
             flash('Contraseña Incorrecta')
             return render_template('index.html')
       else:
-        flash('Usuario Incorrecto')
         return render_template('index.html')   
-
-#Formularios de Registro Entradas Y Salidas 
-@app.route('/f_e_f',methods=['POST','GET'])
-def entradas_full_form():
-  if 'FullName' in session:
-    return render_template('form/f_e_f.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
-
 
 @app.route('/home',methods=['POST','GET'])
 def home():
   if 'FullName' in session:
     return render_template('home.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
-
-@app.route('/f_s_f',methods=['POST','GET'])
-def Salidas_full_form():
-  if 'FullName' in session:
-    return render_template('form/f_s_f.html',Datos = session)
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
@@ -135,22 +115,6 @@ def No_procesable_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-@app.route('/f_e_xd',methods=['POST','GET'])
-def Entradas_Cross_form():
-  if 'FullName' in session:
-    return render_template('form/f_e_xd.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
-
-@app.route('/f_s_xd',methods=['POST','GET'])
-def Salidas_Cross_form():
-  if 'FullName' in session:
-    return render_template('form/f_s_xd.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
-
 @app.route('/f_e_s',methods=['POST','GET'])
 def Entradas_Service_form():
   if 'FullName' in session:
@@ -191,26 +155,15 @@ def Actualizacion_ordenes_noprocesables():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-@app.route('/f_t_f',methods=['POST','GET'])
-def Tranfer_full_form():
-  if 'FullName' in session:
-    return render_template('form/f_t_f.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
 #Redirigie a el Formulario de Registro de Usuarios 
 @app.route('/registro',methods=['POST','GET'])
 def registro():
   try:
-    if 'FullName' in session:
-      if session['Rango'] == 'Administrador':
-        return render_template('registro.html', Datos = session)
-      else:
-        flash("Acseso Denegado")
-      return render_template('index.html')
+    if session['Rango'] == 'Administrador':
+      return render_template('registro.html', Datos = session)
     else:
-      flash("Inicia Secion")
-      return render_template('index.html')
+      flash("Acseso Denegado")
+    return render_template('index.html')
   except:
     flash("Inicia Secion")
     return render_template('index.html')
@@ -220,6 +173,7 @@ def registrar():
   try:
       if request.method == 'POST':
         nombre =  request.form['nombre']
+        apellido =  request.form['apellido']
         rango = request.form['rango']
         ltrabajo =  request.form['ltrabajo']
         cdt = request.form['cdt']
@@ -238,7 +192,7 @@ def registrar():
             return render_template('registro.html',Datos =session)
           else:
             cur = mysql.connection.cursor()
-            cur.execute('INSERT INTO `usuarios` (Nombre, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s)',(nombre,usuario,ltrabajo,cdt,password,rango))
+            cur.execute('INSERT INTO `usuarios` (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)',(nombre,apellido,usuario,ltrabajo,cdt,password,rango))
             mysql.connection.commit()
             flash("Registro Correcto")
             return render_template('registro.html',Datos =session)
@@ -246,7 +200,6 @@ def registrar():
           flash("Las Contraceñas no Cionciden")
           return render_template('registro.html',Datos =session)
   except:
-    flash("Llena todos los Campos Correctamente")
     return render_template('registro.html',Datos =session)
 def _create_password(password):
    return generate_password_hash(password,'pbkdf2:sha256:30',30)
@@ -415,83 +368,6 @@ def Prealert():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_p.html',Datos = session)
-
-@app.route('/registro_fcs_entrada',methods=['POST'])
-def registro_fcs_e():
-  try:
-      if request.method == 'POST':
-        cdt =  session['SiteName']
-        Pallets_en_buen_estado =  request.form['Pallets_en_buen_estado']
-        Pallets_en_mal_estado = request.form['Pallets_en_mal_estado']
-        Pallets_Totales_Recibidos = int(Pallets_en_buen_estado)+int(Pallets_en_mal_estado)
-        Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
-        Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
-        Gaylords_Totales_Recibidos =  int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
-        cajas = request.form['cajas']
-        costales =  request.form['costales']
-        Centro_de_trabajo_origen = request.form['Centro_de_trabajo_origen']
-        Cross_Dock_origen =  request.form['Cross_Dock_origen']
-        Service_Center_Origen = request.form['Service_Center_Origen']
-        usuario =  session['FullName']
-        now = datetime.now()
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO entrada_fc (Fulfillment, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_trabajo_origen, Cross_Dock_origen, Service_Center_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_trabajo_origen,Cross_Dock_origen,Service_Center_Origen,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_e_f.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_e_f.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_e_f.html',Datos = session)
-
-@app.route('/registro_fcs_salida',methods=['POST'])
-def registro_fcs_s():
-  try:
-      if request.method == 'POST':
-        cdt =  session['SiteName']
-        Tarimas_enviadas = request.form['Tarimas_enviadas']
-        Gaylord_Enviados =  request.form['Gaylord_Enviados']
-        cajas = request.form['cajas']
-        costales =  request.form['costales']
-        centro_de_trabajo_Destino = request.form['centro_de_trabajo_Destino']
-        Service_Center =  request.form['Service_Center']
-        fc_Destino = request.form['FC_Destino']
-        usuario =  session['FullName']
-        now = datetime.now()
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO salida_fc (Fulfillment, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, centro_de_trabajo_Destino, Service_Center, FC_Destino, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,centro_de_trabajo_Destino,Service_Center,fc_Destino,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_s_f.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_s_f.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_s_f.html',Datos = session)
-
-@app.route('/registro_fcs_tranfer',methods=['POST'])
-def registro_fcs_t():
-  try:
-      if request.method == 'POST':
-        cdt =  session['SiteName']
-        Pallets = request.form['Pallets']
-        Fulfillment_origen =  request.form['Fulfillment_origen']
-        usuario =  session['FullName']
-        now = datetime.now()
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO entrada_tranferencias_fc (Fulfillment, Pallets, Fulfillment_origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s)',(cdt,Pallets,Fulfillment_origen,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_t_f.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_t_f.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_t_f.html',Datos = session)
 
 @app.route('/registro_fcs_recibo',methods=['POST'])
 def registro_fcs_r():
@@ -760,60 +636,6 @@ def registro_o():
         flash("No has enviado un registro")
         return render_template('form/f_n_p.html',Datos = session)
 
-@app.route('/registro_xd_entrada',methods=['POST'])
-def registro_xd_entrada():
-  try:
-      if request.method == 'POST':
-        cdt = session['SiteName']
-        Tarima_en_buen_estado = request.form['Tarima_en_buen_estado']
-        Tarimas_en_mal_estado = request.form['Tarimas_en_mal_estado']
-        Total_tarimas = int(Tarima_en_buen_estado)+int(Tarimas_en_mal_estado)
-        Gaylors_en_buen_estado = request.form['Gaylors_en_buen_estado']
-        Gaylors_en_mal_estado = request.form['Gaylors_en_mal_estado']
-        Total_Gaylors = int(Gaylors_en_buen_estado)+int(Gaylors_en_mal_estado)
-        Cajas = request.form['cajas']
-        Costales = request.form['costales']
-        Destino_Proveniente = request.form['Destino_Proveniente']
-        usuario = session['FullName']
-        now = datetime.now()
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO entrada_xd (Centro_de_trabajo_donde_te_encuentras, Total_tarimas, Tarima_en_buen_estado, Tarimas_en_mal_estado, Total_Gaylors, Gaylors_en_buen_estado, Gaylors_en_mal_estado, cajas, Costales, Destino_Proveniente, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Total_tarimas,Tarima_en_buen_estado,Tarimas_en_mal_estado,Total_Gaylors,Gaylors_en_buen_estado,Gaylors_en_mal_estado,Cajas,Costales,Destino_Proveniente,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_e_xd.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_e_xd.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_e_xd.html',Datos = session)
-
-@app.route('/registro_xd_salida',methods=['POST'])
-def registro_xd_s():
-  try:
-      if request.method == 'POST':
-        cdt = session['SiteName']
-        Tarimas_Enviadas = request.form['Tarimas_Enviadas']
-        Gaylord_Enviados = request.form['Gaylord_Enviados']
-        cajas = request.form['cajas']
-        costales = request.form['costales']
-        Destino_de_la_carga = request.form['Destino_de_la_carga']
-        Service_Center = request.form['Service_Center']
-        Fulfillment = request.form['Fulfillment']
-        usuario = session['FullName']
-        now = datetime.now()
-        cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO salida_xd (Centro_de_trabajo_donde_te_encuentras, Tarimas_Enviadas, Gaylord_Enviados, cajas, costales, Destino_de_la_carga, service_center, Fulfillment, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Tarimas_Enviadas,Gaylord_Enviados,cajas,costales,Destino_de_la_carga,Service_Center,Fulfillment,usuario,now,now))
-        mysql.connection.commit() 
-        flash("Registro Exitoso")
-        return render_template('form/f_s_xd.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_s_xd.html.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_s_xd.html.html',Datos = session)
-
 @app.route('/registro_planing',methods=['POST'])
 def registro_p():
   try:
@@ -1003,200 +825,7 @@ def registro_actalizacion_ordenes_no_procesables():
 @app.route('/logout')
 def Cerrar_session():
   session.clear()
-  flash("Sesion Finalizada")
   return render_template('index.html')
-
-@app.route('/t_t_f/<rowi>',methods=['POST','GET'])
-def Reporte_tranfer_full(rowi):
-  try:
-      if request.method == 'POST':
-        if request.method == 'GET':
-          session['rowi_t_t_f']=rowi
-          row1 = int(session['rowi_t_t_f'])
-          row2 = 100
-        else:
-            row1 = int(session['rowi_t_t_f'])
-            row2 =100
-        if 'valor' in request.form:
-          if len(request.form['valor'])>0:
-            session['filtro_t_t_f']=request.form['filtro']
-            session['valor_t_t_f']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_t_f']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_t_f']=request.form['fin']
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],session['inicio_t_t_f'],session['fin_t_t_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],session['inicio_t_t_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_t_f.html',Datos = session,Infos =data) 
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_t_f']=rowi
-          row1 = int(session['rowi'])
-          row2 = 50
-        else:
-            row1 = int(session['rowi_t_t_f'])
-            row2 =100
-        if 'valor_t_t_f' in session:
-          if len(session['valor_t_t_f'])>0:
-            if 'inicio_t_t_f' in session:
-              if len(session['inicio_t_t_f'])>0:
-                if 'fin_t_t_f' in session:
-                  if len(session['fin_t_t_f'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],session['inicio_t_t_f'],session['fin_t_t_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],session['inicio_t_t_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],session['inicio_t_t_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_t_f.html',Datos = session,Infos =data)  
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_tranferencias_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_t_f'],session['valor_t_t_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_tranferencias_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_t_f.html',Datos = session,Infos =data)
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
-
-@app.route('/t_e_f/<rowi>',methods=['POST','GET'])
-def Reporte_entradas_full(rowi):
-  try:
-      if request.method == 'POST':
-        if request.method == 'GET':
-          session['rowi_t_e_f']=rowi
-          row1 = int(session['rowi_t_e_f'])
-          row2 = 100
-        else:
-            row1 = int(session['rowi_t_e_f'])
-            row2 =100
-        # Inicio de Tabla Entradas Fulfilment    
-        if 'valor' in request.form:
-          if len(request.form['valor'])>0:
-            session['filtro_t_e_f']=request.form['filtro']
-            session['valor_t_e_f']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_e_f']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_e_f']=request.form['fin']
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],session['inicio_t_e_f'],session['fin_t_e_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],session['inicio_t_e_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_e_f.html',Datos = session,Infos =data) 
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_e_f.html',Datos = session,Infos =data)     
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_e_f']=rowi
-          row1 = int(session['rowi_t_e_f'])
-          row2 = 50
-        else:
-          row1 = int(session['rowi_t_e_f'])
-          row2 =50
-        # Inicio de Tabla Entradas Fulfilment      
-        if 'valor_t_e_f' in session:
-          if len(session['valor_t_e_f'])>0:
-            if 'inicio_t_e_f' in session:
-              if len(session['inicio_t_e_f'])>0:
-                if 'fin_t_e_f' in session:
-                  if len(session['fin_t_e_f'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],session['inicio_t_e_f'],session['fin_t_e_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],session['inicio_t_e_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],session['inicio_t_e_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_f.html',Datos = session,Infos =data)  
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_f'],session['valor_t_e_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_e_f.html',Datos = session,Infos =data)
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
 
 @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_service(rowi):
@@ -1294,102 +923,6 @@ def Reporte_entradas_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_e_xd/<rowi>',methods=['POST','GET'])
-def Reporte_entradas_cross(rowi):
-  try:
-      if request.method == 'POST':
-        if request.method == 'GET':
-          session['rowi_t_e_xd']=rowi
-          row1 = int(session['rowi_t_e_xd'])
-          row2 = 100
-        else:
-            row1 = int(session['rowi_t_e_xd'])
-            row2 =100
-        if 'valor' in request.form:
-          if len(request.form['valor'])>0:
-            session['filtro_t_e_xd']=request.form['filtro']
-            session['valor_t_e_xd']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_e_xd']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_e_xd']=request.form['fin']
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],session['inicio_t_e_xd'],session['fin_t_e_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],session['inicio_t_e_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_e_xd.html',Datos = session,Infos =data) 
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-        
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_e_xd']=rowi
-          row1 = int(session['rowi_t_e_xd'])
-          row2 = 50
-        else:
-          row1 = int(session['rowi_t_e_xd'])
-          row2 =50
-        if 'valor_t_e_xd' in session:
-          if len(session['valor_t_e_xd'])>0:
-            if 'inicio_t_e_xd' in session:
-              if len(session['inicio_t_e_xd'])>0:
-                if 'fin_t_e_xd' in session:
-                  if len(session['fin_t_e_xd'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],session['inicio_t_e_xd'],session['fin_t_e_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],session['inicio_t_e_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],session['inicio_t_e_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)  
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM entrada_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_xd'],session['valor_t_e_xd'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM entrada_xd LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_e_xd.html',Datos = session,Infos =data)
-          
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
 
 @app.route('/t_n_p/<rowi>',methods=['POST','GET'])
 def Reporte_ordenes_no_procesables(rowi):
@@ -1772,102 +1305,6 @@ def Reporte_recibo_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-@app.route('/t_s_f/<rowi>',methods=['POST','GET'])
-def Reporte_salidas_full(rowi):
-  try:
-      if request.method == 'POST':
-        if request.method == 'GET':
-          session['rowi_t_s_f']=rowi
-          row1 = int(session['rowi_t_s_f'])
-          row2 = 100
-        else:
-            row1 = int(session['rowi_t_s_f'])
-            row2 =100
-        if 'valor' in request.form:
-          if len(request.form['valor'])>0:
-            session['filtro_t_s_f']=request.form['filtro']
-            session['valor_t_s_f']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_s_f']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_s_f']=request.form['fin']
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],session['inicio_t_s_f'],session['fin_t_s_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],session['inicio_t_s_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_s_f.html',Datos = session,Infos =data) 
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-        
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_s_f']=rowi
-          row1 = int(session['rowi_t_s_f'])
-          row2 = 50
-        else:
-          row1 = int(session['rowi_t_s_f'])
-          row2 =50
-        if 'valor_t_s_f' in session:
-          if len(session['valor_t_s_f'])>0:
-            if 'inicio_t_s_f' in session:
-              if len(session['inicio_t_s_f'])>0:
-                if 'fin_t_s_f' in session:
-                  if len(session['fin_t_s_f'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],session['inicio_t_s_f'],session['fin_t_s_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],session['inicio_t_s_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],session['inicio_t_s_f'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_f.html',Datos = session,Infos =data)  
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM salida_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_f'],session['valor_t_s_f'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM salida_fc LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_s_f.html',Datos = session,Infos =data)
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
-
 @app.route('/t_s_s/<rowi>',methods=['POST','GET'])
 def Reporte_salida_service(rowi):
   try:
@@ -1960,101 +1397,6 @@ def Reporte_salida_service(rowi):
           cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
           data = cur.fetchall()
           return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
-
-@app.route('/t_s_xd/<rowi>',methods=['POST','GET'])
-def Reporte_salidas_cross(rowi):
-  try:
-      if request.method == 'POST':
-        if request.method == 'GET':
-          session['rowi_t_s_xd']=rowi
-          row1 = int(session['rowi_t_s_xd'])
-          row2 = 100
-        else:
-            row1 = int(session['rowi_t_s_xd'])
-            row2 =100
-        if 'valor' in request.form:
-          if len(request.form['valor'])>0:
-            session['filtro_t_s_xd']=request.form['filtro']
-            session['valor_t_s_xd']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_s_xd']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_s_xd']=request.form['fin']
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],session['inicio_t_s_xd'],session['fin_t_s_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],session['inicio_t_s_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_s_xd.html',Datos = session,Infos =data) 
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_s_xd']=rowi
-          row1 = int(session['rowi_t_s_xd'])
-          row2 = 50
-        else:
-          row1 = int(session['rowi_t_s_xd'])
-          row2 =50
-        if 'valor_t_s_xd' in session:
-          if len(session['valor_t_s_xd'])>0:
-            if 'inicio_t_s_xd' in session:
-              if len(session['inicio_t_s_xd'])>0:
-                if 'fin_t_s_xd' in session:
-                  if len(session['fin_t_s_xd'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],session['inicio_t_s_xd'],session['fin_t_s_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],session['inicio_t_s_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],session['inicio_t_s_xd'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-              else:
-                cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],row1,row2))
-                data = cur.fetchall()
-                return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)  
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM salida_xd WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_xd'],session['valor_t_s_xd'],row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM salida_xd LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_s_xd.html',Datos = session,Infos =data)
   except:
     flash("Inicia Secion")
     return render_template('index.html')
@@ -2242,6 +1584,7 @@ def Track_In():
         return render_template("form/trackinprealert.html", Datos =session)
   except:  
     return render_template("home.html",Datos=session)
+
 @app.route("/Trackin_ordenes",methods=['POST','GET'])
 def Track_in_ordenes():
   try:
@@ -2259,7 +1602,6 @@ def Track_in_ordenes():
       return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata)
   except:  
     return render_template("form/trackin.html",Datos=session)
-
 
 @app.route("/Trackin_prealetkey",methods=['POST','GET'])
 def Track_in_prealert():

@@ -5,217 +5,67 @@
 body{
     background: #fff;
 }
-img{
-    width: 17vh;
-    padding: 1vh 0;
-}
-.Nav_Bar{
-    background: #fff159;
-    color: #2f3476;
-    display: flex;
-    border-bottom: 1px solid #2f3476;
-}
-
-.Nav_Bar button{
-    box-decoration-break: none;
-    background: none;
-    width: 6vh;
-    border: none;
-}
-.Nav_Bar button i{
-    font-size: 5vh;
-    background: none;
-    color: #2f3476;
-}
-
-.Nav_Bar span{
-    margin: auto  2vh auto auto ;
-    color:#fff;
-    background: #2f3476;
-    padding: 0.25vh;
-    border-radius: 5px;
-}
-
- .nav_menu{
-    display: block;
-    flex-direction: column;        
-    width: 20vh;
-    position: absolute;
-    background: #fff159;
-    padding: 0;
-    margin: 0;
-    height: 0;
-    transition: all 500ms;
-    margin-left: -200px;
-    }
-.nav_menu_visual{
-    display: flex;
-    grid-column: 1;
-    width: 22vh;
-    height: 100%;
-    position: absolute;
-    background: #fff;
-    padding: 0;
-    margin: 0;
-    box-shadow: 0 0 0.5vh #000;
-    transition: all 500ms; 
-
-    }
- .nav_menu_visual h3{
-     width: 100%;
-     background: #2f3476;
-     color: #fff;
-     margin: 0;
-     margin-bottom: 1vh;
-     padding: 1vh 0;
-     text-align: center;
-}
- .nav_menu_visual a{
-     display: flex;
-     width: 80%;
-     margin: 1vh auto 1vh auto;
-     padding: 1vh 0.5vh;
-     text-decoration: none;
-     text-align: center;
-     background-color: #2f3476;
-     color: #fff;
-     font-size: 2vh;
-     border-bottom: #2f3476 solid 1px;
- }
- .nav_menu_visual i{
-     font-size: 2.5vh;
-     margin: auto 0.5vh auto 1vh;
-     color: #fff;
-}
 .fondo{
+    margin: 0 ;
     width: 100%;
-    height: 50vh;
+    height: 30vh;
     background: #eee;
-
 }
-section form{
-    width:60vh;
-    margin: -45vh auto;
-    background:#fff;
-    color: #2f3476;
-    text-align:center;
-    align-items:center;
-    padding:10px;
-    display: flex;
-    flex-direction: column;
-    grid-column: 1;
-    border-radius:20px;
-    border:2px solid #a5a6a8;
-}
-section form h2{
-    font-size: 3vh;
-}
-section form label,
-section form select,
-section form input{
-    margin: 0.5vh auto;
-    font-size: 2vh;
-}
-section form input.btn {
-    background:#fff159; 
-    color:#2f3476;
-     border-radius:10px; 
-     padding: 5px 20px; 
-     font-size:20px;
-}
-section form input.btn:hover{
-        background:#2f3476; 
-        color:#fff;
-}
-
-.before,
-.after,
-.Pag{
-    background: #2f3476;
-    color: #fff;
-}
-.before{
-    font-size: 3vh;
-    margin-left: 3vh;
-}
-.after{
-    font-size: 3vh;
-    margin-right: 3vh;
-}
-.after:hover,
-.before:hover{
-    color: #ccc;
-}
-
-.accordion {
-    background-color: #2f3476;
-    color: #fff;
-    cursor: pointer;
+.user{
+    padding: 6vh 0 0 0;
     width: 100%;
-    padding: 5px 0;
-    margin-bottom: 10px;
+    justify-content: center;
     text-align: center;
-    border: none;
-    outline: none;
-    transition: 0.4s;
-  }
-  
-  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-  .nav_menu_visual i:hover,
-  .nav_menu_visual a:hover,
-  .active,
-  .accordion:hover {
-    background-color: #bebfe2;
+    align-items: center;
     color: #2f3476;
-  }
-  
-  /* Style the accordion panel. Note: hidden by default */
-  .panel {
-    padding: 20px 0;
-    background-color: white;
-    display: none;
-    transition: max-height 0.2s ease-out;
-  }
-  .accordion:after {
-    content: '\02795'; /* Unicode character for "plus" sign (+) */
-    font-size: 13px;
-    color: #fff;
-    float: right;
-    margin-left: 5px;
-  }
-  
-  .active:after {
-    content: "\2796"; /* Unicode character for "minus" sign (-) */
-    font-size: 13px;
-    color: #fff;
-    float: right;
-    margin-left: 5px;
-  }
-
-  div.user{
-      margin: -33vh auto auto auto ;
-      width: 100%;
-      justify-content: center;
-      text-align: center;
-      align-items: center;
-      color: #2f3476;
-  }
-  .user i{
-      background: #fff159;
-      padding: 3vh;
-      color: #2f3476;
-      margin: auto;
-      font-size: 4vw;
-      border-radius: 50%;
+}
+.user i{
+    background: #fff159;
+    padding: 3vh;
+    color: #2f3476;
+    margin: auto;
+    font-size: 4vh;
+    border-radius: 50%;
 }
 .user h1{
     color: #2f314e;
     margin: auto;
-    font-size: 1.5vw;
+    font-size: 5vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
 }
 .user h3{
     color: #2f314e;
     margin: auto;
-    font-size: 1vw;
+    font-size: 3vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.fondo .container_form{
+    width: 60%;
+    margin:10vh auto auto auto;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: space-between;
+}
+.fondo .container_form a{
+    width: 15vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2vh;
+    background: #eee;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 1.5vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 4vh;
+    color: #2f3476;
+}
+
+.fondo .container_form i{
+    margin: auto;
+    font-size: 5vh;
+    color: #fff;
+    text-shadow: 1px 2px 0 #2f3476, -2px 1px 0 #fff159, 1px -1px 0 #000;  
 }
 

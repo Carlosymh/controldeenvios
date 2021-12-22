@@ -1,0 +1,59 @@
+{% block cabezera %}
+{% endblock %}
+<nav class="nav-main">
+    <!--BTN-->
+    <input type="checkbox" class="nav-main__btn-collapse" id="nav-main__checkbox">
+    <label for="nav-main__checkbox" class="nav-main__btn-collapse-icon">
+        <span class="icon-nav"></span>
+        <span class="icon-nav"></span>
+        <span class="icon-nav"></span>
+    </label>
+    <!--Logo-->
+    <a href="/home" class="enlace">
+        <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg" alt="" class="logo">
+        <h1 class="text_logo"><b>mercado libre</b></h1>
+        
+    </a>
+ 
+    <!--MENU-->
+    <div class="nav-main__menu">
+        <div class="btn_nav"></div>
+        <button class="accordion"><i class='fas fa-edit'>  Reportes</i></button>
+        <div class="panel">
+            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+                    <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
+                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
+                    <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
+            {%endif%}
+            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
+                    <a href='/t_p/0' class='link_menu'>  Pre-Alert Cross</a>
+            {%endif%}
+            {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+                    <a href='/t_e_s/0' class='link_menu'>  Recibo Insumos </a>
+                    <a href='/t_s_s/0' class='link_menu'>  Salida Insumos</a>
+                    <a href='/t_p/0' class='link_menu'> Pre-Alert Service</a>
+            {%endif%}
+            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+                    <a href='/t_planning/0' class='link_menu'>  Planning</a>
+            {%endif%}
+        </div>
+        
+            <button class="accordion"><i class="fas fa-route"> Track In</i></button>
+            <div class="panel">
+                <a href='/trackinOrden' class='link_menu'> Ordenes</a>
+                <a href='/trackinPrealert' class='link_menu'> Pre-Alert</a>
+            </div>
+            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+                <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+            {%endif%}
+    </div>
+<div class="user_info">
+    <p>Estas Viendo:{{Datos['SiteName']}}</p>
+    <a href="/logout"><i class="fas fa-power-off"></i>  {{Datos['UserName']}}</a>
+</div>
+
+</nav>
+
+
+{% block body %}
+{% endblock %}
