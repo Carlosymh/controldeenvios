@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, Response, jsonify
+import io
+import csv
 from fpdf import FPDF
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 import hashlib
 import qrcode 
+import csv
 
 app = Flask(__name__)
 
@@ -25,7 +28,6 @@ def Index():
     if 'FullName' in session:
       return redirect('/home')
     else:
-      flash("Inicia Sesion")
       return render_template('index.html')
   except:
       return render_template('index.html')
@@ -80,7 +82,6 @@ def Recibo_full_form():
   if 'FullName' in session:
     return render_template('form/f_r_f.html',Datos = session)
   else:
-    flash("Inicia Sesion")
     return render_template('index.html')
 
 @app.route('/f_p',methods=['POST','GET'])
@@ -88,7 +89,20 @@ def Prealert_form():
   if 'FullName' in session:
     return render_template('form/f_p.html',Datos = session)
   else:
-    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/f_r_p_s',methods=['POST','GET'])
+def Registr_Prealert_service_form():
+  if 'FullName' in session:
+    now1 = datetime.now()
+    prealert_key = "CE"+str(now1)+"P"
+    key = prealert_key.replace(" ","")
+    key_ = key.replace(":","")
+    key_p = key_.replace(".","")
+    key_pa = key_p.replace("-","")
+    session['key_pa']= key_pa
+    return render_template('form/f_r_p_s.html',Datos = session)
+  else:
     return render_template('index.html')
 
 @app.route('/f_p_s',methods=['POST','GET'])
@@ -96,7 +110,6 @@ def Prealert_service_form():
   if 'FullName' in session:
     return render_template('form/f_p_s.html',Datos = session)
   else:
-    flash("Inicia Sesion")
     return render_template('index.html')
 
 @app.route('/f_p_f',methods=['POST','GET'])
@@ -256,34 +269,57 @@ def registro_s_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_s_s.html',Datos = session)
 # Registro de Salidas Service Center
-@app.route('/registro_prealert',methods=['POST'])
-def registroPrealert():
+@app.route('/registro_prealert_ordenes',methods=['POST'])
+def registroPrealertOrdenes():
   try:
       if request.method == 'POST':
         key_pa = session['key_pa']
         OrigenFc = session['FcName']
         OrigenSite = session['SiteName']
-        destinoPrealert = session['destinoPrealert'] 
-        SiteDestinoPrealert = session['SiteDestinoPrealert']
-        TransportePrealert = session['TransportePrealert']
-        TrasportistaPrealert = session['TrasportistaPrealert']
-        PlacasPrealert = session['PlacasPrealert']
         Orden = request.form['Orden']
         Paquetera = request.form['Paquetera']
         reponsable = session['FullName']
         now = datetime.now()
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Destino, SiteName_Destino, EmpresaTransporte, Transportista, Placas, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, OrigenFc, OrigenSite, destinoPrealert, SiteDestinoPrealert, TransportePrealert, TrasportistaPrealert, PlacasPrealert, Orden, Paquetera, reponsable, now, now))
+        cur.execute('INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now))
         mysql.connection.commit() 
         flash("Registro Exitoso")
-        return render_template('form/f_prealert.html',Datos = session)
+        return render_template('form/f_r_p_s.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_p_s.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/home.html',Datos = session)
+
+@app.route('/registro_prealert',methods=['POST'])
+def registroPrealert():
+  try:
+      if request.method == 'POST':
+        session['key_pa']= request.form['key_pa']
+        Facility=request.form['Facility']
+        if Facility[0:2]=="MX":
+          session['destinoPrealert'] = "Cross Dock"
+        else:
+          session['destinoPrealert'] = "Fullfilment"
+        session['SiteDestinoPrealert'] = request.form['Facility']
+        session['TransportePrealert'] = request.form['Transporte']
+        session['TrasportistaPrealert'] =  request.form['Trasportista']
+        session['PlacasPrealert'] = request.form['Placas']
+        Marchamo = request.form['Marchamo']
+        reponsable = session['FullName']
+        now = datetime.now()
+        cur = mysql.connection.cursor()
+        cur.execute("""UPDATE prealert SET Marchamo = %s, Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s""",(Marchamo, key, siteName))
+        mysql.connection.commit()
+        flash("Registro Exitoso")
+        return render_template('actualizacion/finalizado.html',Datos = session)
       else:
         flash("No has enviado un registro")
         if session['FcName'] == 'Service Center':
           return render_template('form/f_p_s.html',Datos = session)
         else:
           return render_template('form/f_p.html',Datos = session)
-
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/home.html',Datos = session)
@@ -320,9 +356,17 @@ def finalizarPallet():
   except:  
     return render_template("home.html",Datos=session)
 
+@app.route("/FinalizarPrealertOrdenes",methods=['POST','GET'])
+def finalizarPalletOrdenes():
+  try:
+    return render_template('actualizacion/finalizado.html',Datos = session)
+  except:
+    flash("No has enviado un registro")
+    return render_template('form/finalizar.html',Datos = session)
+
 @app.route('/finalizar',methods=['POST'])
 def finalizar():
-  # try:
+  try:
       if request.method == 'POST':
           key = session['key_pa']
           Marchamo = request.form['Marchamo']
@@ -335,9 +379,9 @@ def finalizar():
       else:
         flash("No has enviado un registro")
         return render_template('form/finalizar.html',Datos = session)
-  # except:
-  #   flash("No has enviado un registro")
-  #   return render_template('form/finalizar.html',Datos = session)
+  except:
+    flash("No has enviado un registro")
+    return render_template('form/finalizar.html',Datos = session)
 
 @app.route('/prealert',methods=['POST'])
 def Prealert():
@@ -1454,18 +1498,22 @@ def pdf_template():
         file =open('qr.png','wb')
         img.save(file)
         lugar = 'De: '+session['FcName']+' | '+session['SiteName']
-        Destino = ' a: '+session['destinoPrealert']+' | '+session['SiteDestinoPrealert']
-        EmpresaTransporte = " Empresa Transporte: "+session['TransportePrealert'] 
-        Transportista = "  Transportista: " + session['TrasportistaPrealert']
-        Placas = "  Placas: "+ session['PlacasPrealert'].upper()
-        Responsable = session['FullName']
         facility = session['FcName']
         site = session['SiteName']
         today= datetime.today()
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
-        result = cur.fetchall()
-        Marchamo = " Marchamo:  "+ str(result[0][11])
+        if 'destinoPrealert' in session:
+          Destino = ' a: '+session['destinoPrealert']+' | '+session['SiteDestinoPrealert']
+          EmpresaTransporte = " Empresa Transporte: "+session['TransportePrealert'] 
+          Transportista = "  Transportista: " + session['TrasportistaPrealert']
+          Placas = "  Placas: "+ session['PlacasPrealert'].upper()
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
+          result = cur.fetchall()
+          Marchamo = " Marchamo:  "+ str(result[0][11])
+        else:
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
+          result = cur.fetchall()
  
         pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
         pdf.add_page()
@@ -1473,17 +1521,18 @@ def pdf_template():
         page_width = pdf.w - 2 * pdf.l_margin
          
         pdf.ln(5)
-        pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=60, h = 25, link="https://www.linkedin.com/in/carlos-yovani-munoz-hernandez/")
-        pdf.set_font('Arial','B',50) 
-        pdf.text(x = 90, y = 20 ,txt =  "Control de" )
-        pdf.set_font('Arial','B',50) 
-        pdf.text(x = 90, y = 35 ,txt =  "Envios")
+        pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=50, h = 20)
+        pdf.set_font('Times','B',30)
+        pdf.set_text_color(0,47,109)  
+        pdf.text(x = 80, y = 19 ,txt =  "Receiving Log. Inversa" )
+        pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
         pdf.ln(80)
         
         pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
 
-        pdf.set_font('Times','B',16) 
+        pdf.set_font('Times','B',12) 
         
+        pdf.set_text_color(0,0,0) 
         pdf.text( x= 70, y = 57, txt = str(today))
         pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
         pdf.text( x= 70, y = 77, txt = Key)
@@ -1491,27 +1540,28 @@ def pdf_template():
         col_widt3 = page_width/2
 
 
-        pdf.set_font('Times','B',16) 
+        pdf.set_font('Times','B',12) 
         pdf.cell(col_widt3, 0.0, lugar, align='C')
-        pdf.cell(col_widt3, 0.0, Destino, align='C')
+        if 'destinoPrealert' in session:
+          pdf.cell(col_widt3, 0.0, Destino, align='C')
          
         pdf.ln(10)
 
+        if 'destinoPrealert' in session:
+          pdf.set_font('Times','B',12) 
+          pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
+          pdf.ln(10)
 
-        pdf.set_font('Times','B',16) 
-        pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
-        pdf.ln(10)
+          pdf.set_font('Times','B',12) 
+          pdf.cell(page_width, 0.0, Transportista, align='C')
+          pdf.ln(10)
 
-        pdf.set_font('Times','B',16) 
-        pdf.cell(page_width, 0.0, Transportista, align='C')
-        pdf.ln(10)
-
-        pdf.set_font('Times','B',16) 
-        pdf.cell(page_width, 0.0, Placas, align='C')
-        pdf.ln(10)
+          pdf.set_font('Times','B',12) 
+          pdf.cell(page_width, 0.0, Placas, align='C')
+          pdf.ln(10)
 
 
-        pdf.set_font('Times', 'B', 16)
+        pdf.set_font('Times', 'B', 12)
         col_widt2 = page_width/3
         col_widt1 = page_width/3
         col_width = page_width/3
@@ -1525,7 +1575,7 @@ def pdf_template():
         pdf.ln(th)
 
 
-        pdf.set_font('Times', '', 16)
+        pdf.set_font('Times', '', 12)
         col_widt2 = page_width/3
         col_widt1 = page_width/3
         col_width = page_width/3
@@ -1539,14 +1589,13 @@ def pdf_template():
             pdf.ln(th)
          
         pdf.ln(10)
-
-        pdf.set_font('Times','B',16)
-        pdf.cell(page_width, 8.0, Marchamo, align='C')
-        
+        if 'destinoPrealert' in session:
+          pdf.set_font('Times','B',12)
+          pdf.cell(page_width, 8.0, Marchamo, align='C')
+          
         pdf.ln(15)
-         
-        pdf.set_font('Times','B',16) 
-        pdf.cell(page_width, 8.0, Responsable, align='C')
+        pdf.set_font('Times','B',12)
+        pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
          
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'Atachment;filename=Prealert'+Key+'.pdf'})
     
@@ -1621,6 +1670,34 @@ def Track_in_prealert():
   # except:  
   #   return render_template("form/trackin.html",Datos=session)
 
+@app.route('/csvPrealert',methods=['POST','GET'])
+def crear_csvPrealert():
+    site=session['SiteName']
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM prealert WHERE   SiteName =\'{}\'  '.format(site))
+    result = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in result:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+
+    print(datos)
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"
+    return response
 
 if __name__=='__main__':
     app.run(port = 3000, debug =True)

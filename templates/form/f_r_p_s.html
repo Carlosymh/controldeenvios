@@ -1,3 +1,5 @@
+{% extends 'nav.html'%}
+{% block cabezera%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <title>Formulario</title>
+    <title>Pre-Alert Service</title>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -25,8 +27,8 @@
     {%endif%}
     {%endwith%}
     <nav class="nav-main">
-            <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg" alt="" class="logo">
-            <h1 class="text_logo"><b>mercado libre</b></h1>
+        <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg" alt="" class="logo">
+        <h1 class="text_logo"><b>mercado libre</b></h1>
      
     <div class="user_info">
         <p>Estas Viendo:{{Datos['SiteName']}} | {{Datos['UserName']}}</p>  
@@ -35,7 +37,7 @@
     </nav>
         <div class="fondo"></div>
         <section>
-            <form action="/registro_prealert" method="POST" >
+            <form action="/registro_prealert_ordenes" method="POST" >
                 <h2>Prealert de ordenes</h2>
                     <h3>ID de envío:  {{Datos['key_pa']}}</h3>
                     <label for="Orden">Orden: </label>
@@ -50,10 +52,11 @@
                         <option value="99 minutos">99 minutos</option>
                     </select>
                 <input type="submit" class="btn" name="enviar" value="Continuar" >
-                <a href="/FinalizarPrealert" class="btn">Cerrar Pallet</a>
+                <a href="/FinalizarPrealertOrdenes" class="btn">Cerrar Pallet</a>
             </form>
         </section>
         <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
 </body>
 </html>
+{% endblock %}

@@ -33,7 +33,7 @@
             {%else%}
             <div class="Service-Invalido">
             {%endif%}
-                <i class="fas fa-warehouse">Service Center</i>
+                <i class="fas fa-warehouse">   Service Center</i>
                 {%for Service in  Servicedata%}
                     <h4>{{Service.1}}</h4>
                 {%endfor%}
@@ -44,7 +44,7 @@
             {%else%}
             <div class="Cross-Invalido">
             {%endif%}
-            <i class="fas fa-sitemap">Cross Dock</i>
+            <i class="fas fa-sitemap">   Cross Dock</i>
             {%for Cross in  Crossdata%}
             <h4>Orden: {{Cross.2}} Paquetera</h4>
             {%endfor%}
@@ -55,7 +55,7 @@
             {%else%}
             <div class="Full-Invalido">
             {%endif%}
-                <i class="fas fa-boxes" > Fullfilment</i>
+                <i class="fas fa-boxes" >   Fullfilment</i>
                 {%for Full in  Fulldata%}
                 <li> Orden: {{Full.2}} Paquetera: {{Full.3}} Estatus: {{Full.4}} Comentarios: {{Full.5}}</h4>
                 {%endfor%}

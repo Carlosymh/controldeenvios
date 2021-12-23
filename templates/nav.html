@@ -18,6 +18,7 @@
     <!--MENU-->
     <div class="nav-main__menu">
         <div class="btn_nav"></div>
+        <a href='/home' class='link_menu'><i class="fas fa-mobile">  Procesos</i> </a>
         <button class="accordion"><i class='fas fa-edit'>  Reportes</i></button>
         <div class="panel">
             {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
@@ -37,14 +38,9 @@
                     <a href='/t_planning/0' class='link_menu'>  Planning</a>
             {%endif%}
         </div>
-        
-            <button class="accordion"><i class="fas fa-route"> Track In</i></button>
-            <div class="panel">
-                <a href='/trackinOrden' class='link_menu'> Ordenes</a>
-                <a href='/trackinPrealert' class='link_menu'> Pre-Alert</a>
-            </div>
+            <a href='/trackinOrden' class='link_menu'><i class="fas fa-route"> Track In</i></a>
             {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
+                <a href='/registro' class='link_menu'><i class="fas fa-users">  Registro de Usuarios</i></a>
             {%endif%}
     </div>
 <div class="user_info">

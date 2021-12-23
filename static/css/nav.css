@@ -18,7 +18,7 @@
 .text_logo{
     width: 20px;
     height: 40px;
-    margin:  auto auto auto 5px;
+    margin:  auto auto auto 3px;
     font-family: 'Harabara',Verdana, Arial;
     font-size: 20px;
     color: var(--color-blue);
@@ -26,14 +26,15 @@
 
 }
 .logo{
-    margin: auto;
+    margin: auto 3px;
+    width: 60px;
     height: 45px;
     padding-left: 1rem;
 }
 .nav-main a{
     color: inherit;
     margin-top: 1vh;
-    margin-bottom: 1vh;
+    margin-bottom: 2vh;
     text-align: center;
 }
 .user .fas{

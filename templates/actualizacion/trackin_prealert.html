@@ -28,12 +28,13 @@
     {% block body%}
     <div class="container"> 
         <section>
+            <h1 class="Tituloprealert">Track In de Pre-Alert Key: {{Datos['key_pa']}}</h1>
             {%if Servicedata|length >0%}
             <div class="Service-valido">
             {%else%}
             <div class="Service-Invalido">
             {%endif%}
-                <button class="accordion"><i class="fas fa-warehouse">Service Center</i></button>
+                <button class="accordion"><i class="fas fa-warehouse">   Service Center</i></button>
                     <div class="panel">
                     {%for Service in  Servicedata%}
                         <h4>{{Service.1}}</h4>
@@ -46,7 +47,7 @@
             {%else%}
             <div class="Cross-Invalido">
             {%endif%}
-                <button class="accordion"><i class="fas fa-sitemap">Cross Dock</i></button>
+                <button class="accordion"><i class="fas fa-sitemap">   Cross Dock</i></button>
                     <div class="panel">
                         {%for Cross in  Crossdata%}
                             <h4>Orden: {{Cross.2}} Paquetera</h4>
@@ -59,7 +60,7 @@
             {%else%}
             <div class="Full-Invalido">
             {%endif%}
-                <button class="accordion"><i class="fas fa-boxes" > Fullfilment</i></button>
+                <button class="accordion"><i class="fas fa-boxes" >  Fullfilment</i></button>
                     <div class="panel">
                         {%for Full in  Fulldata%}
                             <li> Orden: {{Full.2}} Paquetera: {{Full.3}} Estatus: {{Full.4}} Comentarios: {{Full.5}}</h4>

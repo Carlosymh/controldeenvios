@@ -41,7 +41,7 @@ body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .fondo .container_form{
-    width: 60%;
+    width: 80%;
     margin:10vh auto auto auto;
     display: flex;
     flex-wrap: wrap;
@@ -66,6 +66,6 @@ body{
     margin: auto;
     font-size: 5vh;
     color: #fff;
-    text-shadow: 1px 2px 0 #2f3476, -2px 1px 0 #fff159, 1px -1px 0 #000;  
+    text-shadow: -1px 0 0 #fff159, 1px 1px 0 #2f3476, 0 1px 0 #2f3476, 1px 0 0 #2f3476, 0 -1px 0 #fff159,-1px -1px 0 #fff159, 0 -1px 0 #2f3476;  
 }
 

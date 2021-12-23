@@ -32,7 +32,7 @@
         <form action="/t_r_f/0" method="post" class="form_filtros">
             <select name="filtro">
                 <option value="id_recibo">ID</option>
-                <option value="Fulfillment">Fulfillment</option>
+                <option value="Fulfillment">Prealert</option>
                 <option value="responsable">Responsable</option>
                 <option value="paquetera">Paquetera</option>
                 <option value="no_gia"># de Gia</option>
@@ -57,18 +57,14 @@
                 <thead>
                     <tr>
                         <th> ID </th>
-                        <th> Fulfillment </th>
-                        <th> Responsable </th>
+                        <th> Pre-Alert Key </th>
+                        <th> Orden </th>
                         <th> Paquetera </th>
-                        <th> # de Gia </th>
-                        <th> # de Paquete </th>
-                        <th> Tipo Paquete </th>
                         <th> Estatus </th>
-                        <th> Razon Rechazo </th>
+                        <th> Comentario </th>
+                        <th> Site  </th>
+                        <th> Responsable </th>
                         <th> Fecha Y Hora </th>
-                        {%if Datos['Rango']=='Administrador'%}
-                        <th> Editar </th>
-                        {%endif%}
                     </tr>
                 </thead>
                 <tbody>
@@ -80,7 +76,6 @@
                         <td>{{Info.3}}</td>
                         <td>{{Info.4}}</td>
                         <td>{{Info.5}}</td>
-                        <td>{{Info.6}}</td>
                         <td>{{Info.7}}</td>
                         <td>{{Info.8}}</td>
                         <td>{{Info.9}}</td>

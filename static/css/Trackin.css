@@ -5,38 +5,47 @@
 body{
     background: #eee;
 }
-.fondo{
-    width: 100%;
-    height: 50vh;
-    background: #eee;
-
+.Tituloprealert{
+    text-align: center;
+    margin: 3vh auto ;
+    font-size: 4vh;
+    color: #09306c;
+    text-shadow:1px 1px 0 #fff;
 }
-
-
-
 div.Cross-Invalido,
 div.Full-Invalido,
 div.Service-Invalido,
 div.Cross-valido,
 div.Full-valido,
 div.Service-valido{
-    width: 60vh;
-    min-height: 10vh;
-    margin: 2vh auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    width: 90%;
+    margin: 0 auto;
     padding:5px;
     color: #2f3476;
-    border-radius: 25px;
+    border-radius: 5px;
     background: #fff;
     border:1px solid #000;
 }
+
 div.Cross-valido i,
 div.Full-valido i,
 div.Service-valido i{
-    color: rgb(40, 212, 155);
+    width: 100%;
+    padding: 10px;
+    background: #3483fa;
+    border-radius: 10px;
+    font-size: 4vh;
+    color: #fff;
 }
 
 div.Cross-Invalido i,
 div.Full-Invalido i,
 div.Service-Invalido i{
-    color: rgb(110, 110, 110);
+    width: 100%;
+    padding: 10px;
+    background: #eee;
+    font-size: 4vh;
+    color: rgb(83, 83, 83);
+    border-radius: 10px;
 }

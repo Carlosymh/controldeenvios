@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
     <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -22,11 +24,15 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
-    <div class="Nav_Bar">
-         <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo">
-        <span> {{Datos['FcName']}} : {{Datos['SiteName']}} </span>
-    
+    <nav class="nav-main">
+        <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg" alt="" class="logo">
+        <h1 class="text_logo"><b>mercado libre</b></h1>
+     
+    <div class="user_info">
+        <p>Estas Viendo:{{Datos['SiteName']}} | {{Datos['UserName']}}</p>  
     </div>
+    
+    </nav>
         <div class="fondo"></div>
         <section>
             <form action="/finalizar" method="POST" >
