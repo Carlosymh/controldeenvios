@@ -28,39 +28,116 @@
     {% block body%}
     <div class="container"> 
         <section>
+            <h1 class="Tituloprealert">Track In de la Orden: {{Orden}}</h1>
             {%if Servicedata|length >0%}
             <div class="Service-valido">
+                <button class="accordion"><i class="fas fa-warehouse">   Service Center</i></button>
+                <div class="panel">
+                    <table>
+                        <TR>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                        </TR>
+                    {%for Service in  Servicedata%}
+                     <TR>
+                         <TD>{{Service.2}}</TD>
+                         <TD>{{Service.3}}</TD>
+                         <TD>{{Service.4}}</TD>
+                         <TD>{{Service.5}}</TD>
+                         <TD>{{Service.6}}</TD>
+                    </TR>
+                    {%endfor%}
+                </table>
+                </div>
+            </div>
             {%else%}
             <div class="Service-Invalido">
-            {%endif%}
-                <i class="fas fa-warehouse">   Service Center</i>
-                {%for Service in  Servicedata%}
-                    <h4>{{Service.1}}</h4>
-                {%endfor%}
-
+                <button class="accordion"><i class="fas fa-warehouse">   Service Center</i></button>
+                <div class="panel">
+                
+                    <h4>No se encontraron Registros</h4>
+                </div>
             </div>
+            {%endif%}
             {%if Crossdata|length >0%}
             <div class="Cross-valido">
+                <button class="accordion"><i class="fas fa-sitemap">   Cross Dock</i></button>
+                <div class="panel">
+                    <table>
+                        <TR>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                        </TR>
+                    {%for reciboCross in  reciboCrossdata%}
+                     <TR>
+                         <TD>{{reciboCross.2}}</TD>
+                         <TD>{{reciboCross.3}}</TD>
+                         <TD>{{reciboCross.4}}</TD>
+                         <TD>{{reciboCross.5}}</TD>
+                         <TD>{{reciboCross.6}}</TD>
+                    </TR>
+                    {%endfor%}
+                    {%for Cross in  Crossdata%}
+                     <TR>
+                         <TD>{{Cross.2}}</TD>
+                         <TD>{{Cross.3}}</TD>
+                         <TD>{{Cross.4}}</TD>
+                         <TD>{{Cross.5}}</TD>
+                         <TD>{{Cross.6}}</TD>
+                    </TR>
+                    {%endfor%}
+                </table>
+                </div>
+            </div>
             {%else%}
             <div class="Cross-Invalido">
-            {%endif%}
-            <i class="fas fa-sitemap">   Cross Dock</i>
-            {%for Cross in  Crossdata%}
-            <h4>Orden: {{Cross.2}} Paquetera</h4>
-            {%endfor%}
-
+                <button class="accordion"><i class="fas fa-sitemap">  Cross Dock</i></button>
+                <div class="panel">
+                    <h4>No se encontraron Registros</h4>
+                </div>
             </div>
+            {%endif%}
             {%if Fulldata|length >0%}
             <div class="Full-valido">
+                <button class="accordion"><i class="fas fa-boxes" >  Fullfilment</i></button>
+                <div class="panel">
+                    <table>
+                        <TR>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                            <TH></TH>
+                        </TR>
+                    {%for Full in  Fulldata%}
+                     <TR>
+                         <TD>{{Full.2}}</TD>
+                         <TD>{{Full.3}}</TD>
+                         <TD>{{Full.4}}</TD>
+                         <TD>{{Full.5}}</TD>
+                         <TD>{{Full.6}}</TD>
+                    </TR>
+                    {%endfor%}
+                </table>
+                </div>
+            </div>
             {%else%}
             <div class="Full-Invalido">
-            {%endif%}
-                <i class="fas fa-boxes" >   Fullfilment</i>
-                {%for Full in  Fulldata%}
-                <li> Orden: {{Full.2}} Paquetera: {{Full.3}} Estatus: {{Full.4}} Comentarios: {{Full.5}}</h4>
-                {%endfor%}
-
+                <button class="accordion"><i class="fas fa-boxes" >  Fullfilment</i></button>
+                <div class="panel">
+                    <h4>No se encontraron Registros</h4>
+                </div>
             </div>
+            {%endif%}
         </section>
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">

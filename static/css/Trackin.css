@@ -8,8 +8,9 @@ body{
 .Tituloprealert{
     text-align: center;
     margin: 3vh auto ;
-    font-size: 4vh;
-    color: #09306c;
+    font-size: 6vh;
+    color: #2f3476;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     text-shadow:1px 1px 0 #fff;
 }
 div.Cross-Invalido,
@@ -48,4 +49,16 @@ div.Service-Invalido i{
     font-size: 4vh;
     color: rgb(83, 83, 83);
     border-radius: 10px;
+}
+.panel{
+    background: #eee;
+}
+table{
+    width: 95%;
+    justify-content: space-around;
+}
+Td{
+    margin: auto 5px;
+    border-bottom:1px solid #2f3476 ;
+    text-align: center;
 }
