@@ -24,6 +24,15 @@
     {%endfor%}
     {%endif%}
     {%endwith%}
+    <nav class="nav-main">
+        <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg" alt="" class="logo">
+        <h1 class="text_logo"><b>mercado libre</b></h1>
+     
+    <div class="user_info">
+        <p>Estas Viendo:{{Datos['SiteName']}} | {{Datos['UserName']}}</p>  
+    </div>
+    
+    </nav>
         <div class="fondo"></div>
         <section>
             <form action="/registro_recibo" method="POST" >

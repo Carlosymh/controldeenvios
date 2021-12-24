@@ -19,16 +19,14 @@ section{
     justify-content: center;
 }
 section img{
-    width: 15vh;
-    height: 10vh;
+    width: 30px;
     margin-top: 8vh;
     right: 1vh;
 }
-section h1{
-    text-align: left;
-    width: 70%;
-    font-size: 8vh;
-    margin-top: 8vh;
+section .titulo p{
+    width: 500px;
+    font-size: 6vh;
+    margin-top: 6vh;
     margin-left: 1vh;
     font-family: 'Harabara',Verdana;
 }
@@ -49,12 +47,11 @@ section h1{
     margin: auto;
     margin-top: -15vh;
     background: #fff;
-    width: 60VH;
+    width: 50VH;
     height: 45VH;
     display:flexbox;
     box-shadow: 0 0 0.2vh  #000;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
+    border-radius: 5px;
     text-align: center;
 }
 
@@ -69,7 +66,7 @@ form{
 
 form p{
     font-family: Verdana, Tahoma, sans-serif;
-    font-size: 3vh;
+    font-size: 4vh;
     color: #000;
 
 }
@@ -217,30 +214,31 @@ a.help:hover{
 }
 @media (max-width: 1800px ){
     section img{
-        width: 15vh;
-        height: 7vh;
-        margin-top: 8vh;
+        width: 120px;
+        height: 80px;
+        margin-top: 3rem;
         right: 1vh;
     }
     section h1{
         text-align: left;
         width: 70%;
-        font-size: 7vh;
+        font-size: 6vh;
         margin-top: 8vh;
         margin-left: 1vh;
         font-family: 'Harabara',Verdana;
     }
     }
-@media (max-width: 800px ){
+@media (max-width: 505px ){
 section img{
-    width: 15vh;
-    height: 7vh;
-    margin-top: 8vh;
+    width: 120px;
+    height: 80px;
+    margin-top: 3rem;
+    margin-left: 2vh;
     right: 1vh;
 }
-section h1{
+section .titulo p{
     text-align: left;
-    width: 70%;
+    width: 90%;
     font-size: 4vh;
     margin-top: 8vh;
     margin-left: 1vh;
