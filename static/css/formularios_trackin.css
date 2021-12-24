@@ -12,13 +12,12 @@ body{
 
 }
 section{
-    width:40vh;
+    width:60vh;
     margin: -35vh auto;
     background:#fff;
     color: #2f3476;
     text-align:center;
     align-items:center;
-    padding:10px;
     display: flex;
     flex-direction: column;
     grid-column: 1;
@@ -27,24 +26,29 @@ section{
 }
 
 section form {
-    margin-bottom: 4vh;
-    background: rgba(230, 227, 227, 0.795);
+    width: 55vh;
+    margin: 2vh  auto;
+    background: rgba(241, 239, 239, 0.795);
     padding:5px;
     border-radius:20px;
 }
 section form h2{
     font-size: 3vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 2vh;
 }
 section form label,
 section form select,
 section form input{
     margin: 0.5vh auto;
+    width: 70%;
     font-size: 2vh;
 }
 a.btn{
+    width: 80%;
     margin-top: 3px;
-    background:#fff159; 
-    color:#2f3476;
+    background:#256ad3; 
+    color:#fff;
     border-radius:10px; 
     padding: 2px 3px; 
     font-size:20px;
@@ -55,8 +59,8 @@ a.btn{
 
 }
 section form input.btn {
-    background:#fff159; 
-    color:#2f3476;
+    background:#256ad3; 
+    color:#fff;
     border-radius:10px; 
     padding: 5px 20px; 
     font-size:20px;
@@ -66,13 +70,15 @@ section form input.btn {
 
 a.btn:hover{
     margin-top: 3px;
-    background:#2f3476; 
+    background:#174180dc; 
     color:#fff;
     border: 1px solid #a5a6a8;
+    transition: 1s;
 }
 section form input.btn:hover{
-        background:#2f3476; 
+        background:#174180dc; 
         color:#fff;
+        transition: 1s;
 }
 
 .before,

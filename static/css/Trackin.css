@@ -20,7 +20,7 @@ div.Cross-valido,
 div.Full-valido,
 div.Service-valido{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     padding:5px;
     color: #2f3476;
@@ -51,14 +51,19 @@ div.Service-Invalido i{
     border-radius: 10px;
 }
 .panel{
-    background: #eee;
+    text-align: center;
+    background: #fff;
 }
 table{
-    width: 95%;
+    width: 100%;
     justify-content: space-around;
+    background: #eee;
 }
 Td{
-    margin: auto 5px;
+    margin: 10px 5px;
     border-bottom:1px solid #2f3476 ;
     text-align: center;
+}
+tr{
+    margin: 2vh auto;
 }

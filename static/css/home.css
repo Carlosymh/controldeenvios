@@ -53,7 +53,7 @@ body{
     display: flex;
     flex-direction: column;
     padding: 2vh;
-    background: #eee;
+    background: #ddd;
     border-radius: 50%;
     text-decoration: none;
     font-size: 1.5vh;
@@ -65,7 +65,7 @@ body{
 .fondo .container_form i{
     margin: auto;
     font-size: 5vh;
-    color: #fff;
-    text-shadow: -1px 0 0 #fff159, 1px 1px 0 #2f3476, 0 1px 0 #2f3476, 1px 0 0 #2f3476, 0 -1px 0 #fff159,-1px -1px 0 #fff159, 0 -1px 0 #2f3476;  
+    color: #fff159;
+    text-shadow: -1px 0 0 #fff, 1px 1px 0 #2f3476, 0 1px 0 #2f3476, 1px 0 0 #2f3476, 0 -1px 0 #fff,-1px -1px 0 #fff, 0 -1px 0 #2f3476;  
 }
 

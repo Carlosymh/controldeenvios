@@ -3,6 +3,7 @@
     padding: 0;
 }
 body{
+    width: 100%;
     background: #eee;
 }
  div.filtros{
@@ -10,14 +11,15 @@ body{
     padding: 1vh 0;
     border:none;
     border-collapse: collapse;
+    display: flex;
 
 }
 .filtros form{
-    display: inline;
+    display: flex;
     margin-left: 2vh;
     border:none;
     background-color: #fff;
-    padding: 0.5VH;
+    padding: 0.5VH ;
     border: 1px solid #2f3476;
     border-radius: 15px;
 }
@@ -63,13 +65,13 @@ table thead{
     font-size: 1.8vh;
 }
 table thead th{
-    padding: 0.5vh 0.3vh;
+    padding: 0.5vh 0.2vh;
 }
 table tbody tr{
     border-bottom: 1px solid #ddd;
 }
 table tbody tr td{
-    padding: 0.5vh 0.3vh;
+    padding: 0.5vh 0.2vh;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.85vh;
 }
@@ -105,4 +107,23 @@ table tbody tr td .delete{
 .after:hover,
 .before:hover{
     color: #bebfe2;
+}
+.download_csv{
+    display: flex;
+    margin: auto 30px auto auto;
+    color: #787879;
+    text-align: center;
+    border-radius: 50%;
+    text-decoration: none;
+}
+
+.download_csv i{
+    width: 25px;
+    height: 25px;
+    background: green;
+    margin: auto 5px auto auto;
+    font-size: 2vh;
+    padding:  5PX 0;
+    color: #fff;
+    border-radius: 50%;
 }

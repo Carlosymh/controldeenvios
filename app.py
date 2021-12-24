@@ -21,6 +21,7 @@ mysql = MySQL(app)
 # settings
 app.secret_key = 'mysecretkey'
 
+
 #Direccion Principal 
 @app.route('/')
 def Index():
@@ -31,6 +32,7 @@ def Index():
       return render_template('index.html')
   except:
       return render_template('index.html')
+
 #Valida de usuario
 @app.route('/validar_usuario', methods=['POST'])
 def validarusuaro():
@@ -45,6 +47,7 @@ def validarusuaro():
         return render_template('inicio.html',username=username,user=user)
       else:
         return render_template('index.html')    
+
 #Validacion de Contraseña
 @app.route('/validar_contrasena/<user>', methods=['POST'])
 def validarcontrasena(user):
@@ -68,6 +71,7 @@ def validarcontrasena(user):
             return render_template('index.html')
       else:
         return render_template('index.html')   
+
 #Pagina Principal
 @app.route('/home',methods=['POST','GET'])
 def home():
@@ -76,6 +80,7 @@ def home():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #Formulario de Registro
 @app.route('/f_r_f',methods=['POST','GET'])
 def Recibo_full_form():
@@ -83,6 +88,7 @@ def Recibo_full_form():
     return render_template('form/f_r_f.html',Datos = session)
   else:
     return render_template('index.html')
+
 #formulario de Prealert
 @app.route('/f_p',methods=['POST','GET'])
 def Prealert_form():
@@ -90,6 +96,7 @@ def Prealert_form():
     return render_template('form/f_p.html',Datos = session)
   else:
     return render_template('index.html')
+
 #formulario de ordenes Prealert
 @app.route('/f_r_p_s',methods=['POST','GET'])
 def Registr_Prealert_service_form():
@@ -104,13 +111,7 @@ def Registr_Prealert_service_form():
     return render_template('form/f_r_p_s.html',Datos = session)
   else:
     return render_template('index.html')
-#prealert Service
-@app.route('/f_p_s',methods=['POST','GET'])
-def Prealert_service_form():
-  if 'FullName' in session:
-    return render_template('form/f_p_s.html',Datos = session)
-  else:
-    return render_template('index.html')
+
 #formulario Planning Fullfilment
 @app.route('/f_p_f',methods=['POST','GET'])
 def Planning_full_form():
@@ -119,6 +120,7 @@ def Planning_full_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #formulario ordenes no Procesables 
 @app.route('/f_n_p',methods=['POST','GET'])
 def No_procesable_form():
@@ -127,6 +129,7 @@ def No_procesable_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #formulario entradas Service Center
 @app.route('/f_e_s',methods=['POST','GET'])
 def Entradas_Service_form():
@@ -135,6 +138,7 @@ def Entradas_Service_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #fomulari salidas Service Center
 @app.route('/f_s_s',methods=['POST','GET'])
 def Salidas_Service_form():
@@ -143,6 +147,7 @@ def Salidas_Service_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #formulario Planning
 @app.route('/f_planning',methods=['POST','GET'])
 def Planning_form():
@@ -151,7 +156,8 @@ def Planning_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
- #formulario Planning Cross Dock
+
+#formulario Planning Cross Dock 
 @app.route('/f_p_xd',methods=['POST','GET'])
 def Planning_Cross_form():
   if 'FullName' in session:
@@ -159,6 +165,7 @@ def Planning_Cross_form():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #formulario Actualizacion de estatus ordenes no Procesables 
 @app.route('/f_a_o',methods=['POST','GET'])
 def Actualizacion_ordenes_noprocesables():
@@ -167,6 +174,7 @@ def Actualizacion_ordenes_noprocesables():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
+
 #Redirigie a el Formulario de Registro de Usuarios 
 @app.route('/registro',methods=['POST','GET'])
 def registro():
@@ -179,6 +187,7 @@ def registro():
   except:
     flash("Inicia Secion")
     return render_template('index.html')
+
 #Registro de Usuarios 
 @app.route('/registrar',methods=['POST'])
 def registrar():
@@ -215,6 +224,7 @@ def registrar():
     return render_template('registro.html',Datos =session)
 def _create_password(password):
    return generate_password_hash(password,'pbkdf2:sha256:30',30)
+
 #Registros entradas Service Center
 @app.route('/registro_svcs_entrada',methods=['POST'])
 def registro_s_e():
@@ -243,6 +253,7 @@ def registro_s_e():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_e_s.html',Datos = session)
+
 # Registro de Salidas Service Center
 @app.route('/registro_svcs_salida',methods=['POST'])
 def registro_s_s():
@@ -267,6 +278,7 @@ def registro_s_s():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_s_s.html',Datos = session)
+
 # Registro Prealert ordenes 
 @app.route('/registro_prealert_ordenes',methods=['POST'])
 def registroPrealertOrdenes():
@@ -290,7 +302,8 @@ def registroPrealertOrdenes():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/home.html',Datos = session)
-#registro Prealert
+
+#registro Envio Prealert Prealert
 @app.route('/registro_prealert',methods=['POST'])
 def registroPrealert():
   try:
@@ -309,43 +322,17 @@ def registroPrealert():
         reponsable = session['FullName']
         now = datetime.now()
         cur = mysql.connection.cursor()
-        cur.execute("""UPDATE prealert SET Marchamo = %s, Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s""",(Marchamo, key, siteName))
+        cur.execute("""UPDATE prealert SET  Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s""",(session['destinoPrealert'],session['SiteDestinoPrealert'],session['TransportePrealert'],session['TrasportistaPrealert'],session['PlacasPrealert'],Marchamo,reponsable,now,now,session['key_pa'],session['SiteName']))
         mysql.connection.commit()
         flash("Registro Exitoso")
         return render_template('actualizacion/finalizado.html',Datos = session)
       else:
         flash("No has enviado un registro")
-        if session['FcName'] == 'Service Center':
-          return render_template('form/f_p_s.html',Datos = session)
-        else:
-          return render_template('form/f_p.html',Datos = session)
+        return render_template('form/f_p.html',Datos = session)
   except:
     flash("Llena todos los Campos Correctamente")
-    return render_template('form/home.html',Datos = session)
-#registro Prealert Service Centar
-@app.route('/registro_prealert_service',methods=['POST'])
-def resgitroPrealertService():
-  try:
-      if request.method == 'POST':
-        now1 = datetime.now()
-        prealert_key = "CE"+str(now1)+"P"
-        key = prealert_key.replace(" ","")
-        key_ = key.replace(":","")
-        key_p = key_.replace(".","")
-        key_pa = key_p.replace("-","")
-        session['key_pa']= key_pa
-        session['destinoPrealert'] = "Cross Dock"
-        session['SiteDestinoPrealert'] = request.form['Facility']
-        session['TransportePrealert'] = request.form['Transporte']
-        session['TrasportistaPrealert'] =  request.form['Trasportista']
-        session['PlacasPrealert'] = request.form['Placas']
-        return render_template('form/f_prealert.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_p_s.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_p_s.html',Datos = session)
+    return render_template('form/f_p.html',Datos = session)
+
 #confirmacionde Finalizacion Prealert
 @app.route("/FinalizarPrealert",methods=['POST','GET'])
 def finalizarPallet():
@@ -354,6 +341,7 @@ def finalizarPallet():
       return render_template("form/finalizar.html", Datos =session)
   except:  
     return render_template("home.html",Datos=session)
+
 #confirmacionde Finalizacion Prealert Ordenes 
 @app.route("/FinalizarPrealertOrdenes",methods=['POST','GET'])
 def finalizarPalletOrdenes():
@@ -362,55 +350,7 @@ def finalizarPalletOrdenes():
   except:
     flash("No has enviado un registro")
     return render_template('form/finalizar.html',Datos = session)
-#Opcion de Descarga PDF Prealert
-@app.route('/finalizar',methods=['POST'])
-def finalizar():
-  try:
-      if request.method == 'POST':
-          key = session['key_pa']
-          Marchamo = request.form['Marchamo']
-          siteName = session['SiteName']
-          cur = mysql.connection.cursor()
-          cur.execute("""UPDATE prealert SET Marchamo = %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s AND Fecha = CURDATE() """,(Marchamo, key, siteName))
-          mysql.connection.commit()
-          flash("Pallet Finalizado")
-          return render_template('actualizacion/finalizado.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/finalizar.html',Datos = session)
-  except:
-    flash("No has enviado un registro")
-    return render_template('form/finalizar.html',Datos = session)
-#registro ordenes prealert
-@app.route('/prealert',methods=['POST'])
-def Prealert():
-  try:
-      if request.method == 'POST':
-        Key =  request.form['key_pa']
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' LIMIT 1 '.format(Key))
-        data = cur.fetchall()
-        if len(data) > 0 :
-          session['key_pa']= request.form['key_pa']
-          Facility=request.form['Facility']
-          if Facility[0:2]=="MX":
-            session['destinoPrealert'] = "Cross Dock"
-          else:
-            session['destinoPrealert'] = "Fullfilment"
-          session['SiteDestinoPrealert'] = request.form['Facility']
-          session['TransportePrealert'] = request.form['Transporte']
-          session['TrasportistaPrealert'] =  request.form['Trasportista']
-          session['PlacasPrealert'] = request.form['Placas']
-          return render_template('form/f_prealert.html',Datos = session)
-        else:
-          flash("Prealert Key Incorrecta")
-          return render_template('form/f_p.html',Datos = session)
-      else:
-        flash("No has enviado un registro")
-        return render_template('form/f_p.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_p.html',Datos = session)
+
 
 @app.route('/registro_fcs_recibo',methods=['POST'])
 def registro_fcs_r():
@@ -436,6 +376,7 @@ def registro_fcs_r():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_r_f.html',Datos = session)
+
 
 @app.route('/registro_ordenes',methods=['POST'])
 def registro_o():
@@ -679,6 +620,7 @@ def registro_o():
         flash("No has enviado un registro")
         return render_template('form/f_n_p.html',Datos = session)
 
+
 @app.route('/registro_planing',methods=['POST'])
 def registro_p():
   try:
@@ -710,6 +652,7 @@ def registro_p():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_planning.html',Datos = session)
 
+
 @app.route('/a_p_f',methods=['POST'])
 def actualizacion_planning_full():
   try:
@@ -729,6 +672,7 @@ def actualizacion_planning_full():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
+
 
 @app.route('/a_p_xd',methods=['POST'])
 def actualizacion_planning_cross():
@@ -763,6 +707,7 @@ def actualizacion_planning_cross():
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
 
+
 @app.route('/a_o_np',methods=['POST'])
 def actualizacion_ordenes_no_procesables():
   try:
@@ -770,7 +715,7 @@ def actualizacion_ordenes_no_procesables():
         orden = request.form['orden']
         status = 'Pendiente'
         cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = \'{}\' AND estatus_orden = \'{}\' LIMIT 1 '.format(orden,status))
+        cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = {}  LIMIT 1 '.format(orden))
         data = cur.fetchall()
         if len(data)>0:
           return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
@@ -783,6 +728,7 @@ def actualizacion_ordenes_no_procesables():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
+
 
 @app.route('/r_a_p_f',methods=['POST'])
 def registro_actalizacion_planning_full():
@@ -809,6 +755,7 @@ def registro_actalizacion_planning_full():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_p_f.html',Datos = session)
+
 
 @app.route('/r_a_p_xd',methods=['POST'])
 def registro_actalizacion_planning_cross():
@@ -839,36 +786,41 @@ def registro_actalizacion_planning_cross():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_p_xd.html',Datos = session)
 
+
 @app.route('/r_a_o_np',methods=['POST'])
 def registro_actalizacion_ordenes_no_procesables():
-  try:
+  # try:
     if request.method == 'POST':
         id_orden =  request.form['id_orden']
-        estatus = 'Cerrado'
+        estatus = request.form['Status']
         usuario = session['FullName']
+        Comentario = request.form['Comentario']
         now = datetime.now()
         cur = mysql.connection.cursor()
         cur.execute("""
         UPDATE ordenes_no_procesables
         SET estatus_orden = %s,
+        Comentario = %s,
         fecha_actualizacion = %s,
         responsable_actualizacion = %s
         WHERE id_orden  = %s
-        """,(estatus,now,usuario,id_orden))
+        """,(estatus,Comentario,now,usuario,id_orden))
         mysql.connection.commit()
         flash("Registro Exitoso")
         return render_template('form/f_a_o.html',Datos = session)
     else:
         flash("No has enviado un registro")
         return render_template('form/f_a_o.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-    return render_template('form/f_a_o.html',Datos = session)
+  # except:
+  #   flash("Llena todos los Campos Correctamente")
+  #   return render_template('form/f_a_o.html',Datos = session)
+
 #Cerrar Session
 @app.route('/logout')
 def Cerrar_session():
   session.clear()
   return render_template('index.html')
+
 
 @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_service(rowi):
@@ -1063,6 +1015,7 @@ def Reporte_ordenes_no_procesables(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
+
 @app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
   try:
@@ -1157,6 +1110,7 @@ def Reporte_prealert(rowi):
   except:
     flash("Inicia Secion")
     return render_template('index.html')
+
 
 @app.route('/t_planning/<rowi>',methods=['POST','GET'])
 def Reporte_planning(rowi):
@@ -1253,6 +1207,7 @@ def Reporte_planning(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
+
 @app.route('/t_r_f/<rowi>',methods=['POST','GET'])
 def Reporte_recibo_full(rowi):
   try:
@@ -1347,6 +1302,7 @@ def Reporte_recibo_full(rowi):
   except:
     flash("Inicia Secion")
     return render_template('index.html')
+
 
 @app.route('/t_s_s/<rowi>',methods=['POST','GET'])
 def Reporte_salida_service(rowi):
@@ -1444,6 +1400,7 @@ def Reporte_salida_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
+
 @app.route('/validacion_recibo',methods=['Post'])
 def Verificacion_orden_recibo():
   try:
@@ -1463,6 +1420,7 @@ def Verificacion_orden_recibo():
   except:
     flash("Llena todos los Campos Correctamente")
     return render_template('home.html',Datos = session)
+
 
 @app.route('/registro_recibo',methods=['POST'])
 def registroRecibo():
@@ -1489,6 +1447,7 @@ def registroRecibo():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_r_f.html',Datos = session)
 
+
 @app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
   
@@ -1501,14 +1460,15 @@ def pdf_template():
         site = session['SiteName']
         today= datetime.today()
         if 'destinoPrealert' in session:
-          Destino = ' a: '+session['destinoPrealert']+' | '+session['SiteDestinoPrealert']
-          EmpresaTransporte = " Empresa Transporte: "+session['TransportePrealert'] 
-          Transportista = "  Transportista: " + session['TrasportistaPrealert']
-          Placas = "  Placas: "+ session['PlacasPrealert'].upper()
           cur = mysql.connection.cursor()
           cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
           result = cur.fetchall()
-          Marchamo = " Marchamo:  "+ str(result[0][11])
+          if len(result)>0:
+            Marchamo = " Marchamo:  "+ str(result[0][11])
+            Destino = ' a: '+str(result[0][4])+' | '+str(result[0][5])
+            EmpresaTransporte = " Empresa Transporte: "+str(result[0][6]) 
+            Transportista = "  Transportista: " + str(result[0][7])
+            Placas = "  Placas: "+ str(result[0][8]).upper()
         else:
           cur = mysql.connection.cursor()
           cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
@@ -1542,22 +1502,26 @@ def pdf_template():
         pdf.set_font('Times','B',12) 
         pdf.cell(col_widt3, 0.0, lugar, align='C')
         if 'destinoPrealert' in session:
-          pdf.cell(col_widt3, 0.0, Destino, align='C')
+          
+          if len(result)>0:
+            pdf.cell(col_widt3, 0.0, Destino, align='C')
          
         pdf.ln(10)
 
         if 'destinoPrealert' in session:
-          pdf.set_font('Times','B',12) 
-          pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
-          pdf.ln(10)
+          
+          if len(result)>0:
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
+            pdf.ln(10)
 
-          pdf.set_font('Times','B',12) 
-          pdf.cell(page_width, 0.0, Transportista, align='C')
-          pdf.ln(10)
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, Transportista, align='C')
+            pdf.ln(10)
 
-          pdf.set_font('Times','B',12) 
-          pdf.cell(page_width, 0.0, Placas, align='C')
-          pdf.ln(10)
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, Placas, align='C')
+            pdf.ln(10)
 
 
         pdf.set_font('Times', 'B', 12)
@@ -1589,15 +1553,18 @@ def pdf_template():
          
         pdf.ln(10)
         if 'destinoPrealert' in session:
-          pdf.set_font('Times','B',12)
-          pdf.cell(page_width, 8.0, Marchamo, align='C')
+          
+          if len(result)>0:
+            pdf.set_font('Times','B',12)
+            pdf.cell(page_width, 8.0, Marchamo, align='C')
           
         pdf.ln(15)
         pdf.set_font('Times','B',12)
         pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
          
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'Atachment;filename=Prealert'+Key+'.pdf'})
-    
+
+
 @app.route("/FinalizarRecibo",methods=['POST','GET'])
 def finalizarRecibo():
   try:
@@ -1617,6 +1584,7 @@ def finalizarRecibo():
   except:  
     return render_template("home.html",Datos=session)
 
+
 @app.route("/trackinOrden",methods=['POST','GET'])
 def Track_Inorden():
   try:
@@ -1625,6 +1593,7 @@ def Track_Inorden():
   except:  
     return render_template("home.html",Datos=session)
 
+
 @app.route("/trackinPrealert",methods=['POST','GET'])
 def Track_In():
   try:
@@ -1632,6 +1601,7 @@ def Track_In():
         return render_template("form/trackinprealert.html", Datos =session)
   except:  
     return render_template("home.html",Datos=session)
+
 
 @app.route("/Trackin_ordenes",methods=['POST','GET'])
 def Track_in_ordenes():
@@ -1653,6 +1623,7 @@ def Track_in_ordenes():
   # except:  
   #   return render_template("form/trackinorden.html",Datos=session)
 
+
 @app.route("/Trackin_prealetkey",methods=['POST','GET'])
 def Track_in_prealert():
   # try:
@@ -1671,11 +1642,12 @@ def Track_in_prealert():
   # except:  
   #   return render_template("form/trackin.html",Datos=session)
 
+
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
     site=session['SiteName']
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM prealert WHERE   SiteName =\'{}\'  '.format(site))
+    cur.execute('SELECT * FROM prealert WHERE   SiteName =\'{}\' limit 5000 '.format(site))
     result = cur.fetchall()
     datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
     for res in result:
@@ -1699,6 +1671,7 @@ def crear_csvPrealert():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"
     return response
+
 
 if __name__=='__main__':
     app.run(port = 3000, debug =True)

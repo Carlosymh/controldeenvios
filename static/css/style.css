@@ -27,7 +27,7 @@ section img{
 section h1{
     text-align: left;
     width: 70%;
-    font-size: 9vh;
+    font-size: 8vh;
     margin-top: 8vh;
     margin-left: 1vh;
     font-family: 'Harabara',Verdana;
@@ -37,7 +37,7 @@ section h1{
     margin: auto;
     margin-top: -15vh;
     background: #fff;
-    width: 60VH;
+    width: 55VH;
     height: 50VH;
     display:flexbox;
     box-shadow: 0 0 0.2vh  #000;
@@ -225,7 +225,7 @@ a.help:hover{
     section h1{
         text-align: left;
         width: 70%;
-        font-size: 8vh;
+        font-size: 7vh;
         margin-top: 8vh;
         margin-left: 1vh;
         font-family: 'Harabara',Verdana;
