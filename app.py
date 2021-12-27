@@ -1023,45 +1023,140 @@ def Reporte_prealert(rowi):
         if request.method == 'GET':
           session['rowi_t_p']=rowi
           row1 = int(session['rowi_t_p'])
-          row2 = 100
+          row2 = 50
         else:
             row1 = int(session['rowi_t_p'])
-            row2 =100
+            row2 =50
         if 'valor' in request.form:
           if len(request.form['valor'])>0:
             session['filtro_t_p']=request.form['filtro']
             session['valor_t_p']=request.form['valor']
-            daterangef=request.form['datefilter']
-            daterange=daterangef.replace("-", "' AND '")
-            if len(daterange)>0:
-              if len(daterange)>0:
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                daterangef=request.form['datefilter']
+                daterange=daterangef.replace("-", "' AND '")
                 session['datefilter']=daterange
                 cur = mysql.connection.cursor()
                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
                 data = cur.fetchall()
-                flash(daterange)
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
                 cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['inicio_t_p'],row1,row2))
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              session.pop('datefilter')
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          else:
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                if 'valor_t_p' in session:
+                  if len(session['valor_t_p'])>0:
+                    daterangef=request.form['datefilter']
+                    daterange=daterangef.replace("-", "' AND '")
+                    session['datefilter']=daterange
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                  else:
+                    session.pop('filtro_t_p')
+                    session.pop('valor_t_p')
+                    cur = mysql.connection.cursor()
+                    cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert   LIMIT {}, {}'.format(row1,row2))
                 data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+              cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
               data = cur.fetchall()
-              flash(daterange)
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
-          else:
-            cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_p.html',Datos = session,Infos =data) 
         else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          if 'valor_t_p' in session:
+            if len(session['valor_t_p'])>0:
+              if 'datefilter' in session:
+                if len(session['datefilter'])>0:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  session.pop('datefilter')
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+            else:
+              session.pop('filtro_t_p')
+              session.pop('valor_t_p')
+              if 'datefilter' in session:
+                if len(session['datefilter'])>0:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          else:
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                session.pop('datefilter')
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              if 'datefilter' in request.form:
+                if len(request.form['datefilter'])>0:
+                  daterangef=request.form['datefilter']
+                  daterange=daterangef.replace("-", "' AND '")
+                  session['datefilter']=daterange
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert WHERE  Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data) 
       else: 
         if request.method == 'GET':
           session['rowi_t_p']=rowi
@@ -1072,44 +1167,62 @@ def Reporte_prealert(rowi):
           row2 =50
         if 'valor_t_p' in session:
           if len(session['valor_t_p'])>0:
-            if 'inicio_t_p' in session:
-              if len(session['inicio_t_p'])>0:
-                if 'fin_t_p' in session:
-                  if len(session['fin_t_p'])>0:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['inicio_t_p'],session['fin_t_p'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
-                  else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['inicio_t_p'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
-                else:
-                    cur = mysql.connection.cursor()
-                    cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['inicio_t_p'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
-              else:
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
                 cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
                 data = cur.fetchall()
-                return render_template('reportes/t_p.html',Datos = session,Infos =data)  
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                session.pop('datefilter')
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+              cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+          else:
+            session.pop('filtro_t_p')
+            session.pop('valor_t_p')
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                session.pop('datefilter')
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+        else:
+          if 'datefilter' in session:
+            if len(session['datefilter'])>0:
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              session.pop('datefilter')
+              cur = mysql.connection.cursor()
+              cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
               data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
           else:
             cur = mysql.connection.cursor()
-            cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+            cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
             data = cur.fetchall()
             return render_template('reportes/t_p.html',Datos = session,Infos =data)
-        else:
-          cur = mysql.connection.cursor()
-          cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          
   # except:
   #   flash("Inicia Secion")
   #   return render_template('index.html')
@@ -1649,11 +1762,52 @@ def Track_in_prealert():
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
     site=session['SiteName']
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM prealert WHERE   SiteName =\'{}\' limit 5000 '.format(site))
-    result = cur.fetchall()
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
+            data = cur.fetchall()
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+            data = cur.fetchall()
+        else:
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+            data = cur.fetchall()
+          else:
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+        else:
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
+          data = cur.fetchall()
+        else:
+          cur = mysql.connection.cursor()
+          cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
+      else:
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+        data = cur.fetchall()
     datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
-    for res in result:
+    for res in data:
       datos+=str(res[0])
       datos+=","+str(res[1])
       datos+=","+str(res[2])

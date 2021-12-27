@@ -50,7 +50,7 @@
             </select>
             <input type="text" name="valor">
             <label for="datefilter">Fecha: </label>
-            <input type="text" name="datefilter" value="" />
+            <input autocomplete="of" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
         </form>
@@ -94,7 +94,7 @@
                         <td>{{Info.13}}</td>
                     </tr>
                     {%endfor%}
-                    <tr>
+                    <tr class="Pag">
                         <td colspan="13" class="Pag">
                             {%set row= Datos['rowi_t_p'] |int%}
                             {%if row==0%}
@@ -110,6 +110,16 @@
                             </a>
                             {%endif%}
                             {%set rowMas=row+50 | int%}
+                            <a href="/t_p/0" class="in"> 1 </a>
+                            <a href="/t_p/50" class="in"> 2 </a>
+                            <a href="/t_p/100" class="in"> 3 </a>
+                            <a href="/t_p/150" class="in"> 4 </a>
+                            <a href="/t_p/200" class="in"> 5 </a>
+                            <a href="/t_p/250" class="in"> 6 </a>
+                            <a href="/t_p/300" class="in"> 7 </a>
+                            <a href="/t_p/350" class="in"> 8 </a>
+                            <a href="/t_p/400" class="in"> 9 </a>
+                            <a href="/t_p/450" class="in"> 10 </a>
                             <a href="/t_p/{{rowMas}}" class="before">
                                 <i class="fas fa-angle-double-right">
                                 </i>
