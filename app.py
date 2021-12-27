@@ -1018,7 +1018,7 @@ def Reporte_ordenes_no_procesables(rowi):
 
 @app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
-  try:
+  # try:
       if request.method == 'POST':
         if request.method == 'GET':
           session['rowi_t_p']=rowi
@@ -1031,13 +1031,15 @@ def Reporte_prealert(rowi):
           if len(request.form['valor'])>0:
             session['filtro_t_p']=request.form['filtro']
             session['valor_t_p']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_p']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_p']=request.form['fin']
+            daterangef=request.form['datefilter']
+            daterange=daterangef.replace("-", "' AND '")
+            if len(daterange)>0:
+              if len(daterange)>0:
+                session['datefilter']=daterange
                 cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['inicio_t_p'],session['fin_t_p'],row1,row2))
+                cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
                 data = cur.fetchall()
+                flash(daterange)
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
                 cur = mysql.connection.cursor()
@@ -1048,6 +1050,7 @@ def Reporte_prealert(rowi):
               cur = mysql.connection.cursor()
               cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
               data = cur.fetchall()
+              flash(daterange)
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
           else:
             cur = mysql.connection.cursor()
@@ -1107,9 +1110,9 @@ def Reporte_prealert(rowi):
           cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
           data = cur.fetchall()
           return render_template('reportes/t_p.html',Datos = session,Infos =data)
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
+  # except:
+  #   flash("Inicia Secion")
+  #   return render_template('index.html')
 
 
 @app.route('/t_planning/<rowi>',methods=['POST','GET'])

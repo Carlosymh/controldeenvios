@@ -14,6 +14,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <title>Reporte Realert</title>
 </head>
 <body>
@@ -45,22 +49,18 @@
                 <option value="Sello">Sello</option>
             </select>
             <input type="text" name="valor">
-            <label for="inicio"> De:  
-                <input type="date" name="inicio" id="inicio">
-            </label>
-            <label for="fin">a:  
-                <input type="date" name="fin" id="fin">
+            <label for="datefilter">Fecha: </label>
+            <input type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
         </form>
-
         <a href="/csvPrealert" target="_blank" class="download_csv"><i class="fas fa-file-download"></i>  Descargar</a>
     </div>
         <div class="fondo">
         <section>
             <table>
-                <thead>
-                    <tr>
+                <thead class="head">
+                    <tr >
                         <th> ID </th>
                         <th> Pre-Alert Key </th>
                         <th> Facility Origen</th>
@@ -122,6 +122,25 @@
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
+    <script type="text/javascript">
+        $(function() {
+          $('input[name="datefilter"]').daterangepicker({
+              autoUpdateInput: false,
+              locale: {
+                  cancelLabel: 'Clear'
+              }
+          });
+        
+          $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+          });
+        
+          $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+          });
+        
+        });
+        </script>
 </body>
 </html>
 {% endblock %}

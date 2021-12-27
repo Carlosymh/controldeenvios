@@ -30,6 +30,8 @@ body{
     border: none;
     font-size: 2vh;
 }
+
+.filtros form select:focus,
 .filtros form input:focus{
     text-align: center;
     outline:none;
@@ -58,15 +60,15 @@ table{
     text-align: center;
     border-collapse: collapse;
 }
-table thead{
+
+table thead.head{
     background: #ddd;
     color: rgb(36, 35, 35);
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.8vh;
+    font-size: 15px;
+    padding: 5px 0;
 }
-table thead th{
-    padding: 0.5vh 0.2vh;
-}
+
 table tbody tr{
     border-bottom: 1px solid #ddd;
 }
