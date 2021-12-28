@@ -140,9 +140,9 @@ table tbody tr td .delete{
     width: 25px;
     height: 25px;
     background: green;
-    margin: auto 5px auto auto;
-    font-size: 2vh;
-    padding:  5PX 0;
+    margin: auto 3px auto auto;
+    font-size: 15px;
+    padding: 4PX ;
     color: #fff;
     border-radius: 50%;
 }

@@ -11,8 +11,6 @@ body{
 section{
     background: #fff159 ;
     margin: 0;
-    padding: 0.1rem 0;
-    font-size: 3vh;
     color: #2f3476;
     height: 40vh;
     display: flex;
@@ -20,14 +18,14 @@ section{
 }
 section img{
     width: 30px;
-    margin-top: 8vh;
-    right: 1vh;
+    margin-top: 10PX;
+    right: 10px;
 }
 section .titulo p{
     width: 500px;
-    font-size: 6vh;
-    margin-top: 6vh;
-    margin-left: 1vh;
+    font-size: 50PX;
+    margin-top: 30PX;
+    margin-left: 10px;
     font-family: 'Harabara',Verdana;
 }
 .container-contraseña{

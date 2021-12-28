@@ -1826,27 +1826,26 @@ def crear_csvPrealert():
         cur = mysql.connection.cursor()
         cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
         data = cur.fetchall()
-    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    datos="Id"+";"+"Pre-Alert key"+";"+"Facility Origen"+";"+"Site Origen"+";"+"Facility Destino"+";"+"Site Destino"+";"+"Transporte"+";"+"Transportista"+";"+"Placas"+";"+"Orden"+";"+"Paquetera"+";"+"Marchamo"+";"+"Responsable"+";"+"Fecha y Hora"+";"+"\n"
     for res in data:
       datos+=str(res[0])
-      datos+=","+str(res[1])
-      datos+=","+str(res[2])
-      datos+=","+str(res[3])
-      datos+=","+str(res[4])
-      datos+=","+str(res[5])
-      datos+=","+str(res[6])
-      datos+=","+str(res[7])
-      datos+=","+str(res[8])
-      datos+=","+str(res[9])
-      datos+=","+str(res[10])
-      datos+=","+str(res[11])
-      datos+=","+str(res[12])
-      datos+=","+str(res[14])
+      datos+=";"+str(res[1])
+      datos+=";"+str(res[2])
+      datos+=";"+str(res[3])
+      datos+=";"+str(res[4])
+      datos+=";"+str(res[5])
+      datos+=";"+str(res[6])
+      datos+=";"+str(res[7])
+      datos+=";"+str(res[8])
+      datos+=";"+str(res[9])
+      datos+=";"+str(res[10])
+      datos+=";"+str(res[11])
+      datos+=";"+str(res[12])
+      datos+=";"+str(res[14])
       datos+="\n"
 
-    print(datos)
     response = make_response(datos)
-    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
     return response
 
 @app.route('/insumos',methods=['GET'])
