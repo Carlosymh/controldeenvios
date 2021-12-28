@@ -16,13 +16,13 @@
     --box-shadow: 3px 7px 7px rgba(31, 13, 13, 0.22);
 }
 .text_logo{
-    width: 20px;
-    height: 40px;
+    width: 18px;
+    height: 34px;
     margin:  auto auto auto 3px;
     font-family: 'Harabara',Verdana, Arial;
-    font-size: 20px;
+    font-size: 16px;
     color: var(--color-blue);
-    font-weight: bolder;
+    font-weight:600;
 
 }
 .logo{
@@ -33,9 +33,16 @@
 }
 .nav-main a{
     color: inherit;
-    margin-top: 1vh;
-    margin-bottom: 2vh;
+    margin-top: auto;
+    margin-bottom: auto;
     text-align: center;
+}
+.nav-main__menu a{
+    color: inherit;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+
 }
 .user .fas{
     padding-left: 3px;
@@ -108,7 +115,7 @@
     flex-direction: column;
     background-color: #fff;
     width: var(--size-btn-collapse);
-    height: 91.7vh;
+    height: 100vh;
     padding: 2rem;
     font-weight: 300;
     box-shadow: var(--box-shadow);
@@ -192,8 +199,8 @@
 }
 .nav-main .user_info .fas{
     margin: auto;
-    padding:  4px;
-    font-size: 2.5vh;
+    padding: 2px 2px 3px 2px;
+    font-size: 20px;
     border-radius: 50%;
     border:1px solid #2f3476;
     transition: 1s;

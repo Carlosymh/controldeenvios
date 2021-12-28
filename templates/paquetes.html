@@ -35,9 +35,9 @@
                 </div>
         </section>
         <div class="container_form">
-                        <a href='/insumos' class='Proces_link'><i class="fas fa-pallet"></i> Insumos</a>
-                {%if  Datos['Rango'] != 'Planning' %}
-                        <a href='/paquetes' class='Proces_link'><i class="fas fa-cubes"></i> Paquetes</a>
+                <a href='/gestiondepaquetes' class='Proces_link'><i class="fas fa-boxes"></i> Gestion de Paquetes</a>
+                {%if Datos['Rango'] == 'Problem Solver' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='#' class='Proces_link'><i class="far fa-times-circle"></i> Problem Solver</a>
                 {%endif%}
         </div>
     </div>

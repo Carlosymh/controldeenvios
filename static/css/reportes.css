@@ -61,19 +61,19 @@ table{
     border-collapse: collapse;
 }
 
-table thead.head{
+table thead .head th{
+    padding: 10px 2px ;
     background: #ddd;
     color: rgb(36, 35, 35);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
-    padding: 5px 0;
 }
 
 table tbody tr{
-    border-bottom: 1px solid #ddd;
+    border-bottom: 0.2px solid #aaa;
 }
 table tbody tr td{
-    padding: 0.5vh 0.2vh;
+    padding: 10px 2px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.85vh;
 }

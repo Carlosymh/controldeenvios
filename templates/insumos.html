@@ -35,9 +35,18 @@
                 </div>
         </section>
         <div class="container_form">
-                        <a href='/insumos' class='Proces_link'><i class="fas fa-pallet"></i> Insumos</a>
-                {%if  Datos['Rango'] != 'Planning' %}
-                        <a href='/paquetes' class='Proces_link'><i class="fas fa-cubes"></i> Paquetes</a>
+                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_p_f' class='Proces_link'><i class="far fa-calendar-alt"></i>  Planning Full </a>
+                {%endif%}
+                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_p_xd' class='Proces_link'><i class="fas fa-route"></i>  Planning Cross</a>
+                {%endif%}
+                {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_e_s' class='Proces_link'><i class="fas fa-pallet"></i>  Recibo Insumos </a>
+                        <a href='/f_s_s' class='Proces_link'><i class="fas fa-boxes"></i> Salida Insumos</a>
+                {%endif%}
+                {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_planning' class='Proces_link'><i class="far fa-calendar-alt"></i> Planning</a>
                 {%endif%}
         </div>
     </div>

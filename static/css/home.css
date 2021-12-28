@@ -41,30 +41,34 @@ body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .fondo .container_form{
-    width: 80%;
-    margin:10vh auto auto auto;
+    width: 50%;
+    margin:30px auto auto auto;
     display: flex;
     flex-wrap: wrap;
     text-align: center;
     justify-content: space-between;
 }
 .fondo .container_form a{
-    width: 15vh;
+    width: 160px;
     display: flex;
     flex-direction: column;
-    padding: 2vh;
     background: #ddd;
     border-radius: 50%;
     text-decoration: none;
-    font-size: 1.5vh;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 12px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    margin: 4vh;
+    margin:20px  auto;
     color: #2f3476;
+    font-weight: 200;
+    justify-content: center;
+    text-align: center;
 }
 
 .fondo .container_form i{
     margin: auto;
-    font-size: 5vh;
+    font-size: 40px;
     color: #fff159;
     text-shadow: -1px 0 0 #fff, 1px 1px 0 #2f3476, 0 1px 0 #2f3476, 1px 0 0 #2f3476, 0 -1px 0 #fff,-1px -1px 0 #fff, 0 -1px 0 #2f3476;  
 }

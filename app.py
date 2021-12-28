@@ -1018,7 +1018,7 @@ def Reporte_ordenes_no_procesables(rowi):
 
 @app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
-  # try:
+  try:
       if request.method == 'POST':
         if request.method == 'GET':
           session['rowi_t_p']=rowi
@@ -1076,15 +1076,36 @@ def Reporte_prealert(rowi):
                   data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
+                if 'valor_t_p' in session:
+                  session.pop('filtro_t_p')
+                  session.pop('valor_t_p')
+                  if 'datefilter' in session:
+                    session.pop('datefilter')
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cur = mysql.connection.cursor()
+                  cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+                  data = cur.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              if 'valor_t_p' in session:
+                if 'datefilter' in session:
+                    session.pop('datefilter')
+                session.pop('filtro_t_p')
+                session.pop('valor_t_p')
                 cur = mysql.connection.cursor()
-                cur.execute('SELECT * FROM prealert   LIMIT {}, {}'.format(row1,row2))
+                cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
                 data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-            else:
-              cur = mysql.connection.cursor()
-              cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-              data = cur.fetchall()
-              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cur = mysql.connection.cursor()
+                cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+
         else:
           if 'valor_t_p' in session:
             if len(session['valor_t_p'])>0:
@@ -1221,11 +1242,10 @@ def Reporte_prealert(rowi):
             cur = mysql.connection.cursor()
             cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
             data = cur.fetchall()
-            return render_template('reportes/t_p.html',Datos = session,Infos =data)
-          
-  # except:
-  #   flash("Inicia Secion")
-  #   return render_template('index.html')
+            return render_template('reportes/t_p.html',Datos = session,Infos =data)         
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
 @app.route('/t_planning/<rowi>',methods=['POST','GET'])
@@ -1828,6 +1848,52 @@ def crear_csvPrealert():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"
     return response
+
+@app.route('/insumos',methods=['GET'])
+def insumos():
+  if 'FullName' in session:
+    return render_template('insumos.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+
+
+@app.route('/paquetes',methods=['GET'])
+def paquetes():
+  if 'FullName' in session:
+    return render_template('paquetes.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+
+@app.route('/gestiondepaquetes',methods=['GET'])
+def gestiondepaquetes():
+  if 'FullName' in session:
+    return render_template('gestiondepaquetes.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/comercialcarrier',methods=['GET'])
+def comercialcarrier():
+  if 'FullName' in session:
+    return render_template('comercialcarrier.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+@app.route('/logistic',methods=['GET'])
+def logistic():
+  if 'FullName' in session:
+    return render_template('logistic.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
+
+
+
 
 
 if __name__=='__main__':

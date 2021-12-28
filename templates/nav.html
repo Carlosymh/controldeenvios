@@ -23,25 +23,24 @@
         <div class="panel">
             {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
                     <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
-                    <a href='/t_p/0' class='link_menu'>  Prealert</a>
                     <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
             {%endif%}
             {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                    <a href='/t_p/0' class='link_menu'>  Pre-Alert Cross</a>
+            <a href='/t_p/0' class='link_menu'>  Prealert</a>
             {%endif%}
             {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
                     <a href='/t_e_s/0' class='link_menu'>  Recibo Insumos </a>
                     <a href='/t_s_s/0' class='link_menu'>  Salida Insumos</a>
-                    <a href='/t_p/0' class='link_menu'> Pre-Alert Service</a>
             {%endif%}
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador' or Datos['FcName'] == 'Fullfilment' or Datos['FcName'] == 'Cross Dock'%}
                     <a href='/t_planning/0' class='link_menu'>  Planning</a>
             {%endif%}
         </div>
             <a href='/trackinOrden' class='link_menu'><i class="fas fa-route"> Track In</i></a>
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
+            {% if  Datos['Rango'] == 'Administrador'%}
                 <a href='/registro' class='link_menu'><i class="fas fa-users">  Registro de Usuarios</i></a>
             {%endif%}
+            
     </div>
 <div class="user_info">
     <p>Estas Viendo:{{Datos['SiteName']}}</p>

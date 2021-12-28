@@ -35,11 +35,10 @@
                 </div>
         </section>
         <div class="container_form">
-                        <a href='/insumos' class='Proces_link'><i class="fas fa-pallet"></i> Insumos</a>
-                {%if  Datos['Rango'] != 'Planning' %}
-                        <a href='/paquetes' class='Proces_link'><i class="fas fa-cubes"></i> Paquetes</a>
+                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_r_f' class='Proces_link'><i class="fas fa-truck-loading"></i> Recibo</a>
                 {%endif%}
-        </div>
+                
     </div>
 </body>
 <script src="{{url_for('static', filename='js/interfas.js')}}">
