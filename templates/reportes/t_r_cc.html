@@ -1,0 +1,114 @@
+{% extends 'nav.html'%}
+{% block cabezera%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
+    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
+    <title>Reporte Recibo</title>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages%}
+    {%for message in messages%}
+    <script>
+        alert('{{message}}')
+    </script>
+    {%endfor%}
+    {%endif%}
+    {%endwith%}
+    {% endblock %}
+    {% block body%}
+    <div class="filtros">
+        <form action="/t_r_f/0" method="post" class="form_filtros">
+            <select name="filtro">
+                <option value="id_recibo">ID</option>
+                <option value="Fulfillment">Prealert</option>
+                <option value="responsable">Responsable</option>
+                <option value="paquetera">Paquetera</option>
+                <option value="no_gia"># de Gia</option>
+                <option value="no_paquete"># de Paquete</option>
+                <option value="tipo_paquete">Tipo Paquete</option>
+                <option value="estatus">Estatus</option>
+                <option value="razon_rechazo">Razon Rechazo</option>
+            </select>
+            <input type="text" name="valor">
+            <label for="inicio"> De:  
+                <input type="date" name="inicio" id="inicio">
+            </label>
+            <label for="fin">a:  
+                <input type="date" name="fin" id="fin">
+            </label>
+            <input type="submit" value="Buscar">
+        </form> 
+    </div>
+        <div class="fondo">
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th> ID </th>
+                        <th> Pre-Alert Key </th>
+                        <th> Orden </th>
+                        <th> Paquetera </th>
+                        <th> Estatus </th>
+                        <th> Comentario </th>
+                        <th> Site  </th>
+                        <th> Responsable </th>
+                        <th> Fecha Y Hora </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for Info in  Infos%}
+                    <tr>
+                        <td>{{Info.0}}</td>
+                        <td>{{Info.1}}</td>
+                        <td>{{Info.2}}</td>
+                        <td>{{Info.3}}</td>
+                        <td>{{Info.4}}</td>
+                        <td>{{Info.5}}</td>
+                        <td>{{Info.7}}</td>
+                        <td>{{Info.8}}</td>
+                        <td>{{Info.9}}</td>
+                    </tr>
+                    {%endfor%}
+                    <tr>
+                        <td colspan="10" class="Pag">
+                            {%set row= Datos['rowi_t_r_f'] |int%}
+                            {%if row==0%}
+                            <a href="/t_r_f/0" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%else%}
+                            {%set rowMenos=row-50 | int%}
+                            <a href="/t_r_f/{{rowMenos}}" class="after">
+                                <i class="fas fa-angle-double-left">
+                                </i>
+                            </a>
+                            {%endif%}
+                            {%set rowMas=row+50 | int%}
+                            <a href="/t_r_f/{{rowMas}}" class="before">
+                                <i class="fas fa-angle-double-right">
+                                </i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>    
+        </section>
+    </div>
+    <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </script>
+</body>
+</html>
+{% endblock %}

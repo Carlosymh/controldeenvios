@@ -112,7 +112,7 @@ def Registr_Prealert_service_form():
   else:
     return render_template('index.html')
 
-#formulario Planning Fullfilment
+#formulario Planning Fulfillment
 @app.route('/f_p_f',methods=['POST','GET'])
 def Planning_full_form():
   if 'FullName' in session:
@@ -313,7 +313,7 @@ def registroPrealert():
         if Facility[0:2]=="MX":
           session['destinoPrealert'] = "Cross Dock"
         else:
-          session['destinoPrealert'] = "Fullfilment"
+          session['destinoPrealert'] = "Fulfillment"
         session['SiteDestinoPrealert'] = request.form['Facility']
         session['TransportePrealert'] = request.form['Transporte']
         session['TrasportistaPrealert'] =  request.form['Trasportista']
@@ -789,7 +789,7 @@ def registro_actalizacion_planning_cross():
 
 @app.route('/r_a_o_np',methods=['POST'])
 def registro_actalizacion_ordenes_no_procesables():
-  # try:
+  try:
     if request.method == 'POST':
         id_orden =  request.form['id_orden']
         estatus = request.form['Status']
@@ -811,9 +811,9 @@ def registro_actalizacion_ordenes_no_procesables():
     else:
         flash("No has enviado un registro")
         return render_template('form/f_a_o.html',Datos = session)
-  # except:
-  #   flash("Llena todos los Campos Correctamente")
-  #   return render_template('form/f_a_o.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_a_o.html',Datos = session)
 
 #Cerrar Session
 @app.route('/logout')
@@ -1730,18 +1730,10 @@ def Track_Inorden():
     return render_template("home.html",Datos=session)
 
 
-@app.route("/trackinPrealert",methods=['POST','GET'])
-def Track_In():
-  try:
-    if 'FullName' in session:
-        return render_template("form/trackinprealert.html", Datos =session)
-  except:  
-    return render_template("home.html",Datos=session)
-
 
 @app.route("/Trackin_ordenes",methods=['POST','GET'])
 def Track_in_ordenes():
-  # try:
+  try:
     if 'FullName' in session:
       Orden= request.form['Orden']
       cur = mysql.connection.cursor()
@@ -1750,34 +1742,18 @@ def Track_in_ordenes():
       cur = mysql.connection.cursor()
       cur.execute('SELECT * FROM recibo_fc WHERE  Orden = {} And Facility = \'Cross Dock\''.format(Orden))
       reciboCrossdata = cur.fetchall()
+      cur = mysql.connection.cursor()
       cur.execute('SELECT * FROM prealert WHERE  Orden = {} And Origen = \'Cross Dock\''.format(Orden))
       Crossdata = cur.fetchall()
       cur = mysql.connection.cursor()
-      cur.execute('SELECT * FROM recibo_fc WHERE  Orden = {} And Facility = \'Fullfilment\' '.format(Orden))
+      cur.execute('SELECT * FROM prealert WHERE  Orden = {} And Origen = \'Fulfillment\''.format(Orden))
       Fulldata = cur.fetchall()
-      return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata)
-  # except:  
-  #   return render_template("form/trackinorden.html",Datos=session)
-
-
-@app.route("/Trackin_prealetkey",methods=['POST','GET'])
-def Track_in_prealert():
-  # try:
-    if 'FullName' in session:
-      key= request.form['prealertkey']
       cur = mysql.connection.cursor()
-      cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Service Center\''.format(key))
-      Servicedata = cur.fetchall()
-      cur = mysql.connection.cursor()
-      cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Cross Dock\''.format(key))
-      Crossdata = cur.fetchall()
-      cur = mysql.connection.cursor()
-      cur.execute('SELECT * FROM recibo_fc WHERE  ID_Envio_Prealert = \'{}\' '.format(key))
-      Fulldata = cur.fetchall()
-      return render_template("actualizacion/trackin_prealert.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata)
-  # except:  
-  #   return render_template("form/trackin.html",Datos=session)
-
+      cur.execute('SELECT * FROM recibo_fc WHERE  Orden = {} And Facility = \'Fulfillment\' '.format(Orden))
+      reciboFulldata = cur.fetchall()
+      return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata,reciboFulldata=reciboFulldata)
+  except:  
+    return render_template("form/trackinorden.html",Datos=session)
 
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
@@ -1826,22 +1802,22 @@ def crear_csvPrealert():
         cur = mysql.connection.cursor()
         cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
         data = cur.fetchall()
-    datos="Id"+";"+"Pre-Alert key"+";"+"Facility Origen"+";"+"Site Origen"+";"+"Facility Destino"+";"+"Site Destino"+";"+"Transporte"+";"+"Transportista"+";"+"Placas"+";"+"Orden"+";"+"Paquetera"+";"+"Marchamo"+";"+"Responsable"+";"+"Fecha y Hora"+";"+"\n"
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
     for res in data:
       datos+=str(res[0])
-      datos+=";"+str(res[1])
-      datos+=";"+str(res[2])
-      datos+=";"+str(res[3])
-      datos+=";"+str(res[4])
-      datos+=";"+str(res[5])
-      datos+=";"+str(res[6])
-      datos+=";"+str(res[7])
-      datos+=";"+str(res[8])
-      datos+=";"+str(res[9])
-      datos+=";"+str(res[10])
-      datos+=";"+str(res[11])
-      datos+=";"+str(res[12])
-      datos+=";"+str(res[14])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
       datos+="\n"
 
     response = make_response(datos)

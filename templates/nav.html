@@ -19,9 +19,9 @@
     <div class="nav-main__menu">
         <div class="btn_nav"></div>
         <a href='/home' class='link_menu'><i class="fas fa-mobile">  Procesos</i> </a>
-        <button class="accordion"><i class='fas fa-edit'>  Reportes</i></button>
+        <button class="accordion"><i class="fas fa-table">  Reportes</i></button>
         <div class="panel">
-            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+            {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
                     <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
                     <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
             {%endif%}
@@ -32,7 +32,7 @@
                     <a href='/t_e_s/0' class='link_menu'>  Recibo Insumos </a>
                     <a href='/t_s_s/0' class='link_menu'>  Salida Insumos</a>
             {%endif%}
-            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador' or Datos['FcName'] == 'Fullfilment' or Datos['FcName'] == 'Cross Dock'%}
+            {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador' or Datos['FcName'] == 'Fulfillment' or Datos['FcName'] == 'Cross Dock'%}
                     <a href='/t_planning/0' class='link_menu'>  Planning</a>
             {%endif%}
         </div>

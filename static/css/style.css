@@ -17,8 +17,9 @@ section{
     justify-content: center;
 }
 section img{
-    width: 30px;
-    margin-top: 10PX;
+    width: 150px;
+    height: 100px;
+    margin-top: 30PX;
     right: 10px;
 }
 section .titulo p{

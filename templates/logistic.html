@@ -35,10 +35,6 @@
                 </div>
         </section>
         <div class="container_form">
-                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/f_n_p' class='Proces_link'><i class="fas fa-exclamation"></i>  No Prosesable</a>
-                        <a href='/f_a_o' class='Proces_link'><i class="far fa-edit"></i>  Actualizacion N/P</a>
-                {%endif%}
                         <a href='/f_r_f' class='Proces_link'><i class="fas fa-truck-loading"></i> Recibo</a>
                         <a href='/f_r_p_s' class='Proces_link'><i class="fas fa-mobile-alt"></i>Registro Prealert </a>
                         <a href='/f_p' class='Proces_link'><i class="far fa-bell"></i>Envio Prealert</a>

@@ -35,9 +35,9 @@
         <section>
             <form action="/registro_prealert_ordenes" method="POST" >
                 <h2>Prealert de ordenes</h2>
-                    <h3>ID de envío:  {{Datos['key_pa']}}</h3>
+                    <!-- <h3>ID de envío:  {{Datos['key_pa']}}</h3> -->
                     <label for="Orden">Orden: </label>
-                    <input type="number" name="Orden" placeholder="Numero de Orden"/> 
+                    <input type="text" name="Orden" placeholder="Numero de Orden"/> 
                     <label for="Paquetera">Paquetera: </label>
                     <select name="Paquetera" required>
                         <option value="Mercado Envíos">Mercado Envíos</option>
@@ -47,7 +47,8 @@
                         <option value="FedEx">FedEx</option>
                         <option value="99 minutos">99 minutos</option>
                     </select>
-                <input type="submit" class="btn" name="enviar" value="Continuar" >
+                <input type="submit" class="btn" name="enviar" value="Continuar" ><br>
+                <h4> Ultimo Movimiento: 2021-12-28 16:00:00</h4><br>
                 <a href="/FinalizarPrealertOrdenes" class="btn">Cerrar Pallet</a>
             </form>
         </section>

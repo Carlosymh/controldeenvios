@@ -34,7 +34,7 @@
                 <button class="accordion"><i class="fas fa-warehouse">   Service Center</i></button>
                 <div class="panel">
                     {%for Service in  Servicedata%}
-                    <button class="accordion"><i class="fas fa-sitemap">   {{Service.2}} - {{Service.3}} | {{Service.14}}</i></button>
+                    <button class="accordion"><i class="fas fa-sitemap"> Pre-Alert  {{Service.2}} - {{Service.3}} | {{Service.14}}</i></button>
                     <div class="panel">
                         <table>
                             <TR>
@@ -71,7 +71,7 @@
             <div class="panel">
                 {%if reciboCrossdata|length >0 %}
                 {%for reciboCross in  reciboCrossdata%}
-                <button class="accordion"><i class="fas fa-sitemap">   {{reciboCross.6}} - {{reciboCross.7}} | {{reciboCross.10}}</i></button>
+                <button class="accordion"><i class="fas fa-sitemap"> Reciving  {{reciboCross.6}} - {{reciboCross.7}} | {{reciboCross.10}}</i></button>
                 <div class="panel">
                 <table>
                     <TR>
@@ -93,7 +93,7 @@
                 {%endfor%}
                 {%endif%}
                 {%for Cross in  Crossdata%}
-                <button class="accordion"><i class="fas fa-sitemap">   {{Cross.2}} - {{Cross.3}} | {{Cross.14}}</i></button>
+                <button class="accordion"><i class="fas fa-sitemap"> Pre-Alert  {{Cross.2}} - {{Cross.3}} | {{Cross.14}}</i></button>
                 <div class="panel">
                     <table>
                         <TR>
@@ -125,25 +125,48 @@
             {%endif%}
             {%if Fulldata|length >0%}
             <div class="Full-valido">
-            <button class="accordion"><i class="fas fa-sitemap">  Fullfilment</i></button>
+            <button class="accordion"><i class="fas fa-sitemap">   Fulfillment</i></button>
             <div class="panel">
-                {%for Full in  Fulldata%}
-                <button class="accordion"><i class="fas fa-sitemap">   {{Full.6}} - {{Full.7}} | {{Full.10}}</i></button>
+                {%if reciboFulldata|length >0 %}
+                {%for recibofull in  reciboFulldata%}
+                <button class="accordion"><i class="fas fa-sitemap">  Reciving  {{recibofull.6}} - {{recibofull.7}} | {{recibofull.10}}</i></button>
+                <div class="panel">
+                <table>
+                    <TR>
+                        <TH>Pre-Alert Key</TH>
+                        <TH>Paquetera</TH>
+                        <TH>Estatus</TH>
+                        <TH>Comentario</TH>
+                        <TH>Responsable</TH>
+                    </TR>
+                     <TR>
+                         <TD>{{recibofull.1}}</TD>
+                         <TD>{{recibofull.3}}</TD>
+                         <TD>{{recibofull.4}}</TD>
+                         <TD>{{recibofull.5}}</TD>
+                         <TD>{{recibofull.8}}</TD>
+                    </TR>
+                </table>
+                </div>
+                {%endfor%}
+                {%endif%}
+                {%for full in  Fulldata%}
+                <button class="accordion"><i class="fas fa-sitemap"> Pre-Alert  {{full.2}} - {{full.3}} | {{full.14}}</i></button>
                 <div class="panel">
                     <table>
                         <TR>
                             <TH>Pre-Alert Key</TH>
+                            <TH> Destino</TH>
+                            <TH>Datos de Trasporte</TH>
                             <TH>Paquetera</TH>
-                            <TH>Estatus</TH>
-                            <TH>Comentario</TH>
                             <TH>Responsable</TH>
                         </TR>
                         <TR>
-                            <TD>{{Full.1}}</TD>
-                            <TD>{{Full.3}}</TD>
-                            <TD>{{Full.4}}</TD>
-                            <TD>{{Full.5}}</TD>
-                            <TD>{{Full.8}}</TD>
+                            <TD>{{full.1}}</TD>
+                            <TD>{{full.4}} - {{full.5}}</TD>
+                            <TD>Transporte: {{full.6}}, Transportista: {{full.7}}, Placas: {{full.8}}, Marchamo: {{full.11}} </TD>
+                            <TD>{{full.10}}</TD>
+                            <TD>{{full.12}}</TD>
                         </TR>
                     </table>
                 </div>
@@ -152,12 +175,13 @@
             </div>
             {%else%}
             <div class="Full-Invalido">
-                <button class="accordion"><i class="fas fa-boxes" >  Fullfilment</i></button>
+                <button class="accordion"><i class="fas fa-sitemap">  Fulfillment</i></button>
                 <div class="panel">
                     <h4>No se encontraron Registros</h4>
                 </div>
             </div>
             {%endif%}
+            
         </section>
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">

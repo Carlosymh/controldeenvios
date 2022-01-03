@@ -28,7 +28,7 @@
 <div class="nav_menu">
     <button class="accordion"><i class="fas fa-book"></i> formularios</button>
     <div class="panel">
-    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
         <button class="accordion">Fulfillment</button>
         <div class="panel">
             <a href='/f_e_f' class='link_menu'> Entradas</a>
@@ -68,7 +68,7 @@
     </div>
     <button class="accordion"><i class='fas fa-edit'></i> Reportes</button>
     <div class="panel">
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
+        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
             <button class="accordion">Fulfillment</button>
             <div class="panel">
                 <a href='/t_e_f/0' class='link_menu'> Entradas</a>
@@ -103,8 +103,8 @@
         </div>
     <button class="accordion"><i class="fas fa-chart-pie"></i> Dashboard</button>
     <div class="panel">
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fullfilment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fullfilment' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/g_f' class='link_menu'> Fullfilment</a>
+        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
+            <a href='/g_f' class='link_menu'> Fulfillment</a>
         {%endif%}
         {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
             <a href='/g_xd' class='link_menu'> Cross Dock</a>
@@ -150,7 +150,7 @@
             </label>
             <select name="ltrabajo" required>
                 <option disabled selected>Selecciona una Opción </option>
-                <option value="Fullfilment">Fullfilment</option>
+                <option value="Fulfillment">Fulfillment</option>
                 <option value="Service Center">Service Center</option>
                 <option value="Cross Dock">Cross Dock</option>
             </select>
