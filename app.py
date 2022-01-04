@@ -1609,34 +1609,62 @@ def pdf_template():
           cur = mysql.connection.cursor()
           cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
           result = cur.fetchall()
- 
-        pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
-        pdf.add_page()
-         
-        page_width = pdf.w - 2 * pdf.l_margin
-         
-        pdf.ln(5)
-        pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=50, h = 20)
-        pdf.set_font('Times','B',30)
-        pdf.set_text_color(0,47,109)  
-        pdf.text(x = 80, y = 19 ,txt =  "Receiving Log. Inversa" )
-        pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
-        pdf.ln(80)
-        
-        pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
+        if 'destinoPrealert' in session:
+          pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
+          pdf.add_page()
+          
+          page_width = pdf.w - 2 * pdf.l_margin
+          
+          pdf.ln(5)
+          pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=50, h = 20)
+          pdf.set_font('Times','B',30)
+          pdf.set_text_color(0,47,109)  
+          pdf.text(x = 80, y = 19 ,txt =  "Receiving Log. Inversa" )
+          pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
+          pdf.ln(40)
+          
+          pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
 
-        pdf.set_font('Times','B',12) 
-        
-        pdf.set_text_color(0,0,0) 
-        pdf.text( x= 70, y = 57, txt = str(today))
-        pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
-        pdf.text( x= 70, y = 77, txt = Key)
+          pdf.set_font('Times','B',12) 
+          
+          pdf.set_text_color(0,0,0) 
+          pdf.text( x= 70, y = 57, txt = str(today))
+          pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
+          pdf.text( x= 70, y = 77, txt = Key)
 
-        col_widt3 = page_width/2
+          col_widt3 = page_width/2
 
 
-        pdf.set_font('Times','B',12) 
-        pdf.cell(col_widt3, 0.0, lugar, align='C')
+          pdf.set_font('Times','B',12) 
+          pdf.cell(col_widt3, 0.0, lugar, align='C')
+        else:
+          pdf = FPDF(orientation = 'P',unit = 'mm', format=(120,80))
+          pdf.add_page()
+          
+          page_width = pdf.w - 2 * pdf.l_margin
+          
+          pdf.ln(5)
+          pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 5, w=25, h = 10)
+          pdf.set_font('Times','B',20)
+          pdf.set_text_color(0,47,109)  
+          pdf.text(x = 40, y = 9 ,txt =  "Receiving Log. Inversa" )
+          pdf.text(x = 40, y = 19 ,txt =  "Paquetes e Insumo" )
+          pdf.ln(80)
+          
+          pdf.image('qr.png', x= 5, y = 20, w=30, h = 30)
+
+          pdf.set_font('Times','B',10) 
+          
+          pdf.set_text_color(0,0,0) 
+          pdf.text( x= 40, y = 27, txt = str(today))
+          pdf.text( x= 40, y = 35, txt = "Pre-Alert Key:")
+          pdf.text( x= 40, y = 43, txt = Key)
+
+          col_widt3 = page_width/2
+
+
+          pdf.set_font('Times','B',12) 
+          pdf.cell(col_widt3, 0.0, lugar, align='C')
         if 'destinoPrealert' in session:
           
           if len(result)>0:
@@ -1694,10 +1722,10 @@ def pdf_template():
             pdf.set_font('Times','B',12)
             pdf.cell(page_width, 8.0, Marchamo, align='C')
           
-        pdf.ln(15)
-        pdf.set_font('Times','B',12)
-        pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
-         
+          pdf.ln(15)
+          pdf.set_font('Times','B',12)
+          pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
+         #Atachment or inline 
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'Atachment;filename=Prealert'+Key+'.pdf'})
 
 
@@ -1824,6 +1852,7 @@ def crear_csvPrealert():
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
     return response
 
+
 @app.route('/insumos',methods=['GET'])
 def insumos():
   if 'FullName' in session:
@@ -1831,7 +1860,6 @@ def insumos():
   else:
     flash("Inicia Sesion")
     return render_template('index.html')
-
 
 
 @app.route('/paquetes',methods=['GET'])
@@ -1851,6 +1879,7 @@ def gestiondepaquetes():
     flash("Inicia Sesion")
     return render_template('index.html')
 
+
 @app.route('/comercialcarrier',methods=['GET'])
 def comercialcarrier():
   if 'FullName' in session:
@@ -1859,13 +1888,31 @@ def comercialcarrier():
     flash("Inicia Sesion")
     return render_template('index.html')
 
+
 @app.route('/logistic',methods=['GET'])
 def logistic():
   if 'FullName' in session:
     return render_template('logistic.html',Datos = session)
   else:
-    flash("Inicia Sesion")
     return render_template('index.html')
+
+
+@app.route('/problem',methods=['GET'])
+def Problem():
+  if 'FullName' in session:
+    return render_template('ProblemSolver.html',Datos = session)
+  else:
+    return render_template('index.html')
+
+
+@app.route('/f_r_cc',methods=['GET'])
+def Recibo_cc():
+  if 'FullName' in session:
+    return render_template('form/f_r_cc.html',Datos = session)
+  else:
+    return render_template('index.html')
+
+
 
 
 
