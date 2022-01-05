@@ -1912,7 +1912,27 @@ def Recibo_cc():
   else:
     return render_template('index.html')
 
+@app.route('/Recibocomercialcarrier',methods=['POST','GET'])
+def ReciboComercialCarrier():
+  try:  
+    if request.method == 'POST':
+      paquetera = request.form['Paquetera']
+      return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
+  except:
+    return render_templateI('comercialcarrier.html',Datos=session)
 
+
+@app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
+def validar_comercialcarrier(paquetera):
+  try:
+    if request.method == 'POST':
+      orden = request.form['orden']
+      accion = request.form['accion']
+      if accion == 'Rechazar':
+        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
+
+  except:
+    return render_templates('comercialcarrier.html',Datos=session)  
 
 
 

@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <title>Recibo 3PL</title>
+    <title>Recibo</title>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -30,16 +30,13 @@
     {% block body%}
         <div class="fondo"></div>
         <section>
-            <form action="/Recibocomercialcarrier" method="POST" >
-                <h2 class="titulo">Recibo CC 3PL</h2>
-                <label for="Paquetera">Paquetera: </label>
-                <select name="Paquetera" required>
-                    <option value="Mercado Envíos">Mercado Envíos</option>
-                    <option value="DHL">DHL</option>
-                    <option value="Estafeta">Estafeta</option>
-                    <option value="Paquetexpress">Paquetexpress</option>
-                    <option value="FedEx">FedEx</option>
-                    <option value="99 minutos">99 minutos</option>
+            <form action="/validar_cc/{{paquetera}}" method="POST" >
+                <h2 class="titulo">Entregas no efectivas  {{paquetera}}</h2>
+                <label for="orden">Orden: <input type="text" name="orden"  required ></label>
+                <label for="accion"> Accion: </label>
+                <select name="accion" id="accion" required>
+                    <option value="Aceptar">Aceptar</option>
+                    <option value="Rechazar">Rechazar</option>
                 </select>
                 <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
