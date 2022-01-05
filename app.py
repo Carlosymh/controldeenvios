@@ -1638,27 +1638,27 @@ def pdf_template():
           pdf.set_font('Times','B',12) 
           pdf.cell(col_widt3, 0.0, lugar, align='C')
         else:
-          pdf = FPDF(orientation = 'P',unit = 'mm', format=(120,80))
+          pdf = FPDF(orientation = 'P',unit = 'mm', format=(120,120))
           pdf.add_page()
           
           page_width = pdf.w - 2 * pdf.l_margin
           
           pdf.ln(5)
-          pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 5, w=25, h = 10)
+          pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 5, w=30, h = 15)
           pdf.set_font('Times','B',20)
           pdf.set_text_color(0,47,109)  
-          pdf.text(x = 40, y = 9 ,txt =  "Receiving Log. Inversa" )
-          pdf.text(x = 40, y = 19 ,txt =  "Paquetes e Insumo" )
+          pdf.text(x = 40, y = 15 ,txt =  "Receiving Log. Inversa" )
+          pdf.text(x = 40, y = 25 ,txt =  "Paquetes e Insumo" )
           pdf.ln(80)
           
-          pdf.image('qr.png', x= 5, y = 20, w=30, h = 30)
+          pdf.image('qr.png', x= 5, y = 40, w=40, h = 40)
 
           pdf.set_font('Times','B',10) 
           
           pdf.set_text_color(0,0,0) 
-          pdf.text( x= 40, y = 27, txt = str(today))
-          pdf.text( x= 40, y = 35, txt = "Pre-Alert Key:")
-          pdf.text( x= 40, y = 43, txt = Key)
+          pdf.text( x= 50, y = 47, txt = str(today))
+          pdf.text( x= 50, y = 55, txt = "Pre-Alert Key:")
+          pdf.text( x= 50, y = 63, txt = Key)
 
           col_widt3 = page_width/2
 
@@ -1688,34 +1688,34 @@ def pdf_template():
             pdf.ln(10)
 
 
-        pdf.set_font('Times', 'B', 12)
-        col_widt2 = page_width/3
-        col_widt1 = page_width/3
-        col_width = page_width/3
-        
-        
-        th = pdf.font_size
-         
-        pdf.cell(col_widt2, th,"ID", align='C')
-        pdf.cell(col_width, th,"Orden",align='C')
-        pdf.cell(col_width, th, "Paquetera", align='C')
-        pdf.ln(th)
+          pdf.set_font('Times', 'B', 12)
+          col_widt2 = page_width/3
+          col_widt1 = page_width/3
+          col_width = page_width/3
+          
+          
+          th = pdf.font_size
+          
+          pdf.cell(col_widt2, th,"ID", align='C')
+          pdf.cell(col_width, th,"Orden",align='C')
+          pdf.cell(col_width, th, "Paquetera", align='C')
+          pdf.ln(th)
 
 
-        pdf.set_font('Times', '', 12)
-        col_widt2 = page_width/3
-        col_widt1 = page_width/3
-        col_width = page_width/3
-         
-        th = pdf.font_size
-         
-        for row in result:
-            pdf.cell(col_widt2, th, str(row[0]), align='C')
-            pdf.cell(col_width, th, str(row[9]), align='C')
-            pdf.cell(col_width, th, row[10], align='C')
-            pdf.ln(th)
-         
-        pdf.ln(10)
+          pdf.set_font('Times', '', 12)
+          col_widt2 = page_width/3
+          col_widt1 = page_width/3
+          col_width = page_width/3
+          
+          th = pdf.font_size
+          
+          for row in result:
+              pdf.cell(col_widt2, th, str(row[0]), align='C')
+              pdf.cell(col_width, th, str(row[9]), align='C')
+              pdf.cell(col_width, th, row[10], align='C')
+              pdf.ln(th)
+          
+          pdf.ln(10)
         if 'destinoPrealert' in session:
           
           if len(result)>0:
@@ -1726,7 +1726,7 @@ def pdf_template():
           pdf.set_font('Times','B',12)
           pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
          #Atachment or inline 
-        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'Atachment;filename=Prealert'+Key+'.pdf'})
+        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
 
 
 @app.route("/FinalizarRecibo",methods=['POST','GET'])
