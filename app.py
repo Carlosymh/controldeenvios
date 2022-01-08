@@ -11,30 +11,12 @@ import qrcode
 import csv
 
 app = Flask(__name__)
-# CONNECTING WITH PYMYSQL: Install pymysql with $ pip install pymysql
-import pymysql
-# CONNECTING WITH PYMYSQL: Install pymysql with $ pip install pymysql
-import pymysql
+
 # CONNECTING WITH PYMYSQL: Open database connection
 db_connection = pymysql.connect(host='localhost', 
                                 user='root', 
                                 passwd='', 
                                 db='insumos') 
-cursor = db_connection.cursor() 
-# CONNECTING WITH PYMYSQL: Execute sql query
-cursor.execute("SELECT VERSION()") 
-# CONNECTING WITH PYMYSQL: Process one line
-data = cursor.fetchone() 
-print(f"Database version: {data}")
-# CONNECTING WITH PYMYSQL: 
-# Finally, close database connection
-db_connection.close()
-# #MySQL Connection
-# app.config['MYSQL_HOST'] = 'localhost'
-# app.config['MYSQL_USER'] = 'root'
-# app.config['MYSQL_PASSWORD'] = ''
-# app.config['MYSQL_DB'] = 'insumos'
-# mysql = MySQL(app)
 
 #settings
 app.secret_key = 'mysecretkey'
@@ -56,15 +38,15 @@ def Index():
 def validarusuaro():
     if request.method == 'POST':
       usuario =  request.form['user']
-      with connection.cursor() as cursor:
-        # Read a single record
-        sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s"
-        cursor.execute(sql, (usuario,))
-        data = cursor.fetchone()
-        print(data)
+      with db_connection:
+        with db_connection.cursor() as cursor:
+          # Read a single record
+          sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s Limit 1"
+          cursor.execute(sql, (usuario,))
+          data = cursor.fetchone()
       if len(data) > 0 :
-        username = data[0][1]
-        user = data[0][3]
+        username = data[1]
+        user = data[3]
         return render_template('inicio.html',username=username,user=user)
       else:
         return render_template('index.html')    
@@ -75,20 +57,20 @@ def validarcontrasena(user):
     if request.method == 'POST':
       usuario =  user
       password = request.form['password']
-      with connection.cursor() as cursor:
-        # Read a single record
-        sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s"
-        cursor.execute(sql, (usuario,))
-        data = cursor.fetchone()
-        print(data)
+      with db_connection:
+        with db_connection.cursor() as cursor:
+          # Read a single record
+          sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s LIMIT 1 "
+          cursor.execute(sql, (usuario,))
+          data = cursor.fetchone()
       if len(data) > 0 :
-          if check_password_hash(data[0][6],password):
-            session['UserName'] = data[0][1]
-            session['FullName'] = data[0][1] + data[0][2]
-            session['User'] = data[0][3]
-            session['FcName'] = data[0][4]
-            session['SiteName'] = data[0][5]
-            session['Rango'] = data[0][7]
+          if check_password_hash(data[6],password):
+            session['UserName'] = data[1]
+            session['FullName'] = data[1] + data[2]
+            session['User'] = data[3]
+            session['FcName'] = data[4]
+            session['SiteName'] = data[5]
+            session['Rango'] = data[7]
             return redirect('/home')
           else:
             flash('Contraseña Incorrecta')
@@ -105,203 +87,222 @@ def home():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-# #Formulario de Registro
-# @app.route('/f_r_f',methods=['POST','GET'])
-# def Recibo_full_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_r_f.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+#Formulario de Registro
+@app.route('/f_r_f',methods=['POST','GET'])
+def Recibo_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_r_f.html',Datos = session)
+  else:
+    return render_template('index.html')
 
-# #formulario de Prealert
-# @app.route('/f_p',methods=['POST','GET'])
-# def Prealert_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_p.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+#formulario de Prealert
+@app.route('/f_p',methods=['POST','GET'])
+def Prealert_form():
+  if 'FullName' in session:
+    return render_template('form/f_p.html',Datos = session)
+  else:
+    return render_template('index.html')
 
-# #formulario de ordenes Prealert
-# @app.route('/f_r_p_s',methods=['POST','GET'])
-# def Registr_Prealert_service_form():
-#   if 'FullName' in session:
-#     now1 = datetime.now()
-#     prealert_key = "CE"+str(now1)+"P"
-#     key = prealert_key.replace(" ","")
-#     key_ = key.replace(":","")
-#     key_p = key_.replace(".","")
-#     key_pa = key_p.replace("-","")
-#     session['key_pa']= key_pa
-#     return render_template('form/f_r_p_s.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+#formulario de ordenes Prealert
+@app.route('/f_r_p_s',methods=['POST','GET'])
+def Registr_Prealert_service_form():
+  if 'FullName' in session:
+    now1 = datetime.now()
+    prealert_key = "CE"+str(now1)+"P"
+    key = prealert_key.replace(" ","")
+    key_ = key.replace(":","")
+    key_p = key_.replace(".","")
+    key_pa = key_p.replace("-","")
+    session['key_pa']= key_pa
+    return render_template('form/f_r_p_s.html',Datos = session)
+  else:
+    return render_template('index.html')
 
-# #formulario Planning Fulfillment
-# @app.route('/f_p_f',methods=['POST','GET'])
-# def Planning_full_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_p_f.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario Planning Fulfillment
+@app.route('/f_p_f',methods=['POST','GET'])
+def Planning_full_form():
+  if 'FullName' in session:
+    return render_template('form/f_p_f.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #formulario ordenes no Procesables 
-# @app.route('/f_n_p',methods=['POST','GET'])
-# def No_procesable_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_n_p.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario ordenes no Procesables 
+@app.route('/f_n_p',methods=['POST','GET'])
+def No_procesable_form():
+  if 'FullName' in session:
+    return render_template('form/f_n_p.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #formulario entradas Service Center
-# @app.route('/f_e_s',methods=['POST','GET'])
-# def Entradas_Service_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_e_s.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario entradas Service Center
+@app.route('/f_e_s',methods=['POST','GET'])
+def Entradas_Service_form():
+  if 'FullName' in session:
+    return render_template('form/f_e_s.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #fomulari salidas Service Center
-# @app.route('/f_s_s',methods=['POST','GET'])
-# def Salidas_Service_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_s_s.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#fomulari salidas Service Center
+@app.route('/f_s_s',methods=['POST','GET'])
+def Salidas_Service_form():
+  if 'FullName' in session:
+    return render_template('form/f_s_s.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #formulario Planning
-# @app.route('/f_planning',methods=['POST','GET'])
-# def Planning_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_planning.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario Planning
+@app.route('/f_planning',methods=['POST','GET'])
+def Planning_form():
+  if 'FullName' in session:
+    return render_template('form/f_planning.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #formulario Planning Cross Dock 
-# @app.route('/f_p_xd',methods=['POST','GET'])
-# def Planning_Cross_form():
-#   if 'FullName' in session:
-#     return render_template('form/f_p_xd.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario Planning Cross Dock 
+@app.route('/f_p_xd',methods=['POST','GET'])
+def Planning_Cross_form():
+  if 'FullName' in session:
+    return render_template('form/f_p_xd.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #formulario Actualizacion de estatus ordenes no Procesables 
-# @app.route('/f_a_o',methods=['POST','GET'])
-# def Actualizacion_ordenes_noprocesables():
-#   if 'FullName' in session:
-#     return render_template('form/f_a_o.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+#formulario Actualizacion de estatus ordenes no Procesables 
+@app.route('/f_a_o',methods=['POST','GET'])
+def Actualizacion_ordenes_noprocesables():
+  if 'FullName' in session:
+    return render_template('form/f_a_o.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
-# #Redirigie a el Formulario de Registro de Usuarios 
-# @app.route('/registro',methods=['POST','GET'])
-# def registro():
-#   try:
-#     if session['Rango'] == 'Administrador':
-#       return render_template('registro.html', Datos = session)
-#     else:
-#       flash("Acseso Denegado")
-#     return render_template('index.html')
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+#Redirigie a el Formulario de Registro de Usuarios 
+@app.route('/registro',methods=['POST','GET'])
+def registro():
+  try:
+    if session['Rango'] == 'Administrador':
+      return render_template('registro.html', Datos = session)
+    else:
+      flash("Acseso Denegado")
+    return render_template('index.html')
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
-# #Registro de Usuarios 
-# @app.route('/registrar',methods=['POST'])
-# def registrar():
-#   try:
-#       if request.method == 'POST':
-#         nombre =  request.form['nombre']
-#         apellido =  request.form['apellido']
-#         rango = request.form['rango']
-#         ltrabajo =  request.form['ltrabajo']
-#         cdt = request.form['cdt']
-#         usuario =  request.form['usuario']
+#Registro de Usuarios 
+@app.route('/registrar',methods=['POST'])
+def registrar():
+  try:
+      if request.method == 'POST':
+        nombre =  request.form['nombre']
+        apellido =  request.form['apellido']
+        rango = request.form['rango']
+        ltrabajo =  request.form['ltrabajo']
+        cdt = request.form['cdt']
+        usuario =  request.form['usuario']
 
-#         password = _create_password(request.form['pass'])
-#         password2 = _create_password(request.form['pass2'])
+        password = _create_password(request.form['pass'])
+        password2 = _create_password(request.form['pass2'])
         
-#         if check_password_hash(password,request.form['pass']) and check_password_hash(password,request.form['pass2']):
-          
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM usuarios WHERE Usuario = \'{}\'  LIMIT 1 '.format(usuario,password))
-#           data = cur.fetchall()
-#           if len(data) > 0:
-#             flash("El Usuario Ya Existe")
-#             return render_template('registro.html',Datos =session)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('INSERT INTO `usuarios` (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)',(nombre,apellido,usuario,ltrabajo,cdt,password,rango))
-#             mysql.connection.commit()
-#             flash("Registro Correcto")
-#             return render_template('registro.html',Datos =session)
-#         else:
-#           flash("Las Contraceñas no Cionciden")
-#           return render_template('registro.html',Datos =session)
-#   except:
-#     return render_template('registro.html',Datos =session)
-# def _create_password(password):
-#    return generate_password_hash(password,'pbkdf2:sha256:30',30)
+        if check_password_hash(password,request.form['pass']) and check_password_hash(password,request.form['pass2']):
+          with db_connection:
+            with db_connection.cursor() as cursor:
+              # Read a single record
+              sql = "SELECT * FROM usuarios WHERE Usuario =%s LIMIT 1 "
+              cursor.execute(sql, (usuario,))
+              data = cursor.fetchone()
+          if len(data) > 0:
+            flash("El Usuario Ya Existe")
+            return render_template('registro.html',Datos =session)
+          else:
+            with db_connection:
+              with db_connection.cursor() as cursor:
+                  # Create a new record
+                  sql = "INSERT INTO usuarios (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                  cursor.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
 
-# #Registros entradas Service Center
-# @app.route('/registro_svcs_entrada',methods=['POST'])
-# def registro_s_e():
-#   try:
-#       if request.method == 'POST':
-#         cdt =  session['SiteName']
-#         Pallets_en_buen_estado =  request.form['Pallets_en_buen_estado']
-#         Pallets_en_mal_estado = request.form['Pallets_en_mal_estado']
-#         Pallets_Totales_Recibidos = int(Pallets_en_buen_estado)+int(Pallets_en_mal_estado)
-#         Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
-#         Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
-#         Gaylords_Totales_Recibidos = int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
-#         cajas = request.form['cajas']
-#         costales =  request.form['costales']
-#         Centro_de_Origen = request.form['Centro_de_Origen']
-#         usuario =  session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_e_s.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_e_s.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_e_s.html',Datos = session)
+              # connection is not autocommit by default. So you must commit to save
+              # your changes.
+              db_connection.commit()
+            flash("Registro Correcto")
+            return render_template('registro.html',Datos =session)
+        else:
+          flash("Las Contraceñas no Cionciden")
+          return render_template('registro.html',Datos =session)
+  except:
+    return render_template('registro.html',Datos =session)
+def _create_password(password):
+   return generate_password_hash(password,'pbkdf2:sha256:30',30)
 
-# # Registro de Salidas Service Center
-# @app.route('/registro_svcs_salida',methods=['POST'])
-# def registro_s_s():
-#   try:
-#       if request.method == 'POST':
-#         cdt =  session['SiteName']
-#         Tarimas_enviadas = request.form['Tarimas_enviadas']
-#         Gaylord_Enviados =  request.form['Gaylord_Enviados']
-#         cajas = request.form['cajas']
-#         costales =  request.form['costales']
-#         Cross_Dock = request.form['Cross_Dock']
-#         usuario =  session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_s_s.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_s_s.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_s_s.html',Datos = session)
+#Registros entradas Service Center
+@app.route('/registro_svcs_entrada',methods=['POST'])
+def registro_s_e():
+  try:
+      if request.method == 'POST':
+        cdt =  session['SiteName']
+        Pallets_en_buen_estado =  request.form['Pallets_en_buen_estado']
+        Pallets_en_mal_estado = request.form['Pallets_en_mal_estado']
+        Pallets_Totales_Recibidos = int(Pallets_en_buen_estado)+int(Pallets_en_mal_estado)
+        Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
+        Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
+        Gaylords_Totales_Recibidos = int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
+        cajas = request.form['cajas']
+        costales =  request.form['costales']
+        Centro_de_Origen = request.form['Centro_de_Origen']
+        usuario =  session['FullName']
+        now = datetime.now()
+        with db_connection:
+          with db_connection.cursor() as cursor:
+              # Create a new record
+              sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+              cursor.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
+              # connection is not autocommit by default. So you must commit to save
+              # your changes.
+              db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_e_s.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_e_s.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_e_s.html',Datos = session)
+
+# Registro de Salidas Service Center
+@app.route('/registro_svcs_salida',methods=['POST'])
+def registro_s_s():
+  try:
+      if request.method == 'POST':
+        cdt =  session['SiteName']
+        Tarimas_enviadas = request.form['Tarimas_enviadas']
+        Gaylord_Enviados =  request.form['Gaylord_Enviados']
+        cajas = request.form['cajas']
+        costales =  request.form['costales']
+        Cross_Dock = request.form['Cross_Dock']
+        usuario =  session['FullName']
+        now = datetime.now()
+        with db_connection:
+          with db_connection.cursor() as cursor:
+              # Create a new record
+              sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+              cursor.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
+
+          # connection is not autocommit by default. So you must commit to save
+          # your changes.
+          db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_s_s.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_s_s.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_s_s.html',Datos = session)
 
 # # Registro Prealert ordenes 
 # @app.route('/registro_prealert_ordenes',methods=['POST'])
@@ -839,11 +840,11 @@ def home():
 #     flash("Llena todos los Campos Correctamente")
 #     return render_template('form/f_a_o.html',Datos = session)
 
-# #Cerrar Session
-# @app.route('/logout')
-# def Cerrar_session():
-#   session.clear()
-#   return render_template('index.html')
+#Cerrar Session
+@app.route('/logout')
+def Cerrar_session():
+  session.clear()
+  return render_template('index.html')
 
 
 # @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
