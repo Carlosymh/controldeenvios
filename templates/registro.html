@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/registro.css')}}">
-    <title>Registrar</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
+{% extends 'nav.html'%}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/registro.css')}}">
+{% endblock %}
+{% block titulo %}
+<title>Alata de Usuarios</title>
+{% endblock %}
+    {% block body%}
+{% with messages = get_flashed_messages() %}
 {% if messages%}
 {%for message in messages%}
 <script>
@@ -20,109 +15,6 @@
 {%endfor%}
 {%endif%}
 {%endwith%}
-<div class="Nav_Bar">
-    <button class="menu"><i class="fab fa-elementor"></i></button>
-    <a href="/home"> <img src="{{url_for('static', filename='img/MercadoLibre_logo.png')}}" alt="Logotipo" class="img_logo"></a>
-    <span>{{Datos['FcName']}} : {{Datos['SiteName']}}</span>
-</div>
-<div class="nav_menu">
-    <button class="accordion"><i class="fas fa-book"></i> formularios</button>
-    <div class="panel">
-    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
-        <button class="accordion">Fulfillment</button>
-        <div class="panel">
-            <a href='/f_e_f' class='link_menu'> Entradas</a>
-            <a href='/f_s_f' class='link_menu'> Salidas</a>
-            <a href='/f_r_f' class='link_menu'>  Recibo</a>
-            <a href='/f_t_f' class='link_menu'>  Transfer</a>
-            <a href='/f_p' class='link_menu'>  Prealert</a>
-            <a href='/f_n_p' class='link_menu'>  No Prosesable</a>
-            <a href='/f_a_o' class='link_menu'>  Actualizacion N/P</a>
-            <a href='/f_p_f' class='link_menu'>  Planning</a>
-        </div>
-    {%endif%}
-    {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-        <button class="accordion">Cross Dock</button>
-        <div class="panel">
-            <a href='/f_e_xd' class='link_menu'> Entradas</a>
-            <a href='/f_s_xd' class='link_menu'>  Salidas</a>
-            <a href='/f_p' class='link_menu'> Prealert</a>
-            <a href='/f_p_xd' class='link_menu'>  Planning</a>
-        </div>
-    
-    {%endif%}
-    {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-        <button class="accordion">Service Center</button>
-        <div class="panel">
-            <a href='/f_e_s' class='link_menu'>  Entradas</a>
-            <a href='/f_s_s' class='link_menu'> Salidas</a>
-            <a href='/f_p_s' class='link_menu'>  Prealert</a>
-        </div>
-    {%endif%}
-    {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Planning</button>
-        <div class="panel">
-            <a href='/f_planning' class='link_menu'> Planning</a>
-        </div>
-    {%endif%}
-    </div>
-    <button class="accordion"><i class='fas fa-edit'></i> Reportes</button>
-    <div class="panel">
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Fulfillment</button>
-            <div class="panel">
-                <a href='/t_e_f/0' class='link_menu'> Entradas</a>
-                <a href='/t_s_f/0' class='link_menu'> Salidas</a>
-                <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
-                <a href='/t_t_f/0' class='link_menu'>  Transfer</a>
-                <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
-            </div>
-        {%endif%}
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Cross Dock</button>
-            <div class="panel">
-                <a href='/t_e_xd/0' class='link_menu'>  Entradas</a>
-                <a href='/t_s_xd/0' class='link_menu'>  Salidas</a>
-                <a href='/t_p/0' class='link_menu'>  Prealert</a>
-            </div>
-        {%endif%}
-        {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-            <button class="accordion">Service Center</button>
-            <div class="panel">
-                <a href='/t_e_s/0' class='link_menu'>  Entradas</a>
-                <a href='/t_s_s/0' class='link_menu'>  Salidas</a>
-                <a href='/t_p/0' class='link_menu'> Prealert</a>
-            </div>
-        {%endif%}
-        {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                <button class="accordion">Planning</button>
-            <div class="panel">
-                <a href='/t_planning/0' class='link_menu'>  Planning</a>
-            </div>
-        {%endif%}
-        </div>
-    <button class="accordion"><i class="fas fa-chart-pie"></i> Dashboard</button>
-    <div class="panel">
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/g_f' class='link_menu'> Fulfillment</a>
-        {%endif%}
-        {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/g_xd' class='link_menu'> Cross Dock</a>
-        {%endif%}
-        {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/g_s' class='link_menu'> Service Center</a>
-        {%endif%}
-        {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/g_p' class='link_menu'> Planning</a>
-        {%endif%}
-        </div>
-        {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-            <a href='/registro' class='link_menu'><i class="fas fa-users"></i> Registro de Usuarios</a>
-        {%endif%}
-        
-            <a href='/trackin' class='link_menu'><i class="fas fa-route"></i> Track In</a>
-            <a href="/logout" class="link_menu" ><i class="fas fa-power-off"></i>  Cerar sesion</a>
-</div>
     <div class="container"> 
         <form action="/registrar" method="POST">
             <h2>Regístrar</h2>
@@ -308,5 +200,4 @@
 </section>
 <script src="{{url_for('static', filename='js/interfas.js')}}">
 </script>
-</body>
-</html>
+{% endblock %}

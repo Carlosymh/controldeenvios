@@ -1,56 +1,32 @@
 {% extends 'nav.html'%}
-{% block cabezera%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
-    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <title>Reporte Realert</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages%}
-    {%for message in messages%}
-    <script>
-        alert('{{message}}')
-    </script>
-    {%endfor%}
-    {%endif%}
-    {%endwith%}
-    {% endblock %}
-    {% block body%}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
+{% endblock %}
+{% block titulo %}
+<title>Reporte Prealert</title>
+{% endblock %}
+
+{% block body%}
     <div class="filtros">
         <form action="/t_p/0" method="post" class="form_filtros">
             <select name="filtro">
                 <option value="id_prealert">ID</option>
-                <option value="responsable">Responsable</option>
-                <option value="lugaDeTrabajo">Luga de Trabajo</option>
-                <option value="cdt">Site</option>
-                <option value="id_de_envio">ID de Envio</option>
-                <option value="Codificación">Codificación</option>
-                <option value="Metodo">Metodo</option>
-                <option value="Facility">Facility</option>
-                <option value="Transporte">Transporte</option>
-                <option value="Trasportista">Trasportista</option>
+                <option value="ID_Envio_Prealert">Prealert Key</option>
+                <option value="Origen">Facility de Origen</option>
+                <option value="SiteName">Site de Origen</option>
+                <option value="Destino">Facility Destino</option>
+                <option value="SiteName_Destino">Site Destino</option>
+                <option value="EmpresaTransporte">Transporte</option>
+                <option value="Transportista">Trasportista</option>
                 <option value="Placas">Placas</option>
-                <option value="Sello">Sello</option>
+                <option value="Orden">Orden</option>
+                <option value="Paquetera">Paquetera</option>
+                <option value="Marchamo">Marchamo</option>
+                <option value="Responsable">Responsable</option>
             </select>
-            <input type="text" name="valor">
+            <input autocomplete="off" type="text" name="valor">
             <label for="datefilter">Fecha: </label>
-            <input autocomplete="of" type="text" name="datefilter" value="" />
+            <input autocomplete="off" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
         </form>
@@ -73,6 +49,7 @@
                         <th> Orden </th>
                         <th> Paquetera </th>
                         <th> Marchamo </th>
+                        <th> Responsable </th>
                         <th> Fecha Y Hora </th>
                     </tr>
                 </thead>
@@ -91,11 +68,12 @@
                         <td>{{Info.9}}</td>
                         <td>{{Info.10}}</td>
                         <td>{{Info.11}}</td>
-                        <td>{{Info.13}}</td>
+                        <td>{{Info.12}}</td>
+                        <td>{{Info.14}}</td>
                     </tr>
                     {%endfor%}
                     <tr class="Pag">
-                        <td colspan="13" class="Pag">
+                        <td colspan="14" class="Pag">
                             {%set row= Datos['rowi_t_p'] |int%}
                             {%if row==0%}
                             <a href="/t_p/0" class="after">
@@ -151,6 +129,4 @@
         
         });
         </script>
-</body>
-</html>
 {% endblock %}

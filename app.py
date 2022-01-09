@@ -38,12 +38,11 @@ def Index():
 def validarusuaro():
     if request.method == 'POST':
       usuario =  request.form['user']
-      with db_connection:
-        with db_connection.cursor() as cursor:
-          # Read a single record
-          sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s Limit 1"
-          cursor.execute(sql, (usuario,))
-          data = cursor.fetchone()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s Limit 1"
+      cursor.execute(sql, (usuario,))
+      data = cursor.fetchone()
       if len(data) > 0 :
         username = data[1]
         user = data[3]
@@ -57,12 +56,11 @@ def validarcontrasena(user):
     if request.method == 'POST':
       usuario =  user
       password = request.form['password']
-      with db_connection:
-        with db_connection.cursor() as cursor:
-          # Read a single record
-          sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s LIMIT 1 "
-          cursor.execute(sql, (usuario,))
-          data = cursor.fetchone()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s LIMIT 1 "
+      cursor.execute(sql, (usuario,))
+      data = cursor.fetchone()
       if len(data) > 0 :
           if check_password_hash(data[6],password):
             session['UserName'] = data[1]
@@ -210,25 +208,23 @@ def registrar():
         password2 = _create_password(request.form['pass2'])
         
         if check_password_hash(password,request.form['pass']) and check_password_hash(password,request.form['pass2']):
-          with db_connection:
-            with db_connection.cursor() as cursor:
-              # Read a single record
-              sql = "SELECT * FROM usuarios WHERE Usuario =%s LIMIT 1 "
-              cursor.execute(sql, (usuario,))
-              data = cursor.fetchone()
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM usuarios WHERE Usuario =%s LIMIT 1 "
+          cursor.execute(sql, (usuario,))
+          data = cursor.fetchone()
           if len(data) > 0:
             flash("El Usuario Ya Existe")
             return render_template('registro.html',Datos =session)
           else:
-            with db_connection:
-              with db_connection.cursor() as cursor:
-                  # Create a new record
-                  sql = "INSERT INTO usuarios (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                  cursor.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
+            cursor= db_connection.cursor()
+            # Create a new record
+            sql = "INSERT INTO usuarios (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+            cursor.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
 
-              # connection is not autocommit by default. So you must commit to save
-              # your changes.
-              db_connection.commit()
+            # connection is not autocommit by default. So you must commit to save
+            # your changes.
+            db_connection.commit()
             flash("Registro Correcto")
             return render_template('registro.html',Datos =session)
         else:
@@ -256,14 +252,13 @@ def registro_s_e():
         Centro_de_Origen = request.form['Centro_de_Origen']
         usuario =  session['FullName']
         now = datetime.now()
-        with db_connection:
-          with db_connection.cursor() as cursor:
-              # Create a new record
-              sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-              cursor.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
-              # connection is not autocommit by default. So you must commit to save
-              # your changes.
-              db_connection.commit()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
         flash("Registro Exitoso")
         return render_template('form/f_e_s.html',Datos = session)
       else:
@@ -286,15 +281,14 @@ def registro_s_s():
         Cross_Dock = request.form['Cross_Dock']
         usuario =  session['FullName']
         now = datetime.now()
-        with db_connection:
-          with db_connection.cursor() as cursor:
-              # Create a new record
-              sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-              cursor.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
 
-          # connection is not autocommit by default. So you must commit to save
-          # your changes.
-          db_connection.commit()
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
         flash("Registro Exitoso")
         return render_template('form/f_s_s.html',Datos = session)
       else:
@@ -304,541 +298,560 @@ def registro_s_s():
     flash("Llena todos los Campos Correctamente")
     return render_template('form/f_s_s.html',Datos = session)
 
-# # Registro Prealert ordenes 
-# @app.route('/registro_prealert_ordenes',methods=['POST'])
-# def registroPrealertOrdenes():
-#   try:
-#       if request.method == 'POST':
-#         key_pa = session['key_pa']
-#         OrigenFc = session['FcName']
-#         OrigenSite = session['SiteName']
-#         Orden = request.form['Orden']
-#         Paquetera = request.form['Paquetera']
-#         reponsable = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_r_p_s.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_r_p_s.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/home.html',Datos = session)
+# Registro Prealert ordenes 
+@app.route('/registro_prealert_ordenes',methods=['POST'])
+def registroPrealertOrdenes():
+  try:
+      if request.method == 'POST':
+        key_pa = session['key_pa']
+        OrigenFc = session['FcName']
+        OrigenSite = session['SiteName']
+        Orden = request.form['Orden']
+        Paquetera = request.form['Paquetera']
+        reponsable = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now,))
 
-# #registro Envio Prealert Prealert
-# @app.route('/registro_prealert',methods=['POST'])
-# def registroPrealert():
-#   try:
-#       if request.method == 'POST':
-#         session['key_pa']= request.form['key_pa']
-#         Facility=request.form['Facility']
-#         if Facility[0:2]=="MX":
-#           session['destinoPrealert'] = "Cross Dock"
-#         else:
-#           session['destinoPrealert'] = "Fulfillment"
-#         session['SiteDestinoPrealert'] = request.form['Facility']
-#         session['TransportePrealert'] = request.form['Transporte']
-#         session['TrasportistaPrealert'] =  request.form['Trasportista']
-#         session['PlacasPrealert'] = request.form['Placas']
-#         Marchamo = request.form['Marchamo']
-#         reponsable = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute("""UPDATE prealert SET  Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s""",(session['destinoPrealert'],session['SiteDestinoPrealert'],session['TransportePrealert'],session['TrasportistaPrealert'],session['PlacasPrealert'],Marchamo,reponsable,now,now,session['key_pa'],session['SiteName']))
-#         mysql.connection.commit()
-#         flash("Registro Exitoso")
-#         return render_template('actualizacion/finalizado.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_p.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_p.html',Datos = session)
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_r_p_s.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_p_s.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/home.html',Datos = session)
 
-# #confirmacionde Finalizacion Prealert
-# @app.route("/FinalizarPrealert",methods=['POST','GET'])
-# def finalizarPallet():
-#   try:
-#     if 'FullName' in session:
-#       return render_template("form/finalizar.html", Datos =session)
-#   except:  
-#     return render_template("home.html",Datos=session)
+#registro Envio Prealert Prealert
+@app.route('/registro_prealert',methods=['POST'])
+def registroPrealert():
+  try:
+      if request.method == 'POST':
+        session['key_pa']= request.form['key_pa']
+        Facility=request.form['Facility']
+        if Facility[0:2]=="MX":
+          session['destinoPrealert'] = "Cross Dock"
+        else:
+          session['destinoPrealert'] = "Fulfillment"
+        session['SiteDestinoPrealert'] = request.form['Facility']
+        session['TransportePrealert'] = request.form['Transporte']
+        session['TrasportistaPrealert'] =  request.form['Trasportista']
+        session['PlacasPrealert'] = request.form['Placas']
+        Marchamo = request.form['Marchamo']
+        reponsable = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "UPDATE prealert SET  Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s"
+        cursor.execute(sql,(session['destinoPrealert'],session['SiteDestinoPrealert'],session['TransportePrealert'],session['TrasportistaPrealert'],session['PlacasPrealert'],Marchamo,reponsable,now,now,session['key_pa'],session['SiteName'],))
 
-# #confirmacionde Finalizacion Prealert Ordenes 
-# @app.route("/FinalizarPrealertOrdenes",methods=['POST','GET'])
-# def finalizarPalletOrdenes():
-#   try:
-#     return render_template('actualizacion/finalizado.html',Datos = session)
-#   except:
-#     flash("No has enviado un registro")
-#     return render_template('form/finalizar.html',Datos = session)
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('actualizacion/finalizado.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_p.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_p.html',Datos = session)
 
+#confirmacionde Finalizacion Prealert
+@app.route("/FinalizarPrealert",methods=['POST','GET'])
+def finalizarPallet():
+  try:
+    if 'FullName' in session:
+      return render_template("form/finalizar.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
 
-# @app.route('/registro_fcs_recibo',methods=['POST'])
-# def registro_fcs_r():
-#   try:
-#       if request.method == 'POST':
-#         cdt =  session['SiteName']
-#         paquetera = request.form['paquetera']
-#         no_gia =  request.form['no_gia']
-#         no_paquete = request.form['no_paquete']
-#         tipo_paquete =  request.form['tipo_paquete']
-#         estatus =  request.form['estatus']
-#         razon_rechazo = request.form['razon_rechazo']
-#         usuario =  session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO recibo_fc (Fulfillment, responsable, paquetera, no_gia, no_paquete, tipo_paquete, estatus, razon_rechazo, fecha_hora, dia) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(cdt,usuario,paquetera,no_gia,no_paquete,tipo_paquete,estatus,razon_rechazo,now,now))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_r_f.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_r_f.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_r_f.html',Datos = session)
+#confirmacionde Finalizacion Prealert Ordenes 
+@app.route("/FinalizarPrealertOrdenes",methods=['POST','GET'])
+def finalizarPalletOrdenes():
+  try:
+    return render_template('actualizacion/finalizado.html',Datos = session)
+  except:
+    flash("No has enviado un registro")
+    return render_template('form/finalizar.html',Datos = session)
 
 
-# @app.route('/registro_ordenes',methods=['POST'])
-# def registro_o():
-#   try:
-#       if request.method == 'POST':
-
-#         usuario =  session['UserName']
-#         Paquetera = request.form['Paquetera']
-#         orden =  request.form['orden']
-#         Pallet = request.form['Pallet']
-#         Tipo =  request.form['Tipo']
-#         cdt =  session['SiteName']
-#         Estatus =  request.form['Estatus']
-#         Service_Center = request.form['Service_Center']
-
-#         if Service_Center =='SAG1':
-#           region = 'Bajio'
-#         elif Service_Center =='STJ1': 
-#           region = 'Norte Pacifico '
-#         elif Service_Center =='SLP1':
-#           region = 'Norte Pacifico '
-#         elif Service_Center=='STG1':
-#           region = 'Sureste'
-#         elif Service_Center=='SCJ1':
-#           region = 'Noroeste'
-#         elif Service_Center=='SCH1':
-#           region = 'Noroeste'
-#         elif Service_Center=='SMX2':
-#           region = 'Metro norte'
-#         elif Service_Center=='SMX1':
-#           region = 'Metro norte'
-#         elif Service_Center=='SMX3':
-#           region = 'Metro sur'
-#         elif Service_Center=='SMX5':
-#           region = 'Metro norte'
-#         elif Service_Center=='SMX4':
-#           region = 'Metro sur'
-#         elif Service_Center=='SMX6':
-#           region = 'Metro norte'
-#         elif Service_Center=='STR1':
-#           region = 'Noroeste'
-#         elif Service_Center=='SCQ1':
-#           region = 'Centro'
-#         elif Service_Center=='SZL1': 
-#           region = 'Centro'
-#         elif Service_Center=='SDG1':
-#           region = 'Noroeste'
-#         elif Service_Center=='SHP1':
-#           region = 'Metro norte'
-#         elif Service_Center=='SLE1':
-#           region = 'Bajio'
-#         elif Service_Center=='SGR1':
-#           region = 'Metro sur'
-#         elif Service_Center=='SGD1':
-#           region = 'Centro'
-#         elif Service_Center=='STL1':
-#           region= 'Metro norte'
-#         elif Service_Center=='SML1':
-#           region= 'Bajio'
-#         elif Service_Center=='SCV1':
-#           region= 'Metro sur'
-#         elif Service_Center=='SPV1':
-#           region= 'Centro'
-#         elif Service_Center=='STN1':
-#           region= 'Centro'
-#         elif Service_Center=='SOX1':
-#           region= 'Golfo'
-#         elif Service_Center=='SPB1':
-#           region= 'Golfo'
-#         elif Service_Center=='SQR1':
-#           region= 'Bajio'
-#         elif Service_Center=='SCN1':
-#           region= 'Sureste'
-#         elif Service_Center=='SSL1':
-#           region= 'Bajio'
-#         elif Service_Center=='SCU1':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SMZ1':
-#           region= 'Centro'
-#         elif Service_Center=='SMO1': 
-#           region= 'Norte Pacifico'
-#         elif Service_Center=='SHM1': 
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SVH1':
-#           region= 'Sureste'
-#         elif Service_Center=='SVR1':
-#           region= 'Golfo'
-#         elif Service_Center=='SPZ1':
-#           region= 'Golfo'
-#         elif Service_Center=='SMD1':
-#           region= 'Sureste'
-#         elif Service_Center=='SZC1':
-#           region= 'Noroeste'
-#         elif Service_Center=='SLP1_A':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SMZ1_A':
-#           region= 'Centro'
-#         elif Service_Center=='SCN1_A':
-#           region= 'Sureste'
-#         elif Service_Center=='SMX3_S':
-#           region= 'Metro sur'
-#         elif Service_Center=='STJ1_A':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SCU1_A':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SMO1_A':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SHM1_A':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SCJ1_A':
-#           region= 'Noroeste'
-#         elif Service_Center=='SMD1_A':
-#           region= 'Sureste'
-#         elif Service_Center=='SMX1_S':
-#           region= 'Metro norte'
-#         elif Service_Center=='SCH1_A':
-#           region= 'Noroeste'
-#         elif Service_Center=='SMX4_S': 
-#           region= 'Metro sur'
-#         elif Service_Center=='SMX5_S':
-#           region= 'Metro norte'
-#         elif Service_Center=='SMX2_S':
-#           region= 'Metro norte' 
-#         elif Service_Center=='SMX6_S':
-#           region= 'Metro norte'
-#         elif Service_Center=='slw1':
-#           region= 'Noreste'
-#         elif Service_Center=='smt1':
-#           region= 'Noreste'
-#         elif Service_Center=='srx1':
-#           region= 'Noreste'
-#         elif Service_Center=='sma1':
-#           region= 'Noreste'
-#         elif Service_Center=='sta1':
-#           region= 'Noreste'
-#         elif Service_Center=='snl1':
-#           region= 'Noreste'
-#         elif Service_Center=='99MLM':
-#           region= '99minutos'
-#         elif Service_Center=='DHLSU2':
-#           region= 'DHL'
-#         elif Service_Center=='DHLJC1':
-#           region= 'DHL'
-#         elif Service_Center=='ESTMLM':
-#           region= 'Estafeta'
-#         elif Service_Center=='FDXXS2':
-#           region= 'FedEx'
-#         elif Service_Center=='FDXSO1':
-#           region= 'FedEx'
-#         elif Service_Center=='PQXMLM':
-#           region= 'Paquetexpress'
-#         elif Service_Center=='SG2':
-#           region= 'Centro'
-#         elif Service_Center=='SJA1':
-#           region= 'Golfo'
-#         elif Service_Center=='SCT1':
-#           region= 'Sureste'
-#         elif Service_Center=='SMI1':
-#           region= 'Sureste'
-#         elif Service_Center=='SBJ1':
-#           region= 'Bajio'
-#         elif Service_Center=='SVM1':
-#           region= 'Noreste'
-#         elif Service_Center=='SMT2':
-#           region= 'Noreste'
-#         elif Service_Center=='SMX7':
-#           region= 'Metro sur'
-#         elif Service_Center=='SMX7_S':
-#           region= 'Metro sur'
-#         elif Service_Center=='SDC1':
-#           region= 'Golfo'
-#         elif Service_Center=='SCP1':
-#           region= 'Sureste'
-#         elif Service_Center=='SCP1_A':
-#           region= 'Sureste'
-#         elif Service_Center=='STP1':
-#           region= 'Sureste'
-#         elif Service_Center=='STR1_A':
-#           region= 'Noroeste'
-#         elif Service_Center=='SPD1':
-#           region= 'Noroeste'
-#         elif Service_Center=='SXL1':
-#           region= 'Norte Pacifico'
-#         elif Service_Center=='SCE1':
-#           region= 'Norte Pacifico '
-#         elif Service_Center=='SJD1':
-#           region= 'Norte Pacifico'
-#         elif Service_Center=='SCY1':
-#           region= 'Bajio'
-#         elif Service_Center=='SLZ1':
-#           region= 'Bajio'
-#         elif Service_Center=='SGD1_S':
-#           region= 'Centro'
-#         elif Service_Center=='SGD2_S':
-#           region= 'Centro'
-#         elif Service_Center=='SMT1_S':
-#           region= 'Noreste'
-#         elif Service_Center=='SMT2_S':
-#           region= 'Noreste'
-#         elif Service_Center=='FedEx':
-#           region= 'FedEx'
-#         elif Service_Center=='DHL':
-#           region= 'DHL'
-#         elif Service_Center=='Estafeta':
-#           region= 'Estafeta'
-#         elif Service_Center=='Paquete Express':
-#           region= 'Paquete Express'
-#         elif Service_Center=='sgd2':
-#           region= 'Centro'
-#         elif Service_Center=='99 Minutos':
-#           region= '99 Minutos'
-
-#         ticket = request.form['ticket']
-#         fechatiket =  request.form['fechatiket']
-#         Comentario =  request.form['Comentario']
-#         estatus_orden = 'Pendiente'
-#         now = datetime.now()
-#         semana = now.isocalendar()
-#         meses= ('Null','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiempbre','Octubre','Noviebre','Diciembre')
-#         mes = meses[now.month]
-#         Responsable =  session['FullName']
-#         cur = mysql.connection.cursor()
-#         cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = \'{}\' AND estatus_orden = \'{}\' LIMIT 1 '.format(orden,estatus_orden))
-#         data = cur.fetchall()
-#         if len(data)>0:
-#           flash("Ya Existe un Ticket Pendiente para esta Orden")
-#           return render_template('form.html',Datos = session)
-#         elif len(orden)>0 and len(ticket)>0 and len(fechatiket)>0:
-#           cur = mysql.connection.cursor()
-#           cur.execute('INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, ticket, fecha_ticket, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,ticket,fechatiket,estatus_orden,Comentario,semana[1],mes,Responsable,now,now))
-#           mysql.connection.commit() 
-#           flash("Registro Exitoso")
-#           return render_template('form/f_n_p.html',Datos = session)
-#         else:
-#           flash("Llena Todos Los Datos")
-#           return render_template('form/f_n_p.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_n_p.html',Datos = session)
-#   except:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_n_p.html',Datos = session)
+@app.route('/registro_fcs_recibo',methods=['POST'])
+def registro_fcs_r():
+  try:
+      if request.method == 'POST':
+        cdt =  session['SiteName']
+        paquetera = request.form['paquetera']
+        no_gia =  request.form['no_gia']
+        no_paquete = request.form['no_paquete']
+        tipo_paquete =  request.form['tipo_paquete']
+        estatus =  request.form['estatus']
+        razon_rechazo = request.form['razon_rechazo']
+        usuario =  session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO recibo_fc (Fulfillment, responsable, paquetera, no_gia, no_paquete, tipo_paquete, estatus, razon_rechazo, fecha_hora, dia) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(cdt,usuario,paquetera,no_gia,no_paquete,tipo_paquete,estatus,razon_rechazo,now,now,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_r_f.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_f.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_r_f.html',Datos = session)
 
 
-# @app.route('/registro_planing',methods=['POST'])
-# def registro_p():
-#   try:
-#       if request.method == 'POST':
-#         Fecha_agendada = request.form['Fecha_agendada']
-#         codigo_sku = int(request.form['codigo_sku'])
-#         if codigo_sku == 10053:
-#           descripcion = 'Caja Gaylord'
-#         elif codigo_sku == 10060:
-#           descripcion = 'Tarima Madera'
-#         piezas_p = request.form['piezas_p']
-#         unidades = request.form['unidades']
-#         datos_de_la_unidad = request.form['datos_de_la_unidad']
-#         operador = request.form['operador']
-#         Origen = session['FcName']
-#         destino = request.form['destino']
-#         estatus = 'Pendiente'
-#         usuario = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO planing (Fecha_agendada, codigo_sku, descripción, piezas_p, unidades, datos_de_la_unidad, operador, origen, destino,	reponsable, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,datos_de_la_unidad,operador,Origen,destino,usuario,estatus))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_planning.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_planning.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_planning.html',Datos = session)
+@app.route('/registro_ordenes',methods=['POST'])
+def registro_o():
+  try:
+      if request.method == 'POST':
+
+        usuario =  session['UserName']
+        Paquetera = request.form['Paquetera']
+        orden =  request.form['orden']
+        Pallet = request.form['Pallet']
+        Tipo =  request.form['Tipo']
+        cdt =  session['SiteName']
+        Estatus =  request.form['Estatus']
+        Service_Center = request.form['Service_Center']
+
+        if Service_Center =='SAG1':
+          region = 'Bajio'
+        elif Service_Center =='STJ1': 
+          region = 'Norte Pacifico '
+        elif Service_Center =='SLP1':
+          region = 'Norte Pacifico '
+        elif Service_Center=='STG1':
+          region = 'Sureste'
+        elif Service_Center=='SCJ1':
+          region = 'Noroeste'
+        elif Service_Center=='SCH1':
+          region = 'Noroeste'
+        elif Service_Center=='SMX2':
+          region = 'Metro norte'
+        elif Service_Center=='SMX1':
+          region = 'Metro norte'
+        elif Service_Center=='SMX3':
+          region = 'Metro sur'
+        elif Service_Center=='SMX5':
+          region = 'Metro norte'
+        elif Service_Center=='SMX4':
+          region = 'Metro sur'
+        elif Service_Center=='SMX6':
+          region = 'Metro norte'
+        elif Service_Center=='STR1':
+          region = 'Noroeste'
+        elif Service_Center=='SCQ1':
+          region = 'Centro'
+        elif Service_Center=='SZL1': 
+          region = 'Centro'
+        elif Service_Center=='SDG1':
+          region = 'Noroeste'
+        elif Service_Center=='SHP1':
+          region = 'Metro norte'
+        elif Service_Center=='SLE1':
+          region = 'Bajio'
+        elif Service_Center=='SGR1':
+          region = 'Metro sur'
+        elif Service_Center=='SGD1':
+          region = 'Centro'
+        elif Service_Center=='STL1':
+          region= 'Metro norte'
+        elif Service_Center=='SML1':
+          region= 'Bajio'
+        elif Service_Center=='SCV1':
+          region= 'Metro sur'
+        elif Service_Center=='SPV1':
+          region= 'Centro'
+        elif Service_Center=='STN1':
+          region= 'Centro'
+        elif Service_Center=='SOX1':
+          region= 'Golfo'
+        elif Service_Center=='SPB1':
+          region= 'Golfo'
+        elif Service_Center=='SQR1':
+          region= 'Bajio'
+        elif Service_Center=='SCN1':
+          region= 'Sureste'
+        elif Service_Center=='SSL1':
+          region= 'Bajio'
+        elif Service_Center=='SCU1':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SMZ1':
+          region= 'Centro'
+        elif Service_Center=='SMO1': 
+          region= 'Norte Pacifico'
+        elif Service_Center=='SHM1': 
+          region= 'Norte Pacifico '
+        elif Service_Center=='SVH1':
+          region= 'Sureste'
+        elif Service_Center=='SVR1':
+          region= 'Golfo'
+        elif Service_Center=='SPZ1':
+          region= 'Golfo'
+        elif Service_Center=='SMD1':
+          region= 'Sureste'
+        elif Service_Center=='SZC1':
+          region= 'Noroeste'
+        elif Service_Center=='SLP1_A':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SMZ1_A':
+          region= 'Centro'
+        elif Service_Center=='SCN1_A':
+          region= 'Sureste'
+        elif Service_Center=='SMX3_S':
+          region= 'Metro sur'
+        elif Service_Center=='STJ1_A':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SCU1_A':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SMO1_A':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SHM1_A':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SCJ1_A':
+          region= 'Noroeste'
+        elif Service_Center=='SMD1_A':
+          region= 'Sureste'
+        elif Service_Center=='SMX1_S':
+          region= 'Metro norte'
+        elif Service_Center=='SCH1_A':
+          region= 'Noroeste'
+        elif Service_Center=='SMX4_S': 
+          region= 'Metro sur'
+        elif Service_Center=='SMX5_S':
+          region= 'Metro norte'
+        elif Service_Center=='SMX2_S':
+          region= 'Metro norte' 
+        elif Service_Center=='SMX6_S':
+          region= 'Metro norte'
+        elif Service_Center=='slw1':
+          region= 'Noreste'
+        elif Service_Center=='smt1':
+          region= 'Noreste'
+        elif Service_Center=='srx1':
+          region= 'Noreste'
+        elif Service_Center=='sma1':
+          region= 'Noreste'
+        elif Service_Center=='sta1':
+          region= 'Noreste'
+        elif Service_Center=='snl1':
+          region= 'Noreste'
+        elif Service_Center=='99MLM':
+          region= '99minutos'
+        elif Service_Center=='DHLSU2':
+          region= 'DHL'
+        elif Service_Center=='DHLJC1':
+          region= 'DHL'
+        elif Service_Center=='ESTMLM':
+          region= 'Estafeta'
+        elif Service_Center=='FDXXS2':
+          region= 'FedEx'
+        elif Service_Center=='FDXSO1':
+          region= 'FedEx'
+        elif Service_Center=='PQXMLM':
+          region= 'Paquetexpress'
+        elif Service_Center=='SG2':
+          region= 'Centro'
+        elif Service_Center=='SJA1':
+          region= 'Golfo'
+        elif Service_Center=='SCT1':
+          region= 'Sureste'
+        elif Service_Center=='SMI1':
+          region= 'Sureste'
+        elif Service_Center=='SBJ1':
+          region= 'Bajio'
+        elif Service_Center=='SVM1':
+          region= 'Noreste'
+        elif Service_Center=='SMT2':
+          region= 'Noreste'
+        elif Service_Center=='SMX7':
+          region= 'Metro sur'
+        elif Service_Center=='SMX7_S':
+          region= 'Metro sur'
+        elif Service_Center=='SDC1':
+          region= 'Golfo'
+        elif Service_Center=='SCP1':
+          region= 'Sureste'
+        elif Service_Center=='SCP1_A':
+          region= 'Sureste'
+        elif Service_Center=='STP1':
+          region= 'Sureste'
+        elif Service_Center=='STR1_A':
+          region= 'Noroeste'
+        elif Service_Center=='SPD1':
+          region= 'Noroeste'
+        elif Service_Center=='SXL1':
+          region= 'Norte Pacifico'
+        elif Service_Center=='SCE1':
+          region= 'Norte Pacifico '
+        elif Service_Center=='SJD1':
+          region= 'Norte Pacifico'
+        elif Service_Center=='SCY1':
+          region= 'Bajio'
+        elif Service_Center=='SLZ1':
+          region= 'Bajio'
+        elif Service_Center=='SGD1_S':
+          region= 'Centro'
+        elif Service_Center=='SGD2_S':
+          region= 'Centro'
+        elif Service_Center=='SMT1_S':
+          region= 'Noreste'
+        elif Service_Center=='SMT2_S':
+          region= 'Noreste'
+        elif Service_Center=='FedEx':
+          region= 'FedEx'
+        elif Service_Center=='DHL':
+          region= 'DHL'
+        elif Service_Center=='Estafeta':
+          region= 'Estafeta'
+        elif Service_Center=='Paquete Express':
+          region= 'Paquete Express'
+        elif Service_Center=='sgd2':
+          region= 'Centro'
+        elif Service_Center=='99 Minutos':
+          region= '99 Minutos'
+
+        ticket = request.form['ticket']
+        fechatiket =  request.form['fechatiket']
+        Comentario =  request.form['Comentario']
+        estatus_orden = 'Pendiente'
+        now = datetime.now()
+        semana = now.isocalendar()
+        meses= ('Null','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiempbre','Octubre','Noviebre','Diciembre')
+        mes = meses[now.month]
+        Responsable =  session['FullName']
+        cursor= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT * FROM ordenes_no_procesables WHERE orden = %s AND estatus_orden = %s LIMIT 1 "
+        cursor.execute(sql, (orden,estatus_orden,))
+        data = cursor.fetchone()
+        if len(data)>0:
+          flash("Ya Existe un Ticket Pendiente para esta Orden")
+          return render_template('form.html',Datos = session)
+        elif len(orden)>0 and len(ticket)>0 and len(fechatiket)>0:
+          cursor= db_connection.cursor()
+          # Create a new record
+          sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, ticket, fecha_ticket, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cursor.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,ticket,fechatiket,estatus_orden,Comentario,semana[1],mes,Responsable,now,now,))
+          # connection is not autocommit by default. So you must commit to save
+          # your changes.
+          db_connection.commit()
+          flash("Registro Exitoso")
+          return render_template('form/f_n_p.html',Datos = session)
+        else:
+          flash("Llena Todos Los Datos")
+          return render_template('form/f_n_p.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_n_p.html',Datos = session)
+  except:
+        flash("No has enviado un registro")
+        return render_template('form/f_n_p.html',Datos = session)
 
 
-# @app.route('/a_p_f',methods=['POST'])
-# def actualizacion_planning_full():
-#   try:
-#       if request.method == 'POST':
-#           id_planing = request.form['id_planing']
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM planing WHERE id_planing = \'{}\' LIMIT 1 '.format(id_planing))
-#           data = cur.fetchall()
-#           if len(data)>0:
-#             return render_template('actualizacion/a_p_f.html',Datos = session,Info = data)
-#           else:
-#             flash("ID Invalido")
-#             return render_template('home.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('home.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('home.html',Datos = session)
+@app.route('/registro_planing',methods=['POST'])
+def registro_p():
+  try:
+      if request.method == 'POST':
+        Fecha_agendada = request.form['Fecha_agendada']
+        codigo_sku = int(request.form['codigo_sku'])
+        if codigo_sku == 10053:
+          descripcion = 'Caja Gaylord'
+        elif codigo_sku == 10060:
+          descripcion = 'Tarima Madera'
+        piezas_p = request.form['piezas_p']
+        unidades = request.form['unidades']
+        datos_de_la_unidad = request.form['datos_de_la_unidad']
+        operador = request.form['operador']
+        Origen = session['FcName']
+        destino = request.form['destino']
+        estatus = 'Pendiente'
+        usuario = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO planing (Fecha_agendada, codigo_sku, descripción, piezas_p, unidades, datos_de_la_unidad, operador, origen, destino,	reponsable, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,datos_de_la_unidad,operador,Origen,destino,usuario,estatus,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_planning.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_planning.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_planning.html',Datos = session)
 
 
-# @app.route('/a_p_xd',methods=['POST'])
-# def actualizacion_planning_cross():
-#   try:
-#       if request.method == 'POST':
-#         id_planing = request.form['id_planing']
-#         cur = mysql.connection.cursor()
-#         cur.execute('SELECT * FROM planing WHERE id_planing = \'{}\' LIMIT 1 '.format(id_planing))
-#         data = cur.fetchall()
-#         if len(data)>0:
-#           id=data[0][0]
-#           status ='Procesando'
-#           now = datetime.now()
-#           responsable=session['FullName']
-#           cur = mysql.connection.cursor()
-#           cur.execute("""
-#           UPDATE planing
-#           SET hora_inicio_de_carga = %s,
-#           status = %s,
-#           responsable_xd = %s
-#           WHERE id_planing  = %s
-#           """,(now,status,responsable,id))
-#           mysql.connection.commit()
-#           return render_template('actualizacion/a_p_xd.html',Datos = session,Info = data)
-#         else:
-#           flash("ID Invalido")
-#           return render_template('home.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('home.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('home.html',Datos = session)
+@app.route('/a_p_f',methods=['POST'])
+def actualizacion_planning_full():
+  try:
+      if request.method == 'POST':
+        id_planing = request.form['id_planing']
+        cursor= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT * FROM planing WHERE id_planing = %s LIMIT 1  "
+        cursor.execute(sql, (id_planing,))
+        data = cursor.fetchone()
+        if len(data)>0:
+          return render_template('actualizacion/a_p_f.html',Datos = session,Info = data)
+        else:
+          flash("ID Invalido")
+          return render_template('home.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('home.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('home.html',Datos = session)
 
 
-# @app.route('/a_o_np',methods=['POST'])
-# def actualizacion_ordenes_no_procesables():
-#   try:
-#       if request.method == 'POST':
-#         orden = request.form['orden']
-#         status = 'Pendiente'
-#         cur = mysql.connection.cursor()
-#         cur.execute('SELECT * FROM ordenes_no_procesables WHERE orden = {}  LIMIT 1 '.format(orden))
-#         data = cur.fetchall()
-#         if len(data)>0:
-#           return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
-#         else:
-#           flash("Numero de Orden Invalido")
-#           return render_template('home.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('home.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('home.html',Datos = session)
+@app.route('/a_p_xd',methods=['POST'])
+def actualizacion_planning_cross():
+  try:
+      if request.method == 'POST':
+        cursor= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT * FROM planing WHERE id_planing = %s LIMIT 1 "
+        cursor.execute(sql, (id_planing,))
+        data = cursor.fetchone()
+        if len(data)>0:
+          id=data[0][0]
+          status ='Procesando'
+          now = datetime.now()
+          responsable=session['FullName']
+          cursor= db_connection.cursor()
+          # Create a new record
+          sql = "UPDATE planing SET hora_inicio_de_carga = %s, status = %s, responsable_xd = %s WHERE id_planing  = %s"
+          cursor.execute(sql,(now,status,responsable,id,))
+          # connection is not autocommit by default. So you must commit to save
+          # your changes.
+          db_connection.commit()
+          return render_template('actualizacion/a_p_xd.html',Datos = session,Info = data)
+        else:
+          flash("ID Invalido")
+          return render_template('home.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('home.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('home.html',Datos = session)
 
 
-# @app.route('/r_a_p_f',methods=['POST'])
-# def registro_actalizacion_planning_full():
-#   try:
-#     if request.method == 'POST':
-#         id =  request.form['id']
-#         estatus = 'Enviado'
-#         usuario = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute("""
-#         UPDATE planing
-#         SET status = %s,
-#         arribo_a_fc_destino = %s,
-#         responsable_fc = %s
-#         WHERE id_planing = %s
-#         """,(estatus,now,usuario,id))
-#         mysql.connection.commit()
-#         flash("Registro Exitoso")
-#         return render_template('form/f_p_f.html',Datos = session)
-#     else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_p_f.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_p_f.html',Datos = session)
+@app.route('/a_o_np',methods=['POST'])
+def actualizacion_ordenes_no_procesables():
+  try:
+      if request.method == 'POST':
+        orden = request.form['orden']
+        status = 'Pendiente'
+        cursor= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT * FROM ordenes_no_procesables WHERE orden = %s  LIMIT 1 "
+        cursor.execute(sql, (orden,))
+        data = cursor.fetchone()
+        if len(data)>0:
+          return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
+        else:
+          flash("Numero de Orden Invalido")
+          return render_template('home.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('home.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('home.html',Datos = session)
 
 
-# @app.route('/r_a_p_xd',methods=['POST'])
-# def registro_actalizacion_planning_cross():
-#   try:
-#     if request.method == 'POST':
-#         id = request.form['id']
-#         marchamo =  request.form['marchamo']
-#         marchamo2 =  request.form['marchamo2']
-#         estatus = 'Enviado'
-#         usuario = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute("""
-#         UPDATE planing
-#         SET hora_de_despacho = %s,
-#         marchamo = %s,
-#         marchamo2 = %s,
-#         status = %s
-#         WHERE id_planing  = %s
-#         """,(now,marchamo,marchamo2,estatus,id))
-#         mysql.connection.commit()
-#         flash("Registro Exitoso")
-#         return render_template('form/f_p_xd.html',Datos = session)
-#     else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_p_xd.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
+@app.route('/r_a_p_f',methods=['POST'])
+def registro_actalizacion_planning_full():
+  try:
+    if request.method == 'POST':
+        id =  request.form['id']
+        estatus = 'Enviado'
+        usuario = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "UPDATE planing SET status = %s, arribo_a_fc_destino = %s, responsable_fc = %s WHERE id_planing = %s"
+        cursor.execute(sql,(estatus,now,usuario,id,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_p_f.html',Datos = session)
+    else:
+        flash("No has enviado un registro")
+        return render_template('form/f_p_f.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_p_f.html',Datos = session)
+
+
+@app.route('/r_a_p_xd',methods=['POST'])
+def registro_actalizacion_planning_cross():
+  try:
+    if request.method == 'POST':
+        id = request.form['id']
+        marchamo =  request.form['marchamo']
+        marchamo2 =  request.form['marchamo2']
+        estatus = 'Enviado'
+        usuario = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "UPDATE planing SET hora_de_despacho = %s, marchamo = %s, marchamo2 = %s, status = %s WHERE id_planing  = %s"
+        cursor.execute(sql,(estatus,now,usuario,id,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_p_xd.html',Datos = session)
+    else:
+        flash("No has enviado un registro")
+        return render_template('form/f_p_xd.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
 #     return render_template('form/f_p_xd.html',Datos = session)
 
 
-# @app.route('/r_a_o_np',methods=['POST'])
-# def registro_actalizacion_ordenes_no_procesables():
-#   try:
-#     if request.method == 'POST':
-#         id_orden =  request.form['id_orden']
-#         estatus = request.form['Status']
-#         usuario = session['FullName']
-#         Comentario = request.form['Comentario']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute("""
-#         UPDATE ordenes_no_procesables
-#         SET estatus_orden = %s,
-#         Comentario = %s,
-#         fecha_actualizacion = %s,
-#         responsable_actualizacion = %s
-#         WHERE id_orden  = %s
-#         """,(estatus,Comentario,now,usuario,id_orden))
-#         mysql.connection.commit()
-#         flash("Registro Exitoso")
-#         return render_template('form/f_a_o.html',Datos = session)
-#     else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_a_o.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_a_o.html',Datos = session)
+@app.route('/r_a_o_np',methods=['POST'])
+def registro_actalizacion_ordenes_no_procesables():
+  try:
+    if request.method == 'POST':
+        id_orden =  request.form['id_orden']
+        estatus = request.form['Status']
+        usuario = session['FullName']
+        Comentario = request.form['Comentario']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "UPDATE ordenes_no_procesables SET estatus_orden = %s, Comentario = %s, fecha_actualizacion = %s, responsable_actualizacion = %s WHERE id_orden  = %s"
+        cursor.execute(sql,(estatus,Comentario,now,usuario,id_orden,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_a_o.html',Datos = session)
+    else:
+        flash("No has enviado un registro")
+        return render_template('form/f_a_o.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_a_o.html',Datos = session)
 
 #Cerrar Session
 @app.route('/logout')
@@ -866,9 +879,12 @@ def Cerrar_session():
 #               session['inicio_t_e_s']=request.form['inicio']
 #               if len(request.form['fin'])>0:
 #                 session['fin_t_e_s']=request.form['fin']
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2))
-#                 data = cur.fetchall()
+#                 with db_connection:
+#                   with db_connection.cursor() as cursor:
+#                     # Read a single record
+#                     sql = "SELECT * FROM entrada_svcs WHERE %s LIKE %s AND Fecha_Creación	 BETWEEN %s AND %s LIMIT %s, %s"
+#                     cursor.execute(sql, (session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2,))
+#                     data = cursor.fetchone()
 #                 return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
 #               else:
 #                 cur = mysql.connection.cursor()
@@ -938,7 +954,6 @@ def Cerrar_session():
 #           cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
 #           data = cur.fetchall()
 #           return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-          
 #   except:
 #     flash("Inicia Secion")
 #     return render_template('index.html')
@@ -1041,236 +1056,280 @@ def Cerrar_session():
 #     return render_template('index.html')
 
 
-# @app.route('/t_p/<rowi>',methods=['POST','GET'])
-# def Reporte_prealert(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi_t_p']=rowi
-#           row1 = int(session['rowi_t_p'])
-#           row2 = 50
-#         else:
-#             row1 = int(session['rowi_t_p'])
-#             row2 =50
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_p']=request.form['filtro']
-#             session['valor_t_p']=request.form['valor']
-#             if 'datefilter' in request.form:
-#               if len(request.form['datefilter'])>0:
-#                 daterangef=request.form['datefilter']
-#                 daterange=daterangef.replace("-", "' AND '")
-#                 session['datefilter']=daterange
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               session.pop('datefilter')
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#           else:
-#             if 'datefilter' in request.form:
-#               if len(request.form['datefilter'])>0:
-#                 if 'valor_t_p' in session:
-#                   if len(session['valor_t_p'])>0:
-#                     daterangef=request.form['datefilter']
-#                     daterange=daterangef.replace("-", "' AND '")
-#                     session['datefilter']=daterange
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                   else:
-#                     session.pop('filtro_t_p')
-#                     session.pop('valor_t_p')
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                 else:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 if 'valor_t_p' in session:
-#                   session.pop('filtro_t_p')
-#                   session.pop('valor_t_p')
-#                   if 'datefilter' in session:
-#                     session.pop('datefilter')
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                 else:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               if 'valor_t_p' in session:
-#                 if 'datefilter' in session:
-#                     session.pop('datefilter')
-#                 session.pop('filtro_t_p')
-#                 session.pop('valor_t_p')
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-
-#         else:
-#           if 'valor_t_p' in session:
-#             if len(session['valor_t_p'])>0:
-#               if 'datefilter' in session:
-#                 if len(session['datefilter'])>0:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                 else:
-#                   session.pop('datefilter')
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data) 
-#             else:
-#               session.pop('filtro_t_p')
-#               session.pop('valor_t_p')
-#               if 'datefilter' in session:
-#                 if len(session['datefilter'])>0:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                 else:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#           else:
-#             if 'datefilter' in session:
-#               if len(session['datefilter'])>0:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 session.pop('datefilter')
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               if 'datefilter' in request.form:
-#                 if len(request.form['datefilter'])>0:
-#                   daterangef=request.form['datefilter']
-#                   daterange=daterangef.replace("-", "' AND '")
-#                   session['datefilter']=daterange
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert WHERE  Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#                 else:
-#                   cur = mysql.connection.cursor()
-#                   cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#                   data = cur.fetchall()
-#                   return render_template('reportes/t_p.html',Datos = session,Infos =data) 
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data) 
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_p']=rowi
-#           row1 = int(session['rowi_t_p'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_p'])
-#           row2 =50
-#         if 'valor_t_p' in session:
-#           if len(session['valor_t_p'])>0:
-#             if 'datefilter' in session:
-#               if len(session['datefilter'])>0:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 session.pop('datefilter')
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_p.html',Datos = session,Infos =data) 
-#           else:
-#             session.pop('filtro_t_p')
-#             session.pop('valor_t_p')
-#             if 'datefilter' in session:
-#               if len(session['datefilter'])>0:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#               else:
-#                 session.pop('datefilter')
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#         else:
-#           if 'datefilter' in session:
-#             if len(session['datefilter'])>0:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#             else:
-#               session.pop('datefilter')
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_p.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_p.html',Datos = session,Infos =data)         
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+@app.route('/t_p/<rowi>',methods=['POST','GET'])
+def Reporte_prealert(rowi):
+  # try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi_t_p']=rowi
+          row1 = int(session['rowi_t_p'])
+          row2 = 50
+        else:
+            row1 = int(session['rowi_t_p'])
+            row2 =50
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_p']=request.form['filtro']
+            session['valor_t_p']=request.form['valor']
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                daterangef=request.form['datefilter']
+                daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                session['datefilter']=daterange
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql= "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              if 'datefilter' in session:
+                session.pop('datefilter')
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+              cursor.execute(sql)
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          else:
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                if 'valor_t_p' in session:
+                  if len(session['valor_t_p'])>0:
+                    daterangef=request.form['datefilter']
+                    daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                    session['datefilter']=daterange
+                    cursor= db_connection.cursor()
+                    # Read a single record
+                    sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                    cursor.execute(sql)
+                    data = cursor.fetchall()
+                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                  else:
+                    session.pop('filtro_t_p')
+                    session.pop('valor_t_p')
+                    cursor= db_connection.cursor()
+                    # Read a single record
+                    sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                    cursor.execute(sql)
+                    data = cursor.fetchall()
+                    return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                if 'valor_t_p' in session:
+                  session.pop('filtro_t_p')
+                  session.pop('valor_t_p')
+                  if 'datefilter' in session:
+                    session.pop('datefilter')
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              if 'valor_t_p' in session:
+                if 'datefilter' in session:
+                    session.pop('datefilter')
+                session.pop('filtro_t_p')
+                session.pop('valor_t_p')
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+              cursor.execute(sql)
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+        else: 
+          if 'valor_t_p' in session:
+            if len(session['valor_t_p'])>0:
+              if 'datefilter' in session:
+                if len(session['datefilter'])>0:
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  session.pop('datefilter')
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+            else:
+              session.pop('filtro_t_p')
+              session.pop('valor_t_p')
+              if 'datefilter' in session:
+                if len(session['datefilter'])>0:
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          else:
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                session.pop('datefilter')
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              if 'datefilter' in request.form:
+                if len(request.form['datefilter'])>0:
+                  daterangef=request.form['datefilter']
+                  daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                  session['datefilter']=daterange
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data)
+                else:
+                  cursor= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                  cursor.execute(sql)
+                  data = cursor.fetchall()
+                  return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_p']=rowi
+          row1 = int(session['rowi_t_p'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_p'])
+          row2 =50
+        if 'valor_t_p' in session:
+          if len(session['valor_t_p'])>0:
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+              cursor.execute(sql, )
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data) 
+          else:
+            session.pop('filtro_t_p')
+            session.pop('valor_t_p')
+            if 'datefilter' in session:
+              if len(session['datefilter'])>0:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+              else:
+                cursor= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                cursor.execute(sql)
+                data = cursor.fetchall()
+                return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+              cursor.execute(sql)
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+        else:
+          if 'datefilter' in session:
+            if len(session['datefilter'])>0:
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+              cursor.execute(sql)
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+            else:
+              session.pop('datefilter')
+              cursor= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+              cursor.execute(sql)
+              data = cursor.fetchall()
+              return render_template('reportes/t_p.html',Datos = session,Infos =data)
+          else:
+            cursor= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cursor.execute(sql)
+            data = cursor.fetchall()
+            return render_template('reportes/t_p.html',Datos = session,Infos =data)         
+  # except:
+  #   flash("Inicia Secion")
+  #   return render_template('index.html')
 
 
 # @app.route('/t_planning/<rowi>',methods=['POST','GET'])
@@ -1507,8 +1566,7 @@ def Cerrar_session():
 #           cur = mysql.connection.cursor()
 #           cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
 #           data = cur.fetchall()
-#           return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-        
+#           return render_template('reportes/t_s_s.html',Datos = session,Infos =data) 
 #       else: 
 #         if request.method == 'GET':
 #           session['rowi_t_s_s']=rowi
@@ -1774,13 +1832,13 @@ def Cerrar_session():
 #     return render_template("home.html",Datos=session)
 
 
-# @app.route("/trackinOrden",methods=['POST','GET'])
-# def Track_Inorden():
-#   try:
-#     if 'FullName' in session:
-#         return render_template("form/trackinorden.html", Datos =session)
-#   except:  
-#     return render_template("home.html",Datos=session)
+@app.route("/trackinOrden",methods=['POST','GET'])
+def Track_Inorden():
+  try:
+    if 'FullName' in session:
+        return render_template("form/trackinorden.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
 
 
 # @app.route("/Trackin_ordenes",methods=['POST','GET'])
@@ -1877,73 +1935,73 @@ def Cerrar_session():
 #     return response
 
 
-# @app.route('/insumos',methods=['GET'])
-# def insumos():
-#   if 'FullName' in session:
-#     return render_template('insumos.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+@app.route('/insumos',methods=['GET'])
+def insumos():
+  if 'FullName' in session:
+    return render_template('insumos.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
 
-# @app.route('/paquetes',methods=['GET'])
-# def paquetes():
-#   if 'FullName' in session:
-#     return render_template('paquetes.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+@app.route('/paquetes',methods=['GET'])
+def paquetes():
+  if 'FullName' in session:
+    return render_template('paquetes.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
 
-# @app.route('/gestiondepaquetes',methods=['GET'])
-# def gestiondepaquetes():
-#   if 'FullName' in session:
-#     return render_template('gestiondepaquetes.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+@app.route('/gestiondepaquetes',methods=['GET'])
+def gestiondepaquetes():
+  if 'FullName' in session:
+    return render_template('gestiondepaquetes.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
 
-# @app.route('/comercialcarrier',methods=['GET'])
-# def comercialcarrier():
-#   if 'FullName' in session:
-#     return render_template('comercialcarrier.html',Datos = session)
-#   else:
-#     flash("Inicia Sesion")
-#     return render_template('index.html')
+@app.route('/comercialcarrier',methods=['GET'])
+def comercialcarrier():
+  if 'FullName' in session:
+    return render_template('comercialcarrier.html',Datos = session)
+  else:
+    flash("Inicia Sesion")
+    return render_template('index.html')
 
 
-# @app.route('/logistic',methods=['GET'])
-# def logistic():
-#   if 'FullName' in session:
-#     return render_template('logistic.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+@app.route('/logistic',methods=['GET'])
+def logistic():
+  if 'FullName' in session:
+    return render_template('logistic.html',Datos = session)
+  else:
+    return render_template('index.html')
 
 
-# @app.route('/problem',methods=['GET'])
-# def Problem():
-#   if 'FullName' in session:
-#     return render_template('ProblemSolver.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+@app.route('/problem',methods=['GET'])
+def Problem():
+  if 'FullName' in session:
+    return render_template('ProblemSolver.html',Datos = session)
+  else:
+    return render_template('index.html')
 
 
-# @app.route('/f_r_cc',methods=['GET'])
-# def Recibo_cc():
-#   if 'FullName' in session:
-#     return render_template('form/f_r_cc.html',Datos = session)
-#   else:
-#     return render_template('index.html')
+@app.route('/f_r_cc',methods=['GET'])
+def Recibo_cc():
+  if 'FullName' in session:
+    return render_template('form/f_r_cc.html',Datos = session)
+  else:
+    return render_template('index.html')
 
-# @app.route('/Recibocomercialcarrier',methods=['POST','GET'])
-# def ReciboComercialCarrier():
-#   try:  
-#     if request.method == 'POST':
-#       paquetera = request.form['Paquetera']
-#       return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
-#   except:
-#     return render_templateI('comercialcarrier.html',Datos=session)
+@app.route('/Recibocomercialcarrier',methods=['POST','GET'])
+def ReciboComercialCarrier():
+  try:  
+    if request.method == 'POST':
+      paquetera = request.form['Paquetera']
+      return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
+  except:
+    return render_templateI('comercialcarrier.html',Datos=session)
 
 
 # @app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
