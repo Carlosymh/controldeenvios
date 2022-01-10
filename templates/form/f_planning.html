@@ -1,73 +1,49 @@
 {% extends 'nav.html'%}
-{% block cabezera%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
-    <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
-    <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Khula:wght@800&display=swap" rel="stylesheet">
-    <title>Planeación</title>
-</head>
-<body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages%}
-    {%for message in messages%}
-    <script>
-        alert('{{message}}')
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+{% endblock %}
+{% block titulo %}
+<title>Planeación</title>
+{% endblock %}
+{% block body%}
+    <div class="fondo"></div>
+    <section>
+        <form action="/registro_planing" class="form" method="POST" >
+            <h2 class="titule" > Planeación </h2>
+            <label for="Fecha_agendada">Fecha agendada : 
+                <input type="date" name="Fecha_agendada"  required >
+            </label>
+            <label for="codigo_sku">Codigo sku :
+                <select name="codigo_sku" required>
+                    <option value="10053">10053 -> Caja Gaylord</option>
+                    <option value="10060">10060 -> Tarima Madera</option>
+                </select>
+            </label>
+            <label for="piezas_p">Piezas programadas :
+                <input type="number" name="piezas_p"  required >
+            </label>
+            <label for="unidades">Cantidad de unidades :
+                <input type="number" name="unidades"  required >
+            </label>
+            <label for="datos_de_la_unidad ">Datos de la unidad  :
+                <input type="text" name="datos_de_la_unidad" placeholder="Datos de la unidad" required >
+            </label>
+            <label for="operador">Operador  :
+                <input type="text" name="operador" placeholder="operador"  required >
+            </label>
+            <label for="destino">Destino  : 
+                <select name="destino" required>
+                    <option value="Prologis">Prologis</option>
+                    <option value="Odonnell">O'Donnell</option>
+                    <option value="Mega Park">Mega Park</option>
+                    <option value="CPA Logistics Center">CPA Logistics Center</option>
+                    <option value="Guadalajara">Guadalajara</option>
+                    <option value="Monterrey">Monterrey</option>
+                </select>
+            </label>
+            <input type="submit" class="btn" name="enviar" value="enviar" >
+        </form>
+    </section>
+    <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
-    {%endfor%}
-    {%endif%}
-    {%endwith%}
-    {% endblock %}
-    {% block body%}
-        <div class="fondo"></div>
-        <section>
-            <form action="/registro_planing" class="form" method="POST" >
-                <h2 class="titule" > Planeación </h2>
-                <label for="Fecha_agendada">Fecha agendada : 
-                    <input type="date" name="Fecha_agendada"  required >
-                </label>
-                <label for="codigo_sku">Codigo sku :
-                    <select name="codigo_sku" required>
-                        <option value="10053">10053 -> Caja Gaylord</option>
-                        <option value="10060">10060 -> Tarima Madera</option>
-                    </select>
-                </label>
-                <label for="piezas_p">Piezas programadas :
-                    <input type="number" name="piezas_p"  required >
-                </label>
-                <label for="unidades">Cantidad de unidades :
-                    <input type="number" name="unidades"  required >
-                </label>
-                <label for="datos_de_la_unidad ">Datos de la unidad  :
-                    <input type="text" name="datos_de_la_unidad" placeholder="Datos de la unidad" required >
-                </label>
-                <label for="operador">Operador  :
-                    <input type="text" name="operador" placeholder="operador"  required >
-                </label>
-                <label for="destino">Destino  : 
-                    <select name="destino" required>
-                        <option value="Prologis">Prologis</option>
-                        <option value="Odonnell">O'Donnell</option>
-                        <option value="Mega Park">Mega Park</option>
-                        <option value="CPA Logistics Center">CPA Logistics Center</option>
-                        <option value="Guadalajara">Guadalajara</option>
-                        <option value="Monterrey">Monterrey</option>
-                    </select>
-                </label>
-                <input type="submit" class="btn" name="enviar" value="enviar" >
-            </form>
-        </section>
-        <script src="{{url_for('static', filename='js/interfas.js')}}">
-    </script>
-</body>
-</html>
 {% endblock %}

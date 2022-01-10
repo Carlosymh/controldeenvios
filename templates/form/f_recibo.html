@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image" href="{{url_for('static', filename='img/logo.icon')}}"> 
+    <link rel="icon" type="image" href="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.10.0/mercadolibre/favicon.svg"> 
     <link href="//db.onlinewebfonts.com/c/69f1400361a215519d385199118a34aa?family=Harabara" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{{url_for('static', filename='css/nav.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
@@ -31,7 +31,6 @@
     <div class="user_info">
         <p>Estas Viendo:{{Datos['SiteName']}} | {{Datos['UserName']}}</p>  
     </div>
-    
     </nav>
         <div class="fondo"></div>
         <section>
@@ -40,25 +39,22 @@
                     <h3>ID de envío:  {{Datos['key_pa']}}</h3>
                     <label for="Orden">Orden: </label>
                     <input type="number" name="Orden" placeholder="Numero de Orden"/> 
-                    <label for="Paquetera">Paquetera: </label>
-                    <select name="Paquetera" required>
-                        <option value="Mercado Envíos">Mercado Envíos</option>
-                        <option value="DHL">DHL</option>
-                        <option value="Estafeta">Estafeta</option>
-                        <option value="Paquetexpress">Paquetexpress</option>
-                        <option value="FedEx">FedEx</option>
-                        <option value="99 minutos">99 minutos</option>
-                    </select>
-                    <label for="status">Estatus: </label>
-                    <select name="status" required>
-                        <option value="Rechazado">Rechazado</option>
-                        <option value="Aceptado">Aceptado</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                    <label for="comentario">comentario: </label>
-                    <input type="text" name="comentario" placeholder="Comentario"  /> 
-                <input type="submit" class="btn" name="enviar" value="Continuar" >
+                    <label for="Paquetera">Paquetera: 
+                        <select name="Paquetera" required>
+                            <option value="Mercado Envíos">Mercado Envíos</option>
+                            <option value="DHL">DHL</option>
+                            <option value="Estafeta">Estafeta</option>
+                            <option value="Paquetexpress">Paquetexpress</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="99 minutos">99 minutos</option>
+                        </select>
+                    </label>
+                    <label for="status">Estatus: 
+                        <select name="status" required>
+                            <option value="Rechazado">Rechazado</option>
+                            <option value="Aceptado">Aceptado</option>
+                        </select>
+                    </label>
                 <a href="/FinalizarRecibo" class="btn">Cerrar Pallet</a>
             </form>
         </section>
