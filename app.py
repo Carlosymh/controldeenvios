@@ -3,7 +3,6 @@ import io
 import csv
 from fpdf import FPDF
 import pymysql
-# from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 import hashlib
@@ -195,7 +194,7 @@ def registro():
 #Registro de Usuarios 
 @app.route('/registrar',methods=['POST'])
 def registrar():
-  try:
+  # try:
       if request.method == 'POST':
         nombre =  request.form['nombre']
         apellido =  request.form['apellido']
@@ -213,7 +212,7 @@ def registrar():
           sql = "SELECT * FROM usuarios WHERE Usuario =%s LIMIT 1 "
           cursor.execute(sql, (usuario,))
           data = cursor.fetchone()
-          if len(data) > 0:
+          if data != None:
             flash("El Usuario Ya Existe")
             return render_template('registro.html',Datos =session)
           else:
@@ -221,7 +220,6 @@ def registrar():
             # Create a new record
             sql = "INSERT INTO usuarios (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
             cursor.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
-
             # connection is not autocommit by default. So you must commit to save
             # your changes.
             db_connection.commit()
@@ -230,8 +228,8 @@ def registrar():
         else:
           flash("Las Contraceñas no Cionciden")
           return render_template('registro.html',Datos =session)
-  except:
-    return render_template('registro.html',Datos =session)
+  # except:
+  #   return render_template('registro.html',Datos =session)
 def _create_password(password):
    return generate_password_hash(password,'pbkdf2:sha256:30',30)
 
@@ -1620,216 +1618,229 @@ def Reporte_prealert(rowi):
 #     return render_template('index.html')
 
 
-# @app.route('/validacion_recibo',methods=['Post'])
-# def Verificacion_orden_recibo():
-#   try:
-#       if request.method == 'POST':
-#         session['key_pa'] = request.form['prealertkey']
-#         cur = mysql.connection.cursor()
-#         cur.execute('SELECT * FROM prealert WHERE  ID_Envio_Prealert = \'{}\' limit 1'.format(session['key_pa']))
-#         data = cur.fetchall()
-#         if len(data)>0:
-#           return render_template('form/f_recibo.html',Datos = session,Info = data)
-#         else:
-#           flash("Numero de Orden Invalido")
-#           return render_template('form/f_r_f.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_r_f.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('home.html',Datos = session)
+@app.route('/validacion_recibo',methods=['Post'])
+def Verificacion_orden_recibo():
+  try:
+      if request.method == 'POST':
+        session['key_pa'] = request.form['prealertkey']
+        cursor= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT * FROM prealert WHERE  ID_Envio_Prealert = %s limit 1"
+        cursor.execute(sql,(session['key_pa'],))
+        data = cursor.fetchone()
+        if data != None:
+          return render_template('form/f_recibo.html',Datos = session,Info = data)
+        else:
+          flash("Numero de Orden Invalido")
+          return render_template('form/f_r_f.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_f.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('home.html',Datos = session)
 
 
-# @app.route('/registro_recibo',methods=['POST'])
-# def registroRecibo():
-#   try:
-#       if request.method == 'POST':
-#         key_pa = session['key_pa']
-#         facility = session['FcName']
-#         siteName = session['SiteName']
-#         Orden = request.form['Orden']
-#         Paquetera = request.form['Paquetera']
-#         status = request.form['status']
-#         comentario = request.form['comentario']
-#         reponsable = session['FullName']
-#         now = datetime.now()
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(key_pa, Orden, Paquetera, status, comentario, facility, siteName, reponsable, now, now))
-#         mysql.connection.commit() 
-#         flash("Registro Exitoso")
-#         return render_template('form/f_recibo.html',Datos = session)
-#       else:
-#         flash("No has enviado un registro")
-#         return render_template('form/f_r_f.html',Datos = session)
-#   except:
-#     flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_r_f.html',Datos = session)
+@app.route('/registro_recibo',methods=['POST'])
+def registroRecibo():
+  try:
+      if request.method == 'POST':
+        key_pa = session['key_pa']
+        facility = session['FcName']
+        siteName = session['SiteName']
+        Orden = request.form['Orden']
+        Paquetera = request.form['Paquetera']
+        status = request.form['status']
+        comentario = request.form['comentario']
+        reponsable = session['FullName']
+        now = datetime.now()
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(key_pa, Orden, Paquetera, status, comentario, facility, siteName, reponsable, now, now,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        flash("Registro Exitoso")
+        return render_template('form/f_recibo.html',Datos = session)
+      else:
+        flash("No has enviado un registro")
+        return render_template('form/f_r_f.html',Datos = session)
+  except:
+    flash("Llena todos los Campos Correctamente")
+    return render_template('form/f_r_f.html',Datos = session)
 
 
-# @app.route('/pdf',methods=['POST','GET'])
-# def pdf_template():
-  
-#         Key =  session['key_pa']
-#         img =qrcode.make(Key)
-#         file =open('qr.png','wb')
-#         img.save(file)
-#         lugar = 'De: '+session['FcName']+' | '+session['SiteName']
-#         facility = session['FcName']
-#         site = session['SiteName']
-#         today= datetime.today()
-#         if 'destinoPrealert' in session:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
-#           result = cur.fetchall()
-#           if len(result)>0:
-#             Marchamo = " Marchamo:  "+ str(result[0][11])
-#             Destino = ' a: '+str(result[0][4])+' | '+str(result[0][5])
-#             EmpresaTransporte = " Empresa Transporte: "+str(result[0][6]) 
-#             Transportista = "  Transportista: " + str(result[0][7])
-#             Placas = "  Placas: "+ str(result[0][8]).upper()
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert WHERE ID_Envio_Prealert = \'{}\' AND Origen =\'{}\' AND SiteName =\'{}\'  '.format(Key,facility,site))
-#           result = cur.fetchall()
-#         if 'destinoPrealert' in session:
-#           pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
-#           pdf.add_page()
+@app.route('/pdf',methods=['POST','GET'])
+def pdf_template():
+        Key =  session['key_pa']
+        img =qrcode.make(Key)
+        file =open('qr.png','wb')
+        img.save(file)
+        lugar = 'De: '+session['FcName']+' | '+session['SiteName']
+        facility = session['FcName']
+        site = session['SiteName']
+        today= datetime.today()
+        if 'destinoPrealert' in session:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE ID_Envio_Prealert = %s AND Origen =%s AND SiteName =%s"
+          cursor.execute(sql, (Key,facility,site,))
+          data = cursor.fetchall()
+          if len(result)>0:
+            Marchamo = " Marchamo:  "+ str(result[0][11])
+            Destino = ' a: '+str(result[0][4])+' | '+str(result[0][5])
+            EmpresaTransporte = " Empresa Transporte: "+str(result[0][6]) 
+            Transportista = "  Transportista: " + str(result[0][7])
+            Placas = "  Placas: "+ str(result[0][8]).upper()
+        else:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE ID_Envio_Prealert = %s AND Origen =%s AND SiteName =%s"
+          cursor.execute(sql, (Key,facility,site,))
+          data = cursor.fetchall()
+        if 'destinoPrealert' in session:
+          pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
+          pdf.add_page()
           
-#           page_width = pdf.w - 2 * pdf.l_margin
+          page_width = pdf.w - 2 * pdf.l_margin
           
-#           pdf.ln(5)
-#           pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=50, h = 20)
-#           pdf.set_font('Times','B',30)
-#           pdf.set_text_color(0,47,109)  
-#           pdf.text(x = 80, y = 19 ,txt =  "Receiving Log. Inversa" )
-#           pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
-#           pdf.ln(40)
+          pdf.ln(5)
+          pdf.image('static/img/MercadoLibre_logo.png', x= 20, y = 10, w=50, h = 20)
+          pdf.set_font('Times','B',30)
+          pdf.set_text_color(0,47,109)  
+          pdf.text(x = 80, y = 19 ,txt =  "Receiving Log. Inversa" )
+          pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
+          pdf.ln(40)
           
-#           pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
+          pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
 
-#           pdf.set_font('Times','B',12) 
+          pdf.set_font('Times','B',12) 
           
-#           pdf.set_text_color(0,0,0) 
-#           pdf.text( x= 70, y = 57, txt = str(today))
-#           pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
-#           pdf.text( x= 70, y = 77, txt = Key)
+          pdf.set_text_color(0,0,0) 
+          pdf.text( x= 70, y = 57, txt = str(today))
+          pdf.text( x= 70, y = 67, txt = "Pre-Alert Key:")
+          pdf.text( x= 70, y = 77, txt = Key)
 
-#           col_widt3 = page_width/2
-
-
-#           pdf.set_font('Times','B',12) 
-#           pdf.cell(col_widt3, 0.0, lugar, align='C')
-#         else:
-#           pdf = FPDF(orientation = 'P',unit = 'mm', format=(120,120))
-#           pdf.add_page()
-          
-#           page_width = pdf.w - 2 * pdf.l_margin
-          
-#           pdf.ln(5)
-#           pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 5, w=30, h = 15)
-#           pdf.set_font('Times','B',20)
-#           pdf.set_text_color(0,47,109)  
-#           pdf.text(x = 40, y = 15 ,txt =  "Receiving Log. Inversa" )
-#           pdf.text(x = 40, y = 25 ,txt =  "Paquetes e Insumo" )
-#           pdf.ln(80)
-          
-#           pdf.image('qr.png', x= 5, y = 40, w=40, h = 40)
-
-#           pdf.set_font('Times','B',10) 
-          
-#           pdf.set_text_color(0,0,0) 
-#           pdf.text( x= 50, y = 47, txt = str(today))
-#           pdf.text( x= 50, y = 55, txt = "Pre-Alert Key:")
-#           pdf.text( x= 50, y = 63, txt = Key)
-
-#           col_widt3 = page_width/2
+          col_widt3 = page_width/2
 
 
-#           pdf.set_font('Times','B',12) 
-#           pdf.cell(col_widt3, 0.0, lugar, align='C')
-#         if 'destinoPrealert' in session:
+          pdf.set_font('Times','B',12) 
+          pdf.cell(col_widt3, 0.0, lugar, align='C')
+        else:
+          pdf = FPDF(orientation = 'P',unit = 'mm', format=(120,120))
+          pdf.add_page()
           
-#           if len(result)>0:
-#             pdf.cell(col_widt3, 0.0, Destino, align='C')
+          page_width = pdf.w - 2 * pdf.l_margin
+          
+          pdf.ln(5)
+          pdf.image('static/img/MercadoLibre_logo.png', x= 5, y = 5, w=30, h = 15)
+          pdf.set_font('Times','B',20)
+          pdf.set_text_color(0,47,109)  
+          pdf.text(x = 40, y = 15 ,txt =  "Receiving Log. Inversa" )
+          pdf.text(x = 40, y = 25 ,txt =  "Paquetes e Insumo" )
+          pdf.ln(80)
+          
+          pdf.image('qr.png', x= 5, y = 40, w=40, h = 40)
+
+          pdf.set_font('Times','B',10) 
+          
+          pdf.set_text_color(0,0,0) 
+          pdf.text( x= 50, y = 47, txt = str(today))
+          pdf.text( x= 50, y = 55, txt = "Pre-Alert Key:")
+          pdf.text( x= 50, y = 63, txt = Key)
+
+          col_widt3 = page_width/2
+
+
+          pdf.set_font('Times','B',12) 
+          pdf.cell(col_widt3, 0.0, lugar, align='C')
+        if 'destinoPrealert' in session:
+          
+          if len(result)>0:
+            pdf.cell(col_widt3, 0.0, Destino, align='C')
          
-#         pdf.ln(10)
+        pdf.ln(10)
 
-#         if 'destinoPrealert' in session:
+        if 'destinoPrealert' in session:
           
-#           if len(result)>0:
-#             pdf.set_font('Times','B',12) 
-#             pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
-#             pdf.ln(10)
+          if len(result)>0:
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, EmpresaTransporte, align='C')
+            pdf.ln(10)
 
-#             pdf.set_font('Times','B',12) 
-#             pdf.cell(page_width, 0.0, Transportista, align='C')
-#             pdf.ln(10)
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, Transportista, align='C')
+            pdf.ln(10)
 
-#             pdf.set_font('Times','B',12) 
-#             pdf.cell(page_width, 0.0, Placas, align='C')
-#             pdf.ln(10)
-
-
-#           pdf.set_font('Times', 'B', 12)
-#           col_widt2 = page_width/3
-#           col_widt1 = page_width/3
-#           col_width = page_width/3
-          
-          
-#           th = pdf.font_size
-          
-#           pdf.cell(col_widt2, th,"ID", align='C')
-#           pdf.cell(col_width, th,"Orden",align='C')
-#           pdf.cell(col_width, th, "Paquetera", align='C')
-#           pdf.ln(th)
+            pdf.set_font('Times','B',12) 
+            pdf.cell(page_width, 0.0, Placas, align='C')
+            pdf.ln(10)
 
 
-#           pdf.set_font('Times', '', 12)
-#           col_widt2 = page_width/3
-#           col_widt1 = page_width/3
-#           col_width = page_width/3
+          pdf.set_font('Times', 'B', 12)
+          col_widt2 = page_width/3
+          col_widt1 = page_width/3
+          col_width = page_width/3
           
-#           th = pdf.font_size
           
-#           for row in result:
-#               pdf.cell(col_widt2, th, str(row[0]), align='C')
-#               pdf.cell(col_width, th, str(row[9]), align='C')
-#               pdf.cell(col_width, th, row[10], align='C')
-#               pdf.ln(th)
+          th = pdf.font_size
           
-#           pdf.ln(10)
-#         if 'destinoPrealert' in session:
-          
-#           if len(result)>0:
-#             pdf.set_font('Times','B',12)
-#             pdf.cell(page_width, 8.0, Marchamo, align='C')
-          
-#           pdf.ln(15)
-#           pdf.set_font('Times','B',12)
-#           pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
-#          #Atachment or inline 
-#         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
+          pdf.cell(col_widt2, th,"ID", align='C')
+          pdf.cell(col_width, th,"Orden",align='C')
+          pdf.cell(col_width, th, "Paquetera", align='C')
+          pdf.ln(th)
 
 
-# @app.route("/FinalizarRecibo",methods=['POST','GET'])
-# def finalizarRecibo():
-#   try:
-#     if 'FullName' in session:
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT count(Orden) FROM prealert WHERE  ID_Envio_Prealert = \'{}\' And Origen = \'Cross Dock\''.format(session['key_pa']))
-#       numOrdenCross = cur.fetchall()
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT count(Orden) FROM recibo_fc WHERE  ID_Envio_Prealert = \'{}\' '.format(session['key_pa']))
-#       numOrdenFull = cur.fetchall()
-#       result = numOrdenCross[0][0]-numOrdenFull[0][0]
-#       if result>0:
-#         return render_template("actualizacion/confirmacion.html", Datos =session, faltante= result)
-#       else:
-#         flash("Recibo Finalizado")
-#         return render_template("form/f_r_f.html", Datos =session)
-#   except:  
-#     return render_template("home.html",Datos=session)
+          pdf.set_font('Times', '', 12)
+          col_widt2 = page_width/3
+          col_widt1 = page_width/3
+          col_width = page_width/3
+          
+          th = pdf.font_size
+          
+          for row in result:
+              pdf.cell(col_widt2, th, str(row[0]), align='C')
+              pdf.cell(col_width, th, str(row[9]), align='C')
+              pdf.cell(col_width, th, row[10], align='C')
+              pdf.ln(th)
+          
+          pdf.ln(10)
+        if 'destinoPrealert' in session:
+          
+          if len(result)>0:
+            pdf.set_font('Times','B',12)
+            pdf.cell(page_width, 8.0, Marchamo, align='C')
+          
+          pdf.ln(15)
+          pdf.set_font('Times','B',12)
+          pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
+         #Atachment or inline 
+        return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
+
+
+@app.route("/FinalizarRecibo",methods=['POST','GET'])
+def finalizarRecibo():
+  try:
+    if 'FullName' in session:
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT count(Orden) FROM prealert WHERE  ID_Envio_Prealert = %s And Origen = \'Cross Dock\'"
+      cursor.execute(sql, (session['key_pa'],))
+      numOrdenCross = cursor.fetchall()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT count(Orden) FROM recibo_fc WHERE  ID_Envio_Prealert = %s "
+      cursor.execute(sql, (session['key_pa'],))
+      numOrdenFull = cursor.fetchall()
+      result = numOrdenCross[0][0]-numOrdenFull[0][0]
+      if result>0:
+        return render_template("actualizacion/confirmacion.html", Datos =session, faltante= result)
+      else:
+        flash("Recibo Finalizado")
+        return render_template("form/f_r_f.html", Datos =session)
+  except:  
+    return render_template("home.html",Datos=session)
 
 
 @app.route("/trackinOrden",methods=['POST','GET'])
@@ -1841,98 +1852,126 @@ def Track_Inorden():
     return render_template("home.html",Datos=session)
 
 
-# @app.route("/Trackin_ordenes",methods=['POST','GET'])
-# def Track_in_ordenes():
-#   try:
-#     if 'FullName' in session:
-#       Orden= request.form['Orden']
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT * FROM prealert WHERE  Orden = {} And Origen = \'Service Center\''.format(Orden))
-#       Servicedata = cur.fetchall()
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT * FROM recibo_fc WHERE  Orden = {} And Facility = \'Cross Dock\''.format(Orden))
-#       reciboCrossdata = cur.fetchall()
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT * FROM prealert WHERE  Orden = {} And Origen = \'Cross Dock\''.format(Orden))
-#       Crossdata = cur.fetchall()
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT * FROM prealert WHERE  Orden = {} And Origen = \'Fulfillment\''.format(Orden))
-#       Fulldata = cur.fetchall()
-#       cur = mysql.connection.cursor()
-#       cur.execute('SELECT * FROM recibo_fc WHERE  Orden = {} And Facility = \'Fulfillment\' '.format(Orden))
-#       reciboFulldata = cur.fetchall()
-#       return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata,reciboFulldata=reciboFulldata)
-#   except:  
-#     return render_template("form/trackinorden.html",Datos=session)
+@app.route("/Trackin_ordenes",methods=['POST','GET'])
+def Track_in_ordenes():
+  try:
+    if 'FullName' in session:
+      Orden= request.form['Orden']
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Service Center\' "
+      cursor.execute(sql, (Orden,))
+      Servicedata = cursor.fetchall()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM recibo_fc WHERE  Orden = %s And Facility = \'Cross Dock\'"
+      cursor.execute(sql, (Orden,))
+      reciboCrossdata = cursor.fetchall()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Cross Dock\'"
+      cursor.execute(sql, (Orden,))
+      Crossdata = cursor.fetchall()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Fulfillment\' "
+      cursor.execute(sql, (Orden,))
+      Fulldata = cursor.fetchall()
+      cursor= db_connection.cursor()
+      # Read a single record
+      sql = "SELECT * FROM recibo_fc WHERE  Orden = %s And Facility = \'Fulfillment\' "
+      cursor.execute(sql, (Orden,))
+      reciboFulldata = cursor.fetchall()
+      return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata,reciboFulldata=reciboFulldata)
+  except:  
+    return render_template("form/trackinorden.html",Datos=session)
 
-# @app.route('/csvPrealert',methods=['POST','GET'])
-# def crear_csvPrealert():
-#     site=session['SiteName']
-#     row1 = int(session['rowi_t_p'])
-#     row2 =50
-#     if 'valor_t_p' in session:
-#       if len(session['valor_t_p'])>0:
-#         if 'datefilter' in session:
-#           if len(session['datefilter'])>0:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2))
-#             data = cur.fetchall()
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#             data = cur.fetchall()
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}'.format(session['filtro_t_p'],session['valor_t_p'],row1,row2))
-#           data = cur.fetchall()
-#       else:
-#         if 'datefilter' in session:
-#           if len(session['datefilter'])>0:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#             data = cur.fetchall()
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#     else:
-#       if 'datefilter' in session:
-#         if len(session['datefilter'])>0:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}'.format(session['datefilter'],row1,row2))
-#           data = cur.fetchall()
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM prealert LIMIT {}, {}'.format(row1,row2))
-#       else:
-#         cur = mysql.connection.cursor()
-#         cur.execute('SELECT * FROM prealert  LIMIT {}, {}'.format(row1,row2))
-#         data = cur.fetchall()
-#     datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
-#     for res in data:
-#       datos+=str(res[0])
-#       datos+=","+str(res[1])
-#       datos+=","+str(res[2])
-#       datos+=","+str(res[3])
-#       datos+=","+str(res[4])
-#       datos+=","+str(res[5])
-#       datos+=","+str(res[6])
-#       datos+=","+str(res[7])
-#       datos+=","+str(res[8])
-#       datos+=","+str(res[9])
-#       datos+=","+str(res[10])
-#       datos+=","+str(res[11])
-#       datos+=","+str(res[12])
-#       datos+=","+str(res[14])
-#       datos+="\n"
-
-#     response = make_response(datos)
-#     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
-#     return response
+@app.route('/csvPrealert',methods=['POST','GET'])
+def crear_csvPrealert():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cursor= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cursor.execute(sql)
+            data = cursor.fetchall()
+          else:
+            cursor= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cursor.execute(sql)
+            data = cursor.fetchall()
+        else:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cursor.execute(sql)
+          data = cursor.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cursor= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cursor.execute(sql)
+            data = cursor.fetchall()
+          else:
+            cursor= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cursor.execute(sql)
+            data = cursor.fetchall()
+        else:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cursor.execute(sql)
+          data = cursor.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cursor.execute(sql)
+          data = cursor.fetchall()
+        else:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cursor.execute(sql)
+          data = cursor.fetchall()
+      else:
+          cursor= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cursor.execute(sql)
+          data = cursor.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
 
 
 @app.route('/insumos',methods=['GET'])
@@ -2004,25 +2043,77 @@ def ReciboComercialCarrier():
     return render_templateI('comercialcarrier.html',Datos=session)
 
 
-# @app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
-# def validar_comercialcarrier(paquetera):
-#   # try:
-#     if request.method == 'POST':
-#       orden = request.form['orden']
-#       accion = request.form['accion']
-#       now= datetime.now()
-#       responsable= session['FullName']
-#       facility = session['FcName']
-#       Site = session['SiteName']
-#       if accion == 'Rechazar':
-#         return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
-#       elif accion == 'Aceptar':
-#         cur = mysql.connection.cursor()
-#         cur.execute('INSERT INTO recibo_cc (paquetera, Orden, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s)',(Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,datos_de_la_unidad,operador,Origen,destino,usuario,estatus))
-#         mysql.connection.commit() 
-#       return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
-#   # except:
-#   #   return render_templates('comercialcarrier.html',Datos=session)  
+@app.route('/EntradasSalidasInsumos',methods=['GET'])
+def entradasSalidasInsumos():
+  if 'FullName' in session:
+    return render_template('entradasalidainsumos.html',Datos = session)
+  else:
+    return render_template('index.html')
+
+
+@app.route('/DespachoArribo',methods=['GET'])
+def despachoArribo():
+  if 'FullName' in session:
+    return render_template('despachoarribo.html',Datos = session)
+  else:
+    return render_template('index.html')
+
+@app.route('/Planning',methods=['GET'])
+def planning():
+  if 'FullName' in session:
+    return render_template('Planning.html',Datos = session)
+  else:
+    return render_template('index.html')
+
+@app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
+def validar_comercialcarrier(paquetera):
+  try:
+    if request.method == 'POST':
+      orden = request.form['orden']
+      accion = request.form['accion']
+      now= datetime.now()
+      responsable= session['FullName']
+      facility = session['FcName']
+      Site = session['SiteName']
+      now= datetime.now()
+      if accion == 'Rechazar':
+        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
+      elif accion == 'Aceptar':
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO recibo_cc (paquetera, Orden, accion, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(paquetera,orden,accion,facility,Site,responsable,now,now))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
+  except:
+    return render_templates('comercialcarrier.html',Datos=session)  
+
+
+
+@app.route('/Rechazar/<paquetera>/<orden>/<accion>',methods=['POST','GET'])
+def validar_comercialcarrier(paquetera,orden,accion):
+  try:
+    if request.method == 'POST':
+      comentario = request.form['comentario']
+      now= datetime.now()
+      responsable= session['FullName']
+      facility = session['FcName']
+      Site = session['SiteName']
+      if accion == 'Rechazar':
+        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
+      elif accion == 'Aceptar':
+        cursor= db_connection.cursor()
+        # Create a new record
+        sql = "INSERT INTO recibo_cc (paquetera, Orden, accion,  Comentario, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(sql,(paquetera,orden,accion,comentario,facility,Site,responsable,now,now,))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
+  except:
+    return render_templates('comercialcarrier.html',Datos=session)  
 
 
 

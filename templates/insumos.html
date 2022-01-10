@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
 {% endblock %}
 {% block titulo %}
-<title>Isumos</title>
+<title>Paquetes</title>
 {% endblock %}
     {% block body%}
         <div class="fondo">
@@ -13,18 +13,14 @@
                 </div>
         </section>
         <div class="container_form">
-                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/f_p_f' class='Proces_link'><i class="far fa-calendar-alt"></i>  Planning Full </a>
+                {%if Datos['FcName'] == 'Cross Dock' or  Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
+                <a href='/DespachoArribo' class='Proces_link'><i class="fas fa-truck"></i> Despacho | Arribo </a>
                 {%endif%}
-                {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/f_p_xd' class='Proces_link'><i class="fas fa-route"></i>  Planning Cross</a>
+                {%if Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+                <a href='/EntradasSalidasInsumos' class='Proces_link'><i class="fas fa-pallet"></i>Entradas | Salidas  Insumos</a>
                 {%endif%}
-                {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/f_e_s' class='Proces_link'><i class="fas fa-pallet"></i>  Recibo Insumos </a>
-                        <a href='/f_s_s' class='Proces_link'><i class="fas fa-boxes"></i> Salida Insumos</a>
-                {%endif%}
-                {% if Datos['Rango'] == 'Planning' or  Datos['Rango'] == 'Administrador'%}
-                        <a href='/f_planning' class='Proces_link'><i class="far fa-calendar-alt"></i> Planning</a>
+                {%if Datos['Rango'] == 'Planeacion' or  Datos['Rango'] == 'Administrador'%}
+                <a href='/Planning' class='Proces_link'><i class="fas fa-calendar-day"></i>Planning</a>
                 {%endif%}
         </div>
     </div>

@@ -9,8 +9,14 @@
     <div class="fondo"></div>
         <section>
             <form action="/Rechazar/{{paquetera}}/{{orden}}/{{accion}}" method="POST" >
-                <h2 class="comentario">Motivo del Rechazo</h2>
-                <textarea name="comentario" ></textarea>
+                <label for="comentario">Razon de Rechazo: </label><br>
+                <select name="comentario" required>
+                <option value="N/A">N/A</option>
+                <option value="Dañado">Dañado</option>
+                <option value="Extracción">Extracción</option>
+                <option value="Otro FC">Otro FC</option>
+                <option value="Drop off / cross dosck">Drop off / cross dosck</option>
+                </select>
                 <input type="submit" class="btn" name="enviar" value="Continuar" >
             </form>
         </section>
