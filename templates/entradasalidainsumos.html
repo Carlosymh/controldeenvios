@@ -1,0 +1,24 @@
+{% extends 'nav.html'%}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
+{% endblock %}
+{% block titulo %}
+<title>Isumos</title>
+{% endblock %}
+    {% block body%}
+        <div class="fondo">
+        <section>
+            <div class="user"><i class="far fa-user"></i>
+                <h1>¡Hola! </h1><h3>{{Datos['FullName']}}</h3>
+                </div>
+        </section>
+        <div class="container_form">
+                {% if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Service Center' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Service Center' or  Datos['Rango'] == 'Administrador'%}
+                        <a href='/f_e_s' class='Proces_link'><i class="fas fa-pallet"></i>  Recibo Insumos </a>
+                        <a href='/f_s_s' class='Proces_link'><i class="fas fa-boxes"></i> Salida Insumos</a>
+                {%endif%}
+        </div>
+    </div>
+<script src="{{url_for('static', filename='js/interfas.js')}}">
+</script>
+{% endblock %}
