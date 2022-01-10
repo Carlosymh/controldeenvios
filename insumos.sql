@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-01-2022 a las 03:42:28
+-- Tiempo de generación: 10-01-2022 a las 04:25:43
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 8.0.12
 
@@ -128,7 +128,7 @@ CREATE TABLE `planing` (
 INSERT INTO `planing` (`id_planing`, `Fecha_agendada`, `codigo_sku`, `descripción`, `piezas_p`, `unidades`, `datos_de_la_unidad`, `operador`, `origen`, `destino`, `reponsable`, `status`, `hora_inicio_de_carga`, `hora_de_despacho`, `marchamo`, `marchamo2`, `arribo_a_fc_destino`, `responsable_fc`, `responsable_xd`) VALUES
 (13, '2021-09-20', 10060, 'Tarima de Madera', 390, 1, 'N/A', 'N/A', 'Cross Dock', 'Prologis', 'Jessica Margarito Garduño', 'Recibido', '2021-09-29 19:54:43', '2021-09-29 19:54:54', 5802, 4589, '2021-09-29 19:56:50', 'MASTER OF THE CAOS', 'MASTER OF THE CAOS'),
 (14, '2021-09-20', 10060, 'Tarima de Madera', 390, 1, 'N/A', 'N/A', 'Cross Dock', 'Mega Park', 'Jessica Margarito Garduño', 'Recibido', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(43, '2021-11-17', 10053, 'Caja Gaylord', 40, 1, 'Unidad 514', 'juancho', 'Service Center', 'Odonnell', 'Carlos Yovani Muñoz Hernandez ', 'Enviado', '2021-11-28 17:40:43', '2021-11-28 17:45:52', 556, 4589, '2021-11-28 17:58:47', 'Carlos Yovani Muñoz Hernandez ', 'Carlos Yovani Muñoz Hernandez '),
+(43, '2021-11-17', 10053, 'Caja Gaylord', 40, 1, 'Unidad 514', 'juancho', 'Service Center', 'Odonnell', 'Carlos Yovani Muñoz Hernandez ', 'Procesando', '2022-01-06 17:30:56', '2021-11-28 17:45:52', 556, 4589, '2021-11-28 17:58:47', 'Carlos Yovani Muñoz Hernandez ', 'Carlos Yovani Muñoz Hernandez '),
 (44, '2021-11-30', 10060, 'Tarima Madera', 50, 1, 'trailer matricula 5646jkg', 'David Godínez Fentes', 'Service Center', 'CPA Logistics Center', 'Carlos Yovani Muñoz Hernandez ', 'Pendiente', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (45, '2021-11-30', 10060, 'Tarima Madera', 50, 1, 'trailer matricula 5646jkg', 'David Godínez Fentes', 'Service Center', 'CPA Logistics Center', 'Carlos Yovani Muñoz Hernandez ', 'Pendiente', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
@@ -140,14 +140,14 @@ INSERT INTO `planing` (`id_planing`, `Fecha_agendada`, `codigo_sku`, `descripci�
 
 CREATE TABLE `prealert` (
   `ID_Prealert` bigint(255) NOT NULL,
-  `ID_Envio_Prealert` varchar(255) NOT NULL,
+  `ID_Envio_Prealert` varchar(255) DEFAULT NULL,
   `Origen` varchar(255) NOT NULL,
   `SiteName` varchar(255) NOT NULL,
-  `Destino` varchar(255) NOT NULL,
-  `SiteName_Destino` varchar(255) NOT NULL,
-  `EmpresaTransporte` varchar(255) NOT NULL,
-  `Transportista` varchar(255) NOT NULL,
-  `Placas` varchar(255) NOT NULL,
+  `Destino` varchar(255) DEFAULT NULL,
+  `SiteName_Destino` varchar(255) DEFAULT NULL,
+  `EmpresaTransporte` varchar(255) DEFAULT NULL,
+  `Transportista` varchar(255) DEFAULT NULL,
+  `Placas` varchar(255) DEFAULT NULL,
   `Orden` bigint(255) DEFAULT NULL,
   `Paquetera` varchar(255) DEFAULT NULL,
   `Marchamo` varchar(255) DEFAULT NULL,
@@ -224,6 +224,25 @@ INSERT INTO `prealert` (`ID_Prealert`, `ID_Envio_Prealert`, `Origen`, `SiteName`
 (65, 'CE20211228162546593531P', 'Fulfillment', 'Odonnell', '', '', '', '', '', 985887, 'FedEx', NULL, 'Carlos Yovani Muñoz Hernandez ', '2021-12-28', '2021-12-28 16:26:55'),
 (66, 'CE20220103185608351727P', 'Fulfillment', 'Odonnell', '', '', '', '', '', 985887, 'Paquetexpress', NULL, 'Carlos Yovani Muñoz Hernandez ', '2022-01-03', '2022-01-03 18:56:18'),
 (67, 'CE20220104172529949338P', 'Fulfillment', 'Odonnell', '', '', '', '', '', 985887, 'Estafeta', NULL, 'Carlos Yovani Muñoz Hernandez ', '2022-01-04', '2022-01-04 17:25:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `recibo_cc`
+--
+
+CREATE TABLE `recibo_cc` (
+  `id_recibo_cc` bigint(20) NOT NULL,
+  `paquetera` varchar(255) NOT NULL,
+  `Orden` bigint(20) NOT NULL,
+  `accion` varchar(255) DEFAULT NULL,
+  `Comentario` varchar(255) DEFAULT NULL,
+  `facility` varchar(255) NOT NULL,
+  `site` varchar(255) NOT NULL,
+  `Responsable` varchar(255) NOT NULL,
+  `fecha` date NOT NULL,
+  `fecha_hora` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -312,7 +331,8 @@ INSERT INTO `usuarios` (`ID`, `Nombre`, `Apellido`, `Usuario`, `ltrabajo`, `cdt`
 (60, 'Carlos Yovani ', 'Muñoz Hernandez ', 'admin', 'Fulfillment', 'Odonnell', 'pbkdf2:sha256:30$HV3Gr1FpppJlnGIbkPcuWjBnlQ3Moq$a6609b2961f81ea59e4bb72ec5a16f828b33a39738bfb8222e7355c6a291bd05', 'Administrador'),
 (61, 'Carlos Yovani ', 'Muñoz Hernandez ', 'cmunos', 'Fulfillment', 'Odonnell', 'pbkdf2:sha256:30$B2USsSBhNyzRCffKgyMbvpSMoxwEAN$f0abb1e10c3691b44893e5836021efb4f3b19e881d81e258cfd77d7405f4c8af', 'Auxiliar'),
 (62, 'Carlos Yovani ', 'Muñoz Hernandez ', 'caunimun', 'Fulfillment', 'Odonnell', 'pbkdf2:sha256:30$eTWE47sPB8bxGv7i5WCN4tjBpx0zR9$1c1198ac6bf9e3658103c831a5a84f7b3898f42dbb6db5830569a6c76b42b43e', 'Representante'),
-(63, 'Carlos Yovani ', 'Muñoz Hernandez ', 'vcmunos', 'Cross Dock', 'Odonnell', 'pbkdf2:sha256:30$V2xtwxe9nO7JYIjrqCLzKltanLG68n$31d5aeb41987a43b0dd68202d7b888cea91958fe04b075f9942fd5a8e8ea6abb', 'Planeacion');
+(63, 'Carlos Yovani ', 'Muñoz Hernandez ', 'vcmunos', 'Cross Dock', 'Odonnell', 'pbkdf2:sha256:30$V2xtwxe9nO7JYIjrqCLzKltanLG68n$31d5aeb41987a43b0dd68202d7b888cea91958fe04b075f9942fd5a8e8ea6abb', 'Planeacion'),
+(65, 'Jessica', 'Margarito Garduño', 'jgarduno', 'Fulfillment', 'Odonnell', 'pbkdf2:sha256:30$FdLdmJw3blyLHxroe8LuGeTRoHCnVv$446fea5114d403300f53517aba7413564db315fda57a55d9b737cabacc45b25a', 'Administrador');
 
 --
 -- Índices para tablas volcadas
@@ -404,7 +424,7 @@ ALTER TABLE `salida_svcs`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID` bigint(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `ID` bigint(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
