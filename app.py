@@ -37,11 +37,11 @@ def Index():
 def validarusuaro():
     if request.method == 'POST':
       usuario =  request.form['user']
-      cursor= db_connection.cursor()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s Limit 1"
-      cursor.execute(sql, (usuario,))
-      data = cursor.fetchone()
+      cur.execute(sql, (usuario,))
+      data = cur.fetchone()
       if len(data) > 0 :
         username = data[1]
         user = data[3]
@@ -55,11 +55,11 @@ def validarcontrasena(user):
     if request.method == 'POST':
       usuario =  user
       password = request.form['password']
-      cursor= db_connection.cursor()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM `usuarios` WHERE `Usuario`=%s LIMIT 1 "
-      cursor.execute(sql, (usuario,))
-      data = cursor.fetchone()
+      cur.execute(sql, (usuario,))
+      data = cur.fetchone()
       if len(data) > 0 :
           if check_password_hash(data[6],password):
             session['UserName'] = data[1]
@@ -207,19 +207,19 @@ def registrar():
         password2 = _create_password(request.form['pass2'])
         
         if check_password_hash(password,request.form['pass']) and check_password_hash(password,request.form['pass2']):
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM usuarios WHERE Usuario =%s LIMIT 1 "
-          cursor.execute(sql, (usuario,))
-          data = cursor.fetchone()
+          cur.execute(sql, (usuario,))
+          data = cur.fetchone()
           if data != None:
             flash("El Usuario Ya Existe")
             return render_template('registro.html',Datos =session)
           else:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Create a new record
             sql = "INSERT INTO usuarios (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
+            cur.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
             # connection is not autocommit by default. So you must commit to save
             # your changes.
             db_connection.commit()
@@ -250,10 +250,10 @@ def registro_s_e():
         Centro_de_Origen = request.form['Centro_de_Origen']
         usuario =  session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
+        cur.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -279,10 +279,10 @@ def registro_s_s():
         Cross_Dock = request.form['Cross_Dock']
         usuario =  session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
+        cur.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
 
         # connection is not autocommit by default. So you must commit to save
         # your changes.
@@ -308,10 +308,10 @@ def registroPrealertOrdenes():
         Paquetera = request.form['Paquetera']
         reponsable = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now,))
+        cur.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now,))
 
         # connection is not autocommit by default. So you must commit to save
         # your changes.
@@ -343,10 +343,10 @@ def registroPrealert():
         Marchamo = request.form['Marchamo']
         reponsable = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "UPDATE prealert SET  Destino= %s, SiteName_Destino= %s, EmpresaTransporte= %s, Transportista= %s, Placas= %s, Marchamo= %s, Responsable= %s,  Fecha= %s, fecha_hora= %s WHERE ID_Envio_Prealert = %s  AND SiteName = %s"
-        cursor.execute(sql,(session['destinoPrealert'],session['SiteDestinoPrealert'],session['TransportePrealert'],session['TrasportistaPrealert'],session['PlacasPrealert'],Marchamo,reponsable,now,now,session['key_pa'],session['SiteName'],))
+        cur.execute(sql,(session['destinoPrealert'],session['SiteDestinoPrealert'],session['TransportePrealert'],session['TrasportistaPrealert'],session['PlacasPrealert'],Marchamo,reponsable,now,now,session['key_pa'],session['SiteName'],))
 
         # connection is not autocommit by default. So you must commit to save
         # your changes.
@@ -392,10 +392,10 @@ def registro_fcs_r():
         razon_rechazo = request.form['razon_rechazo']
         usuario =  session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO recibo_fc (Fulfillment, responsable, paquetera, no_gia, no_paquete, tipo_paquete, estatus, razon_rechazo, fecha_hora, dia) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(cdt,usuario,paquetera,no_gia,no_paquete,tipo_paquete,estatus,razon_rechazo,now,now,))
+        cur.execute(sql,(cdt,usuario,paquetera,no_gia,no_paquete,tipo_paquete,estatus,razon_rechazo,now,now,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -619,9 +619,6 @@ def registro_o():
           region= 'Centro'
         elif Service_Center=='99 Minutos':
           region= '99 Minutos'
-
-        ticket = request.form['ticket']
-        fechatiket =  request.form['fechatiket']
         Comentario =  request.form['Comentario']
         estatus_orden = 'Pendiente'
         now = datetime.now()
@@ -629,19 +626,19 @@ def registro_o():
         meses= ('Null','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiempbre','Octubre','Noviebre','Diciembre')
         mes = meses[now.month]
         Responsable =  session['FullName']
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM ordenes_no_procesables WHERE orden = %s AND estatus_orden = %s LIMIT 1 "
-        cursor.execute(sql, (orden,estatus_orden,))
-        data = cursor.fetchone()
-        if len(data)>0:
+        cur.execute(sql, (orden,estatus_orden,))
+        data = cur.fetchone()
+        if data != None:
           flash("Ya Existe un Ticket Pendiente para esta Orden")
           return render_template('form.html',Datos = session)
-        elif len(orden)>0 and len(ticket)>0 and len(fechatiket)>0:
-          cursor= db_connection.cursor()
+        elif len(orden)>0 :
+          cur= db_connection.cursor()
           # Create a new record
-          sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, ticket, fecha_ticket, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-          cursor.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,ticket,fechatiket,estatus_orden,Comentario,semana[1],mes,Responsable,now,now,))
+          sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,estatus_orden,Comentario,semana[1],mes,Responsable,now,now,))
           # connection is not autocommit by default. So you must commit to save
           # your changes.
           db_connection.commit()
@@ -664,23 +661,25 @@ def registro_p():
       if request.method == 'POST':
         Fecha_agendada = request.form['Fecha_agendada']
         codigo_sku = int(request.form['codigo_sku'])
+        k='P'+str(datetime.today())
+        key = k.replace(" ","")
+        key_ = key.replace(":","")
+        key_p = key_.replace(".","")
+        id_planing = key_p.replace("-","")
         if codigo_sku == 10053:
           descripcion = 'Caja Gaylord'
         elif codigo_sku == 10060:
           descripcion = 'Tarima Madera'
         piezas_p = request.form['piezas_p']
         unidades = request.form['unidades']
-        datos_de_la_unidad = request.form['datos_de_la_unidad']
-        operador = request.form['operador']
-        Origen = session['FcName']
         destino = request.form['destino']
         estatus = 'Pendiente'
         usuario = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
-        sql = "INSERT INTO planing (Fecha_agendada, codigo_sku, descripción, piezas_p, unidades, datos_de_la_unidad, operador, origen, destino,	reponsable, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,datos_de_la_unidad,operador,Origen,destino,usuario,estatus,))
+        sql = "INSERT INTO planing (id_planing,Fecha_agendada, codigo_sku, descripción, piezas_p, unidades, destino,	reponsable, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cur.execute(sql,(id_planing,Fecha_agendada,codigo_sku,descripcion,piezas_p,unidades,destino,usuario,estatus,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -699,11 +698,11 @@ def actualizacion_planning_full():
   try:
       if request.method == 'POST':
         id_planing = request.form['id_planing']
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM planing WHERE id_planing = %s LIMIT 1  "
-        cursor.execute(sql, (id_planing,))
-        data = cursor.fetchone()
+        cur.execute(sql, (id_planing,))
+        data = cur.fetchone()
         if len(data)>0:
           return render_template('actualizacion/a_p_f.html',Datos = session,Info = data)
         else:
@@ -721,20 +720,21 @@ def actualizacion_planning_full():
 def actualizacion_planning_cross():
   try:
       if request.method == 'POST':
-        cursor= db_connection.cursor()
+        id_planing=request.form['id_planing']
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM planing WHERE id_planing = %s LIMIT 1 "
-        cursor.execute(sql, (id_planing,))
-        data = cursor.fetchone()
-        if len(data)>0:
-          id=data[0][0]
+        cur.execute(sql, (id_planing,))
+        data = cur.fetchone()
+        if data != None:
+          id=data[0]
           status ='Procesando'
           now = datetime.now()
           responsable=session['FullName']
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Create a new record
-          sql = "UPDATE planing SET hora_inicio_de_carga = %s, status = %s, responsable_xd = %s WHERE id_planing  = %s"
-          cursor.execute(sql,(now,status,responsable,id,))
+          sql = "UPDATE planing SET hora_inicio_de_carga = %s, status = %s, responsable_xd = %s  WHERE id_planing  = %s"
+          cur.execute(sql,(now,status,responsable,id,))
           # connection is not autocommit by default. So you must commit to save
           # your changes.
           db_connection.commit()
@@ -756,11 +756,11 @@ def actualizacion_ordenes_no_procesables():
       if request.method == 'POST':
         orden = request.form['orden']
         status = 'Pendiente'
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM ordenes_no_procesables WHERE orden = %s  LIMIT 1 "
-        cursor.execute(sql, (orden,))
-        data = cursor.fetchone()
+        cur.execute(sql, (orden,))
+        data = cur.fetchone()
         if len(data)>0:
           return render_template('actualizacion/a_o_np.html',Datos = session,Info = data)
         else:
@@ -782,10 +782,10 @@ def registro_actalizacion_planning_full():
         estatus = 'Enviado'
         usuario = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "UPDATE planing SET status = %s, arribo_a_fc_destino = %s, responsable_fc = %s WHERE id_planing = %s"
-        cursor.execute(sql,(estatus,now,usuario,id,))
+        cur.execute(sql,(estatus,now,usuario,id,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -801,29 +801,28 @@ def registro_actalizacion_planning_full():
 
 @app.route('/r_a_p_xd',methods=['POST'])
 def registro_actalizacion_planning_cross():
-  try:
+  # try:
     if request.method == 'POST':
         id = request.form['id']
         marchamo =  request.form['marchamo']
         marchamo2 =  request.form['marchamo2']
+        datos_de_la_unidad = request.form['datos_de_la_unidad']
+        operador = request.form['operador']
         estatus = 'Enviado'
         usuario = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
-        sql = "UPDATE planing SET hora_de_despacho = %s, marchamo = %s, marchamo2 = %s, status = %s WHERE id_planing  = %s"
-        cursor.execute(sql,(estatus,now,usuario,id,))
+        cur.execute("UPDATE planing SET hora_de_despacho = \'{}\', origen= \'{}\', datos_de_la_unidad= \'{}\', operador= \'{}\', marchamo = {}, marchamo2 = {}, status = \'{}\' WHERE id_planing  = \'{}\'".format(now,session['SiteName'],datos_de_la_unidad,operador,marchamo,marchamo2,estatus,id))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
-        flash("Registro Exitoso")
         return render_template('form/f_p_xd.html',Datos = session)
-    else:
-        flash("No has enviado un registro")
-        return render_template('form/f_p_xd.html',Datos = session)
-  except:
-    flash("Llena todos los Campos Correctamente")
-#     return render_template('form/f_p_xd.html',Datos = session)
+    # else:
+    #     return render_template('form/f_p_xd.html',Datos = session)
+  # except:
+  #   flash("Llena todos los Campos Correctamente")
+  #   return render_template('form/f_p_xd.html',Datos = session)
 
 
 @app.route('/r_a_o_np',methods=['POST'])
@@ -835,10 +834,10 @@ def registro_actalizacion_ordenes_no_procesables():
         usuario = session['FullName']
         Comentario = request.form['Comentario']
         now = datetime.now()
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "UPDATE ordenes_no_procesables SET estatus_orden = %s, Comentario = %s, fecha_actualizacion = %s, responsable_actualizacion = %s WHERE id_orden  = %s"
-        cursor.execute(sql,(estatus,Comentario,now,usuario,id_orden,))
+        cur.execute(sql,(estatus,Comentario,now,usuario,id_orden,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -858,205 +857,205 @@ def Cerrar_session():
   return render_template('index.html')
 
 
-# @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
-# def Reporte_entradas_service(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi']=rowi
-#           row1 = int(session['rowi_t_e_s'])
-#           row2 = 100
-#         else:
-#             row1 = int(session['rowi_t_e_s'])
-#             row2 =100
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_e_s']=request.form['filtro']
-#             session['valor_t_e_s']=request.form['valor']
-#             if len(request.form['inicio'])>0:
-#               session['inicio_t_e_s']=request.form['inicio']
-#               if len(request.form['fin'])>0:
-#                 session['fin_t_e_s']=request.form['fin']
-#                 with db_connection:
-#                   with db_connection.cursor() as cursor:
-#                     # Read a single record
-#                     sql = "SELECT * FROM entrada_svcs WHERE %s LIKE %s AND Fecha_Creación	 BETWEEN %s AND %s LIMIT %s, %s"
-#                     cursor.execute(sql, (session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2,))
-#                     data = cursor.fetchone()
-#                 return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_e_s.html',Datos = session,Infos =data) 
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_e_s']=rowi
-#           row1 = int(session['rowi_t_e_s'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_e_s'])
-#           row2 =50
-#         if 'valor_t_e_s' in session:
-#           if len(session['valor_t_e_s'])>0:
-#             if 'inicio_t_e_s' in session:
-#               if len(session['inicio_t_e_s'])>0:
-#                 if 'fin_t_e_s' in session:
-#                   if len(session['fin_t_e_s'])>0:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#                   else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#                 else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_e_s.html',Datos = session,Infos =data)  
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+@app.route('/t_e_s/<rowi>',methods=['POST','GET'])
+def Reporte_entradas_service(rowi):
+  try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi']=rowi
+          row1 = int(session['rowi_t_e_s'])
+          row2 = 100
+        else:
+            row1 = int(session['rowi_t_e_s'])
+            row2 =100
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_e_s']=request.form['filtro']
+            session['valor_t_e_s']=request.form['valor']
+            if len(request.form['inicio'])>0:
+              session['inicio_t_e_s']=request.form['inicio']
+              if len(request.form['fin'])>0:
+                session['fin_t_e_s']=request.form['fin']
+                with db_connection:
+                  with db_connection.cursor() as cursor:
+                    # Read a single record
+                    sql = "SELECT * FROM entrada_svcs WHERE %s LIKE %s AND Fecha_Creación	 BETWEEN %s AND %s LIMIT %s, %s"
+                    cur.execute(sql, (session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2,))
+                    data = cur.fetchall()
+                return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_e_s.html',Datos = session,Infos =data) 
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_e_s']=rowi
+          row1 = int(session['rowi_t_e_s'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_e_s'])
+          row2 =50
+        if 'valor_t_e_s' in session:
+          if len(session['valor_t_e_s'])>0:
+            if 'inicio_t_e_s' in session:
+              if len(session['inicio_t_e_s'])>0:
+                if 'fin_t_e_s' in session:
+                  if len(session['fin_t_e_s'])>0:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],session['fin_t_e_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+                  else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+                else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],session['inicio_t_e_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_e_s.html',Datos = session,Infos =data)  
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM entrada_svcs LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
-# @app.route('/t_n_p/<rowi>',methods=['POST','GET'])
-# def Reporte_ordenes_no_procesables(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi_t_n_p']=rowi
-#           row1 = int(session['rowi_t_n_p'])
-#           row2 = 100
-#         else:
-#             row1 = int(session['rowi_t_n_p'])
-#             row2 =100
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_n_p']=request.form['filtro']
-#             session['valor_t_n_p']=request.form['valor']
-#             if len(request.form['inicio'])>0:
-#               session['inicio_t_n_p']=request.form['inicio']
-#               if len(request.form['fin'])>0:
-#                 session['fin_t_n_p']=request.form['fin']
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],session['fin_t_n_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_n_p.html',Datos = session,Infos =data) 
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+@app.route('/t_n_p/<rowi>',methods=['POST','GET'])
+def Reporte_ordenes_no_procesables(rowi):
+  try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi_t_n_p']=rowi
+          row1 = int(session['rowi_t_n_p'])
+          row2 = 100
+        else:
+            row1 = int(session['rowi_t_n_p'])
+            row2 =100
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_n_p']=request.form['filtro']
+            session['valor_t_n_p']=request.form['valor']
+            if len(request.form['inicio'])>0:
+              session['inicio_t_n_p']=request.form['inicio']
+              if len(request.form['fin'])>0:
+                session['fin_t_n_p']=request.form['fin']
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],session['fin_t_n_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_n_p.html',Datos = session,Infos =data) 
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
         
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_n_p']=rowi
-#           row1 = int(session['rowi_t_n_p'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_n_p'])
-#           row2 =50
-#         if 'valor_t_n_p' in session:
-#           if len(session['valor_t_n_p'])>0:
-#             if 'inicio_t_n_p' in session:
-#               if len(session['inicio_t_n_p'])>0:
-#                 if 'fin_t_n_p' in session:
-#                   if len(session['fin_t_n_p'])>0:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],session['fin_t_n_p'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#                   else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#                 else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_n_p.html',Datos = session,Infos =data)  
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_n_p']=rowi
+          row1 = int(session['rowi_t_n_p'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_n_p'])
+          row2 =50
+        if 'valor_t_n_p' in session:
+          if len(session['valor_t_n_p'])>0:
+            if 'inicio_t_n_p' in session:
+              if len(session['inicio_t_n_p'])>0:
+                if 'fin_t_n_p' in session:
+                  if len(session['fin_t_n_p'])>0:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],session['fin_t_n_p'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+                  else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+                else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],session['inicio_t_n_p'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_n_p.html',Datos = session,Infos =data)  
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM ordenes_no_procesables LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
 @app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
-  # try:
+  try:
       if request.method == 'POST':
         if request.method == 'GET':
           session['rowi_t_p']=rowi
@@ -1074,27 +1073,27 @@ def Reporte_prealert(rowi):
                 daterangef=request.form['datefilter']
                 daterange="'"+daterangef.replace("-", "' AND '")+"'"
                 session['datefilter']=daterange
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql= "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               if 'datefilter' in session:
                 session.pop('datefilter')
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-              cursor.execute(sql)
-              data = cursor.fetchall()
+              cur.execute(sql)
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
           else:
             if 'datefilter' in request.form:
@@ -1104,27 +1103,27 @@ def Reporte_prealert(rowi):
                     daterangef=request.form['datefilter']
                     daterange="'"+daterangef.replace("-", "' AND '")+"'"
                     session['datefilter']=daterange
-                    cursor= db_connection.cursor()
+                    cur= db_connection.cursor()
                     # Read a single record
                     sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
-                    cursor.execute(sql)
-                    data = cursor.fetchall()
+                    cur.execute(sql)
+                    data = cur.fetchall()
                     return render_template('reportes/t_p.html',Datos = session,Infos =data)
                   else:
                     session.pop('filtro_t_p')
                     session.pop('valor_t_p')
-                    cursor= db_connection.cursor()
+                    cur= db_connection.cursor()
                     # Read a single record
                     sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-                    cursor.execute(sql)
-                    data = cursor.fetchall()
+                    cur.execute(sql)
+                    data = cur.fetchall()
                     return render_template('reportes/t_p.html',Datos = session,Infos =data)
                 else:
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
                 if 'valor_t_p' in session:
@@ -1132,11 +1131,11 @@ def Reporte_prealert(rowi):
                   session.pop('valor_t_p')
                   if 'datefilter' in session:
                     session.pop('datefilter')
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               if 'valor_t_p' in session:
@@ -1144,79 +1143,79 @@ def Reporte_prealert(rowi):
                     session.pop('datefilter')
                 session.pop('filtro_t_p')
                 session.pop('valor_t_p')
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-              cursor.execute(sql)
-              data = cursor.fetchall()
+              cur.execute(sql)
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
         else: 
           if 'valor_t_p' in session:
             if len(session['valor_t_p'])>0:
               if 'datefilter' in session:
                 if len(session['datefilter'])>0:
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
                 else:
                   session.pop('datefilter')
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data) 
             else:
               session.pop('filtro_t_p')
               session.pop('valor_t_p')
               if 'datefilter' in session:
                 if len(session['datefilter'])>0:
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
                 else:
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
           else:
             if 'datefilter' in session:
               if len(session['datefilter'])>0:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
                 session.pop('datefilter')
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               if 'datefilter' in request.form:
@@ -1224,25 +1223,25 @@ def Reporte_prealert(rowi):
                   daterangef=request.form['datefilter']
                   daterange="'"+daterangef.replace("-", "' AND '")+"'"
                   session['datefilter']=daterange
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {}".format(session['datefilter'],row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data)
                 else:
-                  cursor= db_connection.cursor()
+                  cur= db_connection.cursor()
                   # Read a single record
                   sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
-                  cursor.execute(sql)
-                  data = cursor.fetchall()
+                  cur.execute(sql)
+                  data = cur.fetchall()
                   return render_template('reportes/t_p.html',Datos = session,Infos =data) 
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data) 
       else: 
         if request.method == 'GET':
@@ -1256,366 +1255,366 @@ def Reporte_prealert(rowi):
           if len(session['valor_t_p'])>0:
             if 'datefilter' in session:
               if len(session['datefilter'])>0:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-              cursor.execute(sql, )
-              data = cursor.fetchall()
+              cur.execute(sql, )
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data) 
           else:
             session.pop('filtro_t_p')
             session.pop('valor_t_p')
             if 'datefilter' in session:
               if len(session['datefilter'])>0:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
               else:
-                cursor= db_connection.cursor()
+                cur= db_connection.cursor()
                 # Read a single record
                 sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
-                cursor.execute(sql)
-                data = cursor.fetchall()
+                cur.execute(sql)
+                data = cur.fetchall()
                 return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
-              cursor.execute(sql)
-              data = cursor.fetchall()
+              cur.execute(sql)
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
         else:
           if 'datefilter' in session:
             if len(session['datefilter'])>0:
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
-              cursor.execute(sql)
-              data = cursor.fetchall()
+              cur.execute(sql)
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
             else:
               session.pop('datefilter')
-              cursor= db_connection.cursor()
+              cur= db_connection.cursor()
               # Read a single record
               sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-              cursor.execute(sql)
-              data = cursor.fetchall()
+              cur.execute(sql)
+              data = cur.fetchall()
               return render_template('reportes/t_p.html',Datos = session,Infos =data)
           else:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Read a single record
             sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-            cursor.execute(sql)
-            data = cursor.fetchall()
+            cur.execute(sql)
+            data = cur.fetchall()
             return render_template('reportes/t_p.html',Datos = session,Infos =data)         
-  # except:
-  #   flash("Inicia Secion")
-  #   return render_template('index.html')
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
-# @app.route('/t_planning/<rowi>',methods=['POST','GET'])
-# def Reporte_planning(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi_t_planning']=rowi
-#           row1 = int(session['rowi_t_planning'])
-#           row2 = 100
-#         else:
-#             row1 = int(session['rowi_t_planning'])
-#             row2 =100
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_planning']=request.form['filtro']
-#             session['valor_t_planning']=request.form['valor']
-#             if len(request.form['inicio'])>0:
-#               session['inicio_t_planning']=request.form['inicio']
-#               if len(request.form['fin'])>0:
-#                 session['fin_t_planning']=request.form['fin']
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_planning']=rowi
-#           row1 = int(session['rowi_t_planning'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_planning'])
-#           row2 =50
-#         if 'valor_t_planning' in session:
-#           if len(session['valor_t_planning'])>0:
-#             if 'inicio_t_planning' in session:
-#               if len(session['inicio_t_planning'])>0:
-#                 if 'fin_t_planning' in session:
-#                   if len(session['fin_t_planning'])>0:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#                   else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#                 else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_planning.html',Datos = session,Infos =data)  
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+@app.route('/t_planning/<rowi>',methods=['POST','GET'])
+def Reporte_planning(rowi):
+  try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi_t_planning']=rowi
+          row1 = int(session['rowi_t_planning'])
+          row2 = 100
+        else:
+            row1 = int(session['rowi_t_planning'])
+            row2 =100
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_planning']=request.form['filtro']
+            session['valor_t_planning']=request.form['valor']
+            if len(request.form['inicio'])>0:
+              session['inicio_t_planning']=request.form['inicio']
+              if len(request.form['fin'])>0:
+                session['fin_t_planning']=request.form['fin']
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_planning']=rowi
+          row1 = int(session['rowi_t_planning'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_planning'])
+          row2 =50
+        if 'valor_t_planning' in session:
+          if len(session['valor_t_planning'])>0:
+            if 'inicio_t_planning' in session:
+              if len(session['inicio_t_planning'])>0:
+                if 'fin_t_planning' in session:
+                  if len(session['fin_t_planning'])>0:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                  else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)  
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
-# @app.route('/t_r_f/<rowi>',methods=['POST','GET'])
-# def Reporte_recibo_full(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi_t_r_f']=rowi
-#           row1 = int(session['rowi_t_r_f'])
-#           row2 = 100
-#         else:
-#             row1 = int(session['rowi_t_r_f'])
-#             row2 =100
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_r_f']=request.form['filtro']
-#             session['valor_t_r_f']=request.form['valor']
-#             if len(request.form['inicio'])>0:
-#               session['inicio_t_r_f']=request.form['inicio']
-#               if len(request.form['fin'])>0:
-#                 session['fin_t_r_f']=request.form['fin']
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],session['fin_t_r_f'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_r_f.html',Datos = session,Infos =data) 
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_r_f']=rowi
-#           row1 = int(session['rowi_t_r_f'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_r_f'])
-#           row2 =50
-#         if 'valor_t_r_f' in session:
-#           if len(session['valor_t_r_f'])>0:
-#             if 'inicio_t_r_f' in session:
-#               if len(session['inicio_t_r_f'])>0:
-#                 if 'fin_t_r_f' in session:
-#                   if len(session['fin_t_r_f'])>0:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],session['fin_t_r_f'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#                   else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#                 else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_r_f.html',Datos = session,Infos =data)  
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+@app.route('/t_r_f/<rowi>',methods=['POST','GET'])
+def Reporte_recibo_full(rowi):
+  try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi_t_r_f']=rowi
+          row1 = int(session['rowi_t_r_f'])
+          row2 = 100
+        else:
+            row1 = int(session['rowi_t_r_f'])
+            row2 =100
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_r_f']=request.form['filtro']
+            session['valor_t_r_f']=request.form['valor']
+            if len(request.form['inicio'])>0:
+              session['inicio_t_r_f']=request.form['inicio']
+              if len(request.form['fin'])>0:
+                session['fin_t_r_f']=request.form['fin']
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],session['fin_t_r_f'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_r_f.html',Datos = session,Infos =data) 
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_r_f']=rowi
+          row1 = int(session['rowi_t_r_f'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_r_f'])
+          row2 =50
+        if 'valor_t_r_f' in session:
+          if len(session['valor_t_r_f'])>0:
+            if 'inicio_t_r_f' in session:
+              if len(session['inicio_t_r_f'])>0:
+                if 'fin_t_r_f' in session:
+                  if len(session['fin_t_r_f'])>0:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],session['fin_t_r_f'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+                  else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+                else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],session['inicio_t_r_f'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_r_f.html',Datos = session,Infos =data)  
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM recibo_fc LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
-# @app.route('/t_s_s/<rowi>',methods=['POST','GET'])
-# def Reporte_salida_service(rowi):
-#   try:
-#       if request.method == 'POST':
-#         if request.method == 'GET':
-#           session['rowi_t_s_s']=rowi
-#           row1 = int(session['rowi_t_s_s'])
-#           row2 = 100
-#         else:
-#             row1 = int(session['rowi_t_s_s'])
-#             row2 =100
-#         if 'valor' in request.form:
-#           if len(request.form['valor'])>0:
-#             session['filtro_t_s_s']=request.form['filtro']
-#             session['valor_t_s_s']=request.form['valor']
-#             if len(request.form['inicio'])>0:
-#               session['inicio_t_s_s']=request.form['inicio']
-#               if len(request.form['fin'])>0:
-#                 session['fin_t_s_s']=request.form['fin']
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],session['fin_t_s_s'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_s_s.html',Datos = session,Infos =data) 
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_s_s.html',Datos = session,Infos =data) 
-#       else: 
-#         if request.method == 'GET':
-#           session['rowi_t_s_s']=rowi
-#           row1 = int(session['rowi_t_s_s'])
-#           row2 = 50
-#         else:
-#           row1 = int(session['rowi_t_s_s'])
-#           row2 =50
-#         if 'valor_t_s_s' in session:
-#           if len(session['valor_t_s_s'])>0:
-#             if 'inicio_t_s_s' in session:
-#               if len(session['inicio_t_s_s'])>0:
-#                 if 'fin_t_s_s' in session:
-#                   if len(session['fin_t_s_s'])>0:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],session['fin_t_s_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#                   else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#                 else:
-#                     cur = mysql.connection.cursor()
-#                     cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
-#                     data = cur.fetchall()
-#                     return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#               else:
-#                 cur = mysql.connection.cursor()
-#                 cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
-#                 data = cur.fetchall()
-#                 return render_template('reportes/t_s_s.html',Datos = session,Infos =data)  
-#             else:
-#               cur = mysql.connection.cursor()
-#               cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
-#               data = cur.fetchall()
-#               return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#           else:
-#             cur = mysql.connection.cursor()
-#             cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
-#             data = cur.fetchall()
-#             return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#         else:
-#           cur = mysql.connection.cursor()
-#           cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
-#           data = cur.fetchall()
-#           return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
-#   except:
-#     flash("Inicia Secion")
-#     return render_template('index.html')
+@app.route('/t_s_s/<rowi>',methods=['POST','GET'])
+def Reporte_salida_service(rowi):
+  try:
+      if request.method == 'POST':
+        if request.method == 'GET':
+          session['rowi_t_s_s']=rowi
+          row1 = int(session['rowi_t_s_s'])
+          row2 = 100
+        else:
+            row1 = int(session['rowi_t_s_s'])
+            row2 =100
+        if 'valor' in request.form:
+          if len(request.form['valor'])>0:
+            session['filtro_t_s_s']=request.form['filtro']
+            session['valor_t_s_s']=request.form['valor']
+            if len(request.form['inicio'])>0:
+              session['inicio_t_s_s']=request.form['inicio']
+              if len(request.form['fin'])>0:
+                session['fin_t_s_s']=request.form['fin']
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],session['fin_t_s_s'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_s_s.html',Datos = session,Infos =data) 
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_s_s.html',Datos = session,Infos =data) 
+      else: 
+        if request.method == 'GET':
+          session['rowi_t_s_s']=rowi
+          row1 = int(session['rowi_t_s_s'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_t_s_s'])
+          row2 =50
+        if 'valor_t_s_s' in session:
+          if len(session['valor_t_s_s'])>0:
+            if 'inicio_t_s_s' in session:
+              if len(session['inicio_t_s_s'])>0:
+                if 'fin_t_s_s' in session:
+                  if len(session['fin_t_s_s'])>0:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],session['fin_t_s_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+                  else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+                else:
+                    cur= db_connection.cursor()
+                    cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],session['inicio_t_s_s'],row1,row2))
+                    data = cur.fetchall()
+                    return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
+                data = cur.fetchall()
+                return render_template('reportes/t_s_s.html',Datos = session,Infos =data)  
+            else:
+              cur= db_connection.cursor()
+              cur.execute('SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2))
+              data = cur.fetchall()
+              return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+          else:
+            cur= db_connection.cursor()
+            cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+            data = cur.fetchall()
+            return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+        else:
+          cur= db_connection.cursor()
+          cur.execute('SELECT * FROM salida_svcs LIMIT {}, {}'.format(row1,row2))
+          data = cur.fetchall()
+          return render_template('reportes/t_s_s.html',Datos = session,Infos =data)
+  except:
+    flash("Inicia Secion")
+    return render_template('index.html')
 
 
 @app.route('/validacion_recibo',methods=['Post'])
@@ -1623,11 +1622,11 @@ def Verificacion_orden_recibo():
   try:
       if request.method == 'POST':
         session['key_pa'] = request.form['prealertkey']
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM prealert WHERE  ID_Envio_Prealert = %s limit 1"
-        cursor.execute(sql,(session['key_pa'],))
-        data = cursor.fetchone()
+        cur.execute(sql,(session['key_pa'],))
+        data = cur.fetchone()
         if data != None:
           return render_template('form/f_recibo.html',Datos = session,Info = data)
         else:
@@ -1651,18 +1650,20 @@ def registroRecibo():
         Orden = request.form['Orden']
         Paquetera = request.form['Paquetera']
         status = request.form['status']
-        comentario = request.form['comentario']
-        reponsable = session['FullName']
+        responsable = session['FullName']
         now = datetime.now()
-        cursor= db_connection.cursor()
-        # Create a new record
-        sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(key_pa, Orden, Paquetera, status, comentario, facility, siteName, reponsable, now, now,))
-        # connection is not autocommit by default. So you must commit to save
-        # your changes.
-        db_connection.commit()
-        flash("Registro Exitoso")
-        return render_template('form/f_recibo.html',Datos = session)
+        if status == 'Aceptar':
+          cur= db_connection.cursor()
+          # Create a new record
+          sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(key_pa, Orden, Paquetera, status, facility, siteName, responsable, now, now,))
+          # connection is not autocommit by default. So you must commit to save
+          # your changes.
+          db_connection.commit()
+          flash("Registro Exitoso")
+          return render_template('form/f_recibo.html',Datos = session)
+        else:
+          return render_template('form/rechazar.html',Datos = session,paquetera=Paquetera,orden=Orden,accion=status,Recibo=key_pa)
       else:
         flash("No has enviado un registro")
         return render_template('form/f_r_f.html',Datos = session)
@@ -1675,18 +1676,18 @@ def registroRecibo():
 def pdf_template():
         Key =  session['key_pa']
         img =qrcode.make(Key)
-        file =open('qr.png','wb')
+        file =open('tatic/img/qr.png','wb')
         img.save(file)
         lugar = 'De: '+session['FcName']+' | '+session['SiteName']
         facility = session['FcName']
         site = session['SiteName']
         today= datetime.today()
         if 'destinoPrealert' in session:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert WHERE ID_Envio_Prealert = %s AND Origen =%s AND SiteName =%s"
-          cursor.execute(sql, (Key,facility,site,))
-          data = cursor.fetchall()
+          cur.execute(sql, (Key,facility,site,))
+          data = cur.fetchall()
           if len(result)>0:
             Marchamo = " Marchamo:  "+ str(result[0][11])
             Destino = ' a: '+str(result[0][4])+' | '+str(result[0][5])
@@ -1694,11 +1695,11 @@ def pdf_template():
             Transportista = "  Transportista: " + str(result[0][7])
             Placas = "  Placas: "+ str(result[0][8]).upper()
         else:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert WHERE ID_Envio_Prealert = %s AND Origen =%s AND SiteName =%s"
-          cursor.execute(sql, (Key,facility,site,))
-          data = cursor.fetchall()
+          cur.execute(sql, (Key,facility,site,))
+          data = cur.fetchall()
         if 'destinoPrealert' in session:
           pdf = FPDF(orientation = 'P',unit = 'mm', format='A4')
           pdf.add_page()
@@ -1713,7 +1714,7 @@ def pdf_template():
           pdf.text(x = 80, y = 29 ,txt =  "Paquetes e Insumo" )
           pdf.ln(40)
           
-          pdf.image('qr.png', x= 20, y = 45, w=40, h = 40)
+          pdf.image('tatic/img/qr.png', x= 20, y = 45, w=40, h = 40)
 
           pdf.set_font('Times','B',12) 
           
@@ -1741,7 +1742,7 @@ def pdf_template():
           pdf.text(x = 40, y = 25 ,txt =  "Paquetes e Insumo" )
           pdf.ln(80)
           
-          pdf.image('qr.png', x= 5, y = 40, w=40, h = 40)
+          pdf.image('tatic/img/qr.png', x= 5, y = 40, w=40, h = 40)
 
           pdf.set_font('Times','B',10) 
           
@@ -1823,16 +1824,16 @@ def pdf_template():
 def finalizarRecibo():
   try:
     if 'FullName' in session:
-      cursor= db_connection.cursor()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT count(Orden) FROM prealert WHERE  ID_Envio_Prealert = %s And Origen = \'Cross Dock\'"
-      cursor.execute(sql, (session['key_pa'],))
-      numOrdenCross = cursor.fetchall()
-      cursor= db_connection.cursor()
+      cur.execute(sql, (session['key_pa'],))
+      numOrdenCross = cur.fetchall()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT count(Orden) FROM recibo_fc WHERE  ID_Envio_Prealert = %s "
-      cursor.execute(sql, (session['key_pa'],))
-      numOrdenFull = cursor.fetchall()
+      cur.execute(sql, (session['key_pa'],))
+      numOrdenFull = cur.fetchall()
       result = numOrdenCross[0][0]-numOrdenFull[0][0]
       if result>0:
         return render_template("actualizacion/confirmacion.html", Datos =session, faltante= result)
@@ -1857,34 +1858,35 @@ def Track_in_ordenes():
   try:
     if 'FullName' in session:
       Orden= request.form['Orden']
-      cursor= db_connection.cursor()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Service Center\' "
-      cursor.execute(sql, (Orden,))
-      Servicedata = cursor.fetchall()
-      cursor= db_connection.cursor()
+      cur.execute(sql, (Orden,))
+      Servicedata = cur.fetchall()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM recibo_fc WHERE  Orden = %s And Facility = \'Cross Dock\'"
-      cursor.execute(sql, (Orden,))
-      reciboCrossdata = cursor.fetchall()
-      cursor= db_connection.cursor()
+      cur.execute(sql, (Orden,))
+      reciboCrossdata = cur.fetchall()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Cross Dock\'"
-      cursor.execute(sql, (Orden,))
-      Crossdata = cursor.fetchall()
-      cursor= db_connection.cursor()
+      cur.execute(sql, (Orden,))
+      Crossdata = cur.fetchall()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM prealert WHERE  Orden = %s And Origen = \'Fulfillment\' "
-      cursor.execute(sql, (Orden,))
-      Fulldata = cursor.fetchall()
-      cursor= db_connection.cursor()
+      cur.execute(sql, (Orden,))
+      Fulldata = cur.fetchall()
+      cur= db_connection.cursor()
       # Read a single record
       sql = "SELECT * FROM recibo_fc WHERE  Orden = %s And Facility = \'Fulfillment\' "
-      cursor.execute(sql, (Orden,))
-      reciboFulldata = cursor.fetchall()
+      cur.execute(sql, (Orden,))
+      reciboFulldata = cur.fetchall()
       return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata,reciboFulldata=reciboFulldata)
   except:  
     return render_template("form/trackinorden.html",Datos=session)
+
 
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
@@ -1895,63 +1897,63 @@ def crear_csvPrealert():
       if len(session['valor_t_p'])>0:
         if 'datefilter' in session:
           if len(session['datefilter'])>0:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Read a single record
             sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
-            cursor.execute(sql)
-            data = cursor.fetchall()
+            cur.execute(sql)
+            data = cur.fetchall()
           else:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Read a single record
             sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-            cursor.execute(sql)
-            data = cursor.fetchall()
+            cur.execute(sql)
+            data = cur.fetchall()
         else:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
-          cursor.execute(sql)
-          data = cursor.fetchall()
+          cur.execute(sql)
+          data = cur.fetchall()
       else:
         if 'datefilter' in session:
           if len(session['datefilter'])>0:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Read a single record
             sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
-            cursor.execute(sql)
-            data = cursor.fetchall()
+            cur.execute(sql)
+            data = cur.fetchall()
           else:
-            cursor= db_connection.cursor()
+            cur= db_connection.cursor()
             # Read a single record
             sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-            cursor.execute(sql)
-            data = cursor.fetchall()
+            cur.execute(sql)
+            data = cur.fetchall()
         else:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
-          cursor.execute(sql)
-          data = cursor.fetchall()
+          cur.execute(sql)
+          data = cur.fetchall()
     else:
       if 'datefilter' in session:
         if len(session['datefilter'])>0:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
-          cursor.execute(sql)
-          data = cursor.fetchall()
+          cur.execute(sql)
+          data = cur.fetchall()
         else:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
-          cursor.execute(sql)
-          data = cursor.fetchall()
+          cur.execute(sql)
+          data = cur.fetchall()
       else:
-          cursor= db_connection.cursor()
+          cur= db_connection.cursor()
           # Read a single record
           sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
-          cursor.execute(sql)
-          data = cursor.fetchall()
+          cur.execute(sql)
+          data = cur.fetchall()
     datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
     for res in data:
       datos+=str(res[0])
@@ -2033,6 +2035,7 @@ def Recibo_cc():
   else:
     return render_template('index.html')
 
+
 @app.route('/Recibocomercialcarrier',methods=['POST','GET'])
 def ReciboComercialCarrier():
   try:  
@@ -2058,12 +2061,14 @@ def despachoArribo():
   else:
     return render_template('index.html')
 
+
 @app.route('/Planning',methods=['GET'])
 def planning():
   if 'FullName' in session:
     return render_template('Planning.html',Datos = session)
   else:
     return render_template('index.html')
+
 
 @app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
 def validar_comercialcarrier(paquetera):
@@ -2077,12 +2082,12 @@ def validar_comercialcarrier(paquetera):
       Site = session['SiteName']
       now= datetime.now()
       if accion == 'Rechazar':
-        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
+        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion,Recibo='3PL')
       elif accion == 'Aceptar':
-        cursor= db_connection.cursor()
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO recibo_cc (paquetera, Orden, accion, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(paquetera,orden,accion,facility,Site,responsable,now,now))
+        cur.execute(sql,(paquetera,orden,accion,facility,Site,responsable,now,now))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -2091,9 +2096,8 @@ def validar_comercialcarrier(paquetera):
     return render_templates('comercialcarrier.html',Datos=session)  
 
 
-
-@app.route('/Rechazar/<paquetera>/<orden>/<accion>',methods=['POST','GET'])
-def validar_comercialcarrier(paquetera,orden,accion):
+@app.route('/Rechazar/<paquetera>/<orden>/<accion>/<Recibo>',methods=['POST','GET'])
+def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
   try:
     if request.method == 'POST':
       comentario = request.form['comentario']
@@ -2101,23 +2105,30 @@ def validar_comercialcarrier(paquetera,orden,accion):
       responsable= session['FullName']
       facility = session['FcName']
       Site = session['SiteName']
-      if accion == 'Rechazar':
-        return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion)
-      elif accion == 'Aceptar':
-        cursor= db_connection.cursor()
+      if Recibo == '3PL':
+        cur= db_connection.cursor()
         # Create a new record
         sql = "INSERT INTO recibo_cc (paquetera, Orden, accion,  Comentario, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(sql,(paquetera,orden,accion,comentario,facility,Site,responsable,now,now,))
+        cur.execute(sql,(paquetera,orden,accion,comentario,facility,Site,responsable,now,now,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
         return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
+      else:
+          cur= db_connection.cursor()
+          # Create a new record
+          sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(Recibo, orden, paquetera, accion, comentario, facility, Site, responsable, now, now,))
+          # connection is not autocommit by default. So you must commit to save
+          # your changes.
+          db_connection.commit()
+          return render_template('form/f_recibo.html',Datos = session)
   except:
-    return render_templates('comercialcarrier.html',Datos=session)  
-
-
-
+    if Recibo == '3PL':
+      return render_template('comercialcarrier.html',Datos=session) 
+    else:
+      return render_template('form/f_recibo.html',Datos = session)
 
 
 if __name__=='__main__':
-    app.run(port = 3000, debug =True)
+    app.run(port = 4000, debug =True)
