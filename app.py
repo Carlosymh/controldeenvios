@@ -619,7 +619,6 @@ def registro_o():
           region= 'Centro'
         elif Service_Center=='99 Minutos':
           region= '99 Minutos'
-        Comentario =  request.form['Comentario']
         estatus_orden = 'Pendiente'
         now = datetime.now()
         semana = now.isocalendar()
@@ -637,8 +636,8 @@ def registro_o():
         elif len(orden)>0 :
           cur= db_connection.cursor()
           # Create a new record
-          sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, estatus_orden, Comentario, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-          cur.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,estatus_orden,Comentario,semana[1],mes,Responsable,now,now,))
+          sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, estatus_orden, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,estatus_orden,semana[1],mes,Responsable,now,now,))
           # connection is not autocommit by default. So you must commit to save
           # your changes.
           db_connection.commit()
@@ -2128,6 +2127,28 @@ def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
       return render_template('comercialcarrier.html',Datos=session) 
     else:
       return render_template('form/f_recibo.html',Datos = session)
+
+
+@app.route('/ticket',methods=['POST','GET'])
+def Tiket_Orden():
+  if 'FullName' in session:
+    return render_template('form/ticket.html',Datos=session)
+  else:
+    redirect('/')
+
+
+@app.route('/aplicarticket',methods=['Post','GET'])
+def aplicarticket_Orden():
+  if 'FullName' in session:
+    orden= request.form['orden']
+    return render_template('form/aplicarticket.html',Datos=session,orden=orden)
+  else:
+    return redirect('/')
+
+
+@app.route('/registrarTicket/<orden>',methods=['POST','GET'])
+def Registrar_Ticket():
+  pass
 
 
 if __name__=='__main__':

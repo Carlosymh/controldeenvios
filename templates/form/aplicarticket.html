@@ -1,0 +1,22 @@
+{% extends 'nav.html'%}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/formularios.css')}}">
+{% endblock %}
+{% block titulo %}
+<title>Actualizacion N/P</title>
+{% endblock %}
+{% block body%}
+        <div class="fondo"></div>
+        <section>
+            <form action="/registrarTicket/{{orden}}" method="POST" >
+                <h2> Ticket de la Orden : {{orden}}</h2>
+                    <label for="Ticket">Numero de Ticket: </label>
+                    <input type="text" name="Ticket" placeholder="Ingresa el numero de orden">
+                    <label for="Comentario">Comentario: </label>
+                    <input type="text" name="Comentario" placeholder="Ingresa el numero de orden">
+                    <input type="submit" class="btn" name="enviar" value="enviar" >
+            </form>
+        </section>
+        <script src="{{url_for('static', filename='js/interfas.js')}}">
+    </script>
+{% endblock %}
