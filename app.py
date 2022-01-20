@@ -1333,95 +1333,274 @@ def Reporte_planning(rowi):
   try:
       if request.method == 'POST':
         if request.method == 'GET':
-          session['rowi_t_planning']=rowi
-          row1 = int(session['rowi_t_planning'])
-          row2 = 100
+          session['rowi_prealert']=rowi
+          row1 = int(session['rowi_prealert'])
+          row2 = 50
         else:
-            row1 = int(session['rowi_t_planning'])
-            row2 =100
+            row1 = int(session['rowi_prealert'])
+            row2 =50
         if 'valor' in request.form:
           if len(request.form['valor'])>0:
-            session['filtro_t_planning']=request.form['filtro']
-            session['valor_t_planning']=request.form['valor']
-            if len(request.form['inicio'])>0:
-              session['inicio_t_planning']=request.form['inicio']
-              if len(request.form['fin'])>0:
-                session['fin_t_planning']=request.form['fin']
+            session['filtro_prealert']=request.form['filtro']
+            session['valor_prealert']=request.form['valor']
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                daterangef=request.form['datefilter']
+                daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                session['datefilter_prealert']=daterange
                 cur= db_connection.cursor()
-                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],session['datefilter_prealert'],row1,row2)
+                cur.execute(sql)
                 data = cur.fetchall()
                 return render_template('reportes/t_planning.html',Datos = session,Infos =data)
               else:
                 cur= db_connection.cursor()
-                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación	 = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
+                # Read a single record
+                sql= "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+                cur.execute(sql)
                 data = cur.fetchall()
                 return render_template('reportes/t_planning.html',Datos = session,Infos =data)
             else:
+              if 'datefilter_prealert' in session:
+                session.pop('datefilter_prealert')
               cur= db_connection.cursor()
-              cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+              # Read a single record
+              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+              cur.execute(sql)
               data = cur.fetchall()
               return render_template('reportes/t_planning.html',Datos = session,Infos =data)
           else:
-            cur= db_connection.cursor()
-            cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-            data = cur.fetchall()
-            return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
-        else:
-          cur= db_connection.cursor()
-          cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-      else: 
-        if request.method == 'GET':
-          session['rowi_t_planning']=rowi
-          row1 = int(session['rowi_t_planning'])
-          row2 = 50
-        else:
-          row1 = int(session['rowi_t_planning'])
-          row2 =50
-        if 'valor_t_planning' in session:
-          if len(session['valor_t_planning'])>0:
-            if 'inicio_t_planning' in session:
-              if len(session['inicio_t_planning'])>0:
-                if 'fin_t_planning' in session:
-                  if len(session['fin_t_planning'])>0:
+            if 'datefilter' in request.form:
+              if len(request.form['datefilter'])>0:
+                if 'valor_prealert' in session:
+                  if len(session['valor_prealert'])>0:
+                    daterangef=request.form['datefilter']
+                    daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                    session['datefilter_prealert']=daterange
                     cur= db_connection.cursor()
-                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada BETWEEN \'{}\' AND \'{}\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],session['fin_t_planning'],row1,row2))
+                    # Read a single record
+                    sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],session['datefilter_prealert'],row1,row2)
+                    cur.execute(sql)
                     data = cur.fetchall()
                     return render_template('reportes/t_planning.html',Datos = session,Infos =data)
                   else:
+                    session.pop('filtro_prealert')
+                    session.pop('valor_prealert')
                     cur= db_connection.cursor()
-                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
+                    # Read a single record
+                    sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+                    cur.execute(sql)
                     data = cur.fetchall()
                     return render_template('reportes/t_planning.html',Datos = session,Infos =data)
                 else:
-                    cur= db_connection.cursor()
-                    cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_agendada = \'{}\'  LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],session['inicio_t_planning'],row1,row2))
-                    data = cur.fetchall()
-                    return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                if 'valor_prealert' in session:
+                  session.pop('filtro_prealert')
+                  session.pop('valor_prealert')
+                  if 'datefilter_prealert' in session:
+                    session.pop('datefilter_prealert')
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            else:
+              if 'valor_prealert' in session:
+                if 'datefilter_prealert' in session:
+                    session.pop('datefilter_prealert')
+                session.pop('filtro_prealert')
+                session.pop('valor_prealert')
+              cur= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+              cur.execute(sql)
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+        else: 
+          if 'valor_prealert' in session:
+            if len(session['valor_prealert'])>0:
+              if 'datefilter_prealert' in session:
+                if len(session['datefilter_prealert'])>0:
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_prealert'],session['valor_prealert'],session['datefilter_prealert'],row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                else:
+                  session.pop('datefilter_prealert')
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
               else:
                 cur= db_connection.cursor()
-                cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+                cur.execute(sql)
                 data = cur.fetchall()
-                return render_template('reportes/t_planning.html',Datos = session,Infos =data)  
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
+            else:
+              session.pop('filtro_prealert')
+              session.pop('valor_prealert')
+              if 'datefilter_prealert' in session:
+                if len(session['datefilter_prealert'])>0:
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                else:
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+          else:
+            if 'datefilter_prealert' in session:
+              if len(session['datefilter_prealert'])>0:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                session.pop('datefilter_prealert')
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            else:
+              if 'datefilter' in request.form:
+                if len(request.form['datefilter'])>0:
+                  daterangef=request.form['datefilter']
+                  daterange="'"+daterangef.replace("-", "' AND '")+"'"
+                  session['datefilter_prealert']=daterange
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_prealert'],row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+                else:
+                  cur= db_connection.cursor()
+                  # Read a single record
+                  sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                  cur.execute(sql)
+                  data = cur.fetchall()
+                  return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
+              else:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
+      else: 
+        if request.method == 'GET':
+          session['rowi_prealert']=rowi
+          row1 = int(session['rowi_prealert'])
+          row2 = 50
+        else:
+          row1 = int(session['rowi_prealert'])
+          row2 =50
+        if 'valor_prealert' in session:
+          if len(session['valor_prealert'])>0:
+            if 'datefilter_prealert' in session:
+              if len(session['datefilter_prealert'])>0:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],session['datefilter_prealert'],row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
             else:
               cur= db_connection.cursor()
-              cur.execute('SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}'.format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2))
+              # Read a single record
+              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_prealert'],session['valor_prealert'],row1,row2)
+              cur.execute(sql, )
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data) 
+          else:
+            session.pop('filtro_prealert')
+            session.pop('valor_prealert')
+            if 'datefilter_prealert' in session:
+              if len(session['datefilter_prealert'])>0:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+              else:
+                cur= db_connection.cursor()
+                # Read a single record
+                sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                cur.execute(sql)
+                data = cur.fetchall()
+                return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            else:
+              cur= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+              cur.execute(sql)
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+        else:
+          if 'datefilter_prealert' in session:
+            if len(session['datefilter_prealert'])>0:
+              cur= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_prealert'],row1,row2)
+              cur.execute(sql)
+              data = cur.fetchall()
+              return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            else:
+              session.pop('datefilter_prealert')
+              cur= db_connection.cursor()
+              # Read a single record
+              sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+              cur.execute(sql)
               data = cur.fetchall()
               return render_template('reportes/t_planning.html',Datos = session,Infos =data)
           else:
             cur= db_connection.cursor()
-            cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
+            # Read a single record
+            sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
             data = cur.fetchall()
-            return render_template('reportes/t_planning.html',Datos = session,Infos =data)
-        else:
-          cur= db_connection.cursor()
-          cur.execute('SELECT * FROM planing LIMIT {}, {}'.format(row1,row2))
-          data = cur.fetchall()
-          return render_template('reportes/t_planning.html',Datos = session,Infos =data)
+            return render_template('reportes/t_planning.html',Datos = session,Infos =data)         
   except:
-    flash("Inicia Secion")
-    return render_template('index.html')
+    return redirect('/')
 
 
 @app.route('/t_r_f/<rowi>',methods=['POST','GET'])
@@ -1975,6 +2154,539 @@ def crear_csvPrealert():
     return response
 
 
+@app.route('/csve_s',methods=['POST','GET'])
+def crear_csve_s():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
+
+
+@app.route('/csvn_p',methods=['POST','GET'])
+def crear_csvn_p():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
+
+
+@app.route('/csvplaneacion',methods=['POST','GET'])
+def crear_csvplaneacion():
+    site=session['SiteName']
+    row1 = int(session['rowi_prealert'])
+    row2 =50
+    if 'valor_prealert' in session:
+      if len(session['valor_prealert'])>0:
+        if 'datefilter_prealert' in session:
+          if len(session['datefilter_prealert'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_prealert'],session['datefilter_prealert'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_prealert'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_prealert'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter_prealert' in session:
+          if len(session['datefilter_prealert'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_prealert'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter_prealert' in session:
+        if len(session['datefilter_prealert'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_prealert'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Fecha Agendada"+","+"Codigo SKU"+","+"Descripcion"+","+"Pinzas"+","+"Unidades"+","+"Datos de la Unidad"+","+"Operador"+","+"Origen"+","+"Destino"+","+"Responsable"+","+"Estatus"+","+"hora inicio de carga"+","+"hora de despacho y Hora"+","+"marchamo"+","+"marchamo2"+","+"arribo_a_fc_destino"+","+"responsable_fc"+","+"responsable_xd"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[13])
+      datos+=","+str(res[14])
+      datos+=","+str(res[15])
+      datos+=","+str(res[16])
+      datos+=","+str(res[17])
+      datos+=","+str(res[18])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"planing"+str(datetime.today())+".csv"; 
+    return response
+
+
+@app.route('/csvr_cc',methods=['POST','GET'])
+def crear_csvr_cc():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
+
+
+@app.route('/csvr_f',methods=['POST','GET'])
+def crear_csvr_f():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
+
+
+@app.route('/csvs_s',methods=['POST','GET'])
+def crear_csvs_s():
+    site=session['SiteName']
+    row1 = int(session['rowi_t_p'])
+    row2 =50
+    if 'valor_t_p' in session:
+      if len(session['valor_t_p'])>0:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+        if 'datefilter' in session:
+          if len(session['datefilter'])>0:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+          else:
+            cur= db_connection.cursor()
+            # Read a single record
+            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            cur.execute(sql)
+            data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    else:
+      if 'datefilter' in session:
+        if len(session['datefilter'])>0:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+        else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+      else:
+          cur= db_connection.cursor()
+          # Read a single record
+          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          cur.execute(sql)
+          data = cur.fetchall()
+    datos="Id"+","+"Pre-Alert key"+","+"Facility Origen"+","+"Site Origen"+","+"Facility Destino"+","+"Site Destino"+","+"Transporte"+","+"Transportista"+","+"Placas"+","+"Orden"+","+"Paquetera"+","+"Marchamo"+","+"Responsable"+","+"Fecha y Hora"+","+"\n"
+    for res in data:
+      datos+=str(res[0])
+      datos+=","+str(res[1])
+      datos+=","+str(res[2])
+      datos+=","+str(res[3])
+      datos+=","+str(res[4])
+      datos+=","+str(res[5])
+      datos+=","+str(res[6])
+      datos+=","+str(res[7])
+      datos+=","+str(res[8])
+      datos+=","+str(res[9])
+      datos+=","+str(res[10])
+      datos+=","+str(res[11])
+      datos+=","+str(res[12])
+      datos+=","+str(res[14])
+      datos+="\n"
+    response = make_response(datos)
+    response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
+    return response
+
+
 @app.route('/insumos',methods=['GET'])
 def insumos():
   if 'FullName' in session:
@@ -2147,8 +2859,20 @@ def aplicarticket_Orden():
 
 
 @app.route('/registrarTicket/<orden>',methods=['POST','GET'])
-def Registrar_Ticket():
-  pass
+def Registrar_Ticket(orden):
+    if request.method == 'POST':
+        Ticket =  request.form['Ticket']
+        status='Pendiente'
+        Comentario =  request.form['Comentario']
+        usuario = session['FullName']
+        now = datetime.now()
+        cur= db_connection.cursor()
+        # Create a new record
+        cur.execute("UPDATE ordenes_no_procesables SET ticket = \'{}\', fecha_ticket= \'{}\', estatus_orden= \'{}\', Comentario= \'{}\', responsable_actualizacion =  \'{}\' WHERE orden  = \'{}\'".format(Ticket,now,status,Comentario,usuario,orden))
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        db_connection.commit()
+        return redirect('/ticket')
 
 
 if __name__=='__main__':
