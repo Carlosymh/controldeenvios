@@ -3,9 +3,10 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
 {% endblock %}
 {% block titulo %}
-<title>Reporte No Procesable</title>
+<title>No Procesable</title>
 {% endblock %}
-    {% block body%}
+
+{% block body%}
     <div class="filtros">
         <form action="/t_n_p/0" method="post" class="form_filtros">
             <select name="filtro">
@@ -23,21 +24,19 @@
                 <option value="estatus_orden">Estatus Orden</option>
                 <option value="responsable">Responsable</option>
             </select>
-            <input type="text" name="valor">
-            <label for="inicio"> De:  
-                <input type="date" name="inicio" id="inicio">
-            </label>
-            <label for="fin">a:  
-                <input type="date" name="fin" id="fin">
+            <input autocomplete="off" type="text" name="valor">
+            <label for="datefilter">Fecha: </label>
+            <input autocomplete="off" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
         </form>
+        <a href="/csvn_p" target="_blank" class="download_csv"><i class="fas fa-file-download"></i>  Descargar</a>
     </div>
         <div class="fondo">
         <section>
             <table>
-                <thead>
-                    <tr>
+                <thead >
+                    <tr class="head">
                         <th> ID </th>
                         <th> Usuario </th>
                         <th> Paquetera </th>
@@ -54,9 +53,6 @@
                         <th> Comentario </th>
                         <th> responsable </th>
                         <th> Fecha Y Hora </th>
-                        {%if Datos['Rango']=='Administrador'%}
-                        <th> Editar </th>
-                        {%endif%}
                     </tr>
                 </thead>
                 <tbody>
@@ -80,7 +76,7 @@
                         <td>{{Info.19}}</td>
                     </tr>
                     {%endfor%}
-                    <tr>
+                    <tr class="Pag">
                         <td colspan="16" class="Pag">
                             {%set row= Datos['rowi_t_n_p'] |int%}
                             {%if row==0%}
@@ -96,6 +92,16 @@
                             </a>
                             {%endif%}
                             {%set rowMas=row+50 | int%}
+                            <a href="/t_n_p/0" class="in"> 1 </a>
+                            <a href="/t_n_p/50" class="in"> 2 </a>
+                            <a href="/t_n_p/100" class="in"> 3 </a>
+                            <a href="/t_n_p/150" class="in"> 4 </a>
+                            <a href="/t_n_p/200" class="in"> 5 </a>
+                            <a href="/t_n_p/250" class="in"> 6 </a>
+                            <a href="/t_n_p/300" class="in"> 7 </a>
+                            <a href="/t_n_p/350" class="in"> 8 </a>
+                            <a href="/t_n_p/400" class="in"> 9 </a>
+                            <a href="/t_n_p/450" class="in"> 10 </a>
                             <a href="/t_n_p/{{rowMas}}" class="before">
                                 <i class="fas fa-angle-double-right">
                                 </i>
@@ -108,4 +114,23 @@
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
+    <script type="text/javascript">
+        $(function() {
+          $('input[name="datefilter"]').daterangepicker({
+              autoUpdateInput: false,
+              locale: {
+                  cancelLabel: 'Clear'
+              }
+          });
+        
+          $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+          });
+        
+          $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+          });
+        
+        });
+        </script>
 {% endblock %}

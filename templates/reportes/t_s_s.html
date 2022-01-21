@@ -5,6 +5,7 @@
 {% block titulo %}
 <title>Salida Insumo</title>
 {% endblock %}
+
 {% block body%}
     <div class="filtros">
         <form action="/t_s_s/0" method="post" class="form_filtros">
@@ -14,21 +15,19 @@
                 <option value="Cross_Dock">Cross Dock</option>
                 <option value="Responsable">Responsable</option>
             </select>
-            <input type="text" name="valor">
-            <label for="inicio"> De:  
-                <input type="date" name="inicio" id="inicio">
-            </label>
-            <label for="fin">a:  
-                <input type="date" name="fin" id="fin">
+            <input autocomplete="off" type="text" name="valor">
+            <label for="datefilter">Fecha: </label>
+            <input autocomplete="off" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
         </form>
+        <a href="/csvs_s" target="_blank" class="download_csv"><i class="fas fa-file-download"></i>  Descargar</a>
     </div>
         <div class="fondo">
         <section>
             <table>
-                <thead>
-                    <tr>
+                <thead >
+                    <tr class="head">
                         <th> ID </th>
                         <th> Service Center </th>
                         <th> Tarimas </th>
@@ -38,9 +37,6 @@
                         <th> Cross Dock </th>
                         <th> Responsable </th>
                         <th> Fecha Y Hora </th>
-                        {%if Datos['Rango']=='Administrador'%}
-                        <th> Editar </th>
-                        {%endif%}
                     </tr>
                 </thead>
                 <tbody>
@@ -57,7 +53,7 @@
                         <td>{{Info.9}}</td>
                     </tr>
                     {%endfor%}
-                    <tr>
+                    <tr class="Pag">
                         <td colspan="9" class="Pag">
                             {%set row= Datos['rowi_t_s_s'] |int%}
                             {%if row==0%}
@@ -73,6 +69,16 @@
                             </a>
                             {%endif%}
                             {%set rowMas=row+50 | int%}
+                            <a href="/t_s_s/0" class="in"> 1 </a>
+                            <a href="/t_s_s/50" class="in"> 2 </a>
+                            <a href="/t_s_s/100" class="in"> 3 </a>
+                            <a href="/t_s_s/150" class="in"> 4 </a>
+                            <a href="/t_s_s/200" class="in"> 5 </a>
+                            <a href="/t_s_s/250" class="in"> 6 </a>
+                            <a href="/t_s_s/300" class="in"> 7 </a>
+                            <a href="/t_s_s/350" class="in"> 8 </a>
+                            <a href="/t_s_s/400" class="in"> 9 </a>
+                            <a href="/t_s_s/450" class="in"> 10 </a>
                             <a href="/t_s_s/{{rowMas}}" class="before">
                                 <i class="fas fa-angle-double-right">
                                 </i>
@@ -85,4 +91,23 @@
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
+    <script type="text/javascript">
+        $(function() {
+          $('input[name="datefilter"]').daterangepicker({
+              autoUpdateInput: false,
+              locale: {
+                  cancelLabel: 'Clear'
+              }
+          });
+        
+          $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+          });
+        
+          $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+          });
+        
+        });
+        </script>
 {% endblock %}

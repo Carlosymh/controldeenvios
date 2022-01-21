@@ -3,37 +3,35 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/reportes.css')}}">
 {% endblock %}
 {% block titulo %}
-<title>Reporte Recibo</title>
+<title>Reporte Recibo ful</title>
 {% endblock %}
+
 {% block body%}
     <div class="filtros">
         <form action="/t_r_f/0" method="post" class="form_filtros">
             <select name="filtro">
                 <option value="id_recibo">ID</option>
-                <option value="Fulfillment">Prealert</option>
-                <option value="responsable">Responsable</option>
-                <option value="paquetera">Paquetera</option>
-                <option value="no_gia"># de Gia</option>
-                <option value="no_paquete"># de Paquete</option>
-                <option value="tipo_paquete">Tipo Paquete</option>
-                <option value="estatus">Estatus</option>
-                <option value="razon_rechazo">Razon Rechazo</option>
+                <option value="ID_Envio_Prealert">Prealert</option>
+                <option value="Orden">Orden</option>
+                <option value="status">status</option>
+                <option value="Comentario">Comentario</option>
+                <option value="Facility">Facility</option>
+                <option value="SiteName">SiteName</option>
+                <option value="Responsable">Responsable</option>
             </select>
-            <input type="text" name="valor">
-            <label for="inicio"> De:  
-                <input type="date" name="inicio" id="inicio">
-            </label>
-            <label for="fin">a:  
-                <input type="date" name="fin" id="fin">
+            <input autocomplete="off" type="text" name="valor">
+            <label for="datefilter">Fecha: </label>
+            <input autocomplete="off" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
-        </form> 
+        </form>
+        <a href="/csvr_f" target="_blank" class="download_csv"><i class="fas fa-file-download"></i>  Descargar</a>
     </div>
         <div class="fondo">
         <section>
             <table>
-                <thead>
-                    <tr>
+                <thead >
+                    <tr class="head">
                         <th> ID </th>
                         <th> Pre-Alert Key </th>
                         <th> Orden </th>
@@ -59,7 +57,7 @@
                         <td>{{Info.9}}</td>
                     </tr>
                     {%endfor%}
-                    <tr>
+                    <tr class="Pag">
                         <td colspan="10" class="Pag">
                             {%set row= Datos['rowi_t_r_f'] |int%}
                             {%if row==0%}
@@ -75,6 +73,16 @@
                             </a>
                             {%endif%}
                             {%set rowMas=row+50 | int%}
+                            <a href="/t_r_f/0" class="in"> 1 </a>
+                            <a href="/t_r_f/50" class="in"> 2 </a>
+                            <a href="/t_r_f/100" class="in"> 3 </a>
+                            <a href="/t_r_f/150" class="in"> 4 </a>
+                            <a href="/t_r_f/200" class="in"> 5 </a>
+                            <a href="/t_r_f/250" class="in"> 6 </a>
+                            <a href="/t_r_f/300" class="in"> 7 </a>
+                            <a href="/t_r_f/350" class="in"> 8 </a>
+                            <a href="/t_r_f/400" class="in"> 9 </a>
+                            <a href="/t_r_f/450" class="in"> 10 </a>
                             <a href="/t_r_f/{{rowMas}}" class="before">
                                 <i class="fas fa-angle-double-right">
                                 </i>
@@ -82,9 +90,28 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>    
+            </table>
         </section>
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
+    <script type="text/javascript">
+        $(function() {
+          $('input[name="datefilter"]').daterangepicker({
+              autoUpdateInput: false,
+              locale: {
+                  cancelLabel: 'Clear'
+              }
+          });
+        
+          $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+          });
+        
+          $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+          });
+        
+        });
+        </script>
 {% endblock %}

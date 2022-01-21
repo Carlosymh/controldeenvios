@@ -5,9 +5,10 @@
 {% block titulo %}
 <title>Reporte Recibo 3PL</title>
 {% endblock %}
+
 {% block body%}
     <div class="filtros">
-        <form action="/t_r_f/0" method="post" class="form_filtros">
+        <form action="/t_r_cc/0" method="post" class="form_filtros">
             <select name="filtro">
                 <option value="id_recibo">ID</option>
                 <option value="Fulfillment">Prealert</option>
@@ -19,21 +20,19 @@
                 <option value="estatus">Estatus</option>
                 <option value="razon_rechazo">Razon Rechazo</option>
             </select>
-            <input type="text" name="valor">
-            <label for="inicio"> De:  
-                <input type="date" name="inicio" id="inicio">
-            </label>
-            <label for="fin">a:  
-                <input type="date" name="fin" id="fin">
+            <input autocomplete="off" type="text" name="valor">
+            <label for="datefilter">Fecha: </label>
+            <input autocomplete="off" type="text" name="datefilter" value="" />
             </label>
             <input type="submit" value="Buscar">
-        </form> 
+        </form>
+        <a href="/csvr_cc" target="_blank" class="download_csv"><i class="fas fa-file-download"></i>  Descargar</a>
     </div>
         <div class="fondo">
         <section>
             <table>
-                <thead>
-                    <tr>
+                <thead >
+                    <tr class="head">
                         <th> ID </th>
                         <th> Pre-Alert Key </th>
                         <th> Orden </th>
@@ -61,30 +60,59 @@
                     {%endfor%}
                     <tr>
                         <td colspan="10" class="Pag">
-                            {%set row= Datos['rowi_t_r_f'] |int%}
+                            {%set row= Datos['rowi_t_r_cc'] |int%}
                             {%if row==0%}
-                            <a href="/t_r_f/0" class="after">
+                            <a href="/t_r_cc/0" class="after">
                                 <i class="fas fa-angle-double-left">
                                 </i>
                             </a>
                             {%else%}
                             {%set rowMenos=row-50 | int%}
-                            <a href="/t_r_f/{{rowMenos}}" class="after">
+                            <a href="/t_r_cc/{{rowMenos}}" class="after">
                                 <i class="fas fa-angle-double-left">
                                 </i>
                             </a>
                             {%endif%}
                             {%set rowMas=row+50 | int%}
-                            <a href="/t_r_f/{{rowMas}}" class="before">
+                            <a href="/t_r_cc/0" class="in"> 1 </a>
+                            <a href="/t_r_cc/50" class="in"> 2 </a>
+                            <a href="/t_r_cc/100" class="in"> 3 </a>
+                            <a href="/t_r_cc/150" class="in"> 4 </a>
+                            <a href="/t_r_cc/200" class="in"> 5 </a>
+                            <a href="/t_r_cc/250" class="in"> 6 </a>
+                            <a href="/t_r_cc/300" class="in"> 7 </a>
+                            <a href="/t_r_cc/350" class="in"> 8 </a>
+                            <a href="/t_r_cc/400" class="in"> 9 </a>
+                            <a href="/t_r_cc/450" class="in"> 10 </a>
+                            <a href="/t_r_cc/{{rowMas}}" class="before">
                                 <i class="fas fa-angle-double-right">
                                 </i>
                             </a>
                         </td>
                     </tr>
                 </tbody>
-            </table>    
+            </table>
         </section>
     </div>
     <script src="{{url_for('static', filename='js/interfas.js')}}">
     </script>
+    <script type="text/javascript">
+        $(function() {
+          $('input[name="datefilter"]').daterangepicker({
+              autoUpdateInput: false,
+              locale: {
+                  cancelLabel: 'Clear'
+              }
+          });
+        
+          $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+              $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+          });
+        
+          $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+              $(this).val('');
+          });
+        
+        });
+        </script>
 {% endblock %}
