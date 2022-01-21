@@ -289,7 +289,7 @@ def registroPrealertOrdenes():
         db_connection.commit()
         cur.close()
         flash("Registro Exitoso")
-        return render_template('form/f_r_p_s.html',Datos = session)
+        return render_template('form/f_r_p_s.html',Datos = session,now=now)
       else:
         flash("No has enviado un registro")
         return render_template('form/f_r_p_s.html',Datos = session)
