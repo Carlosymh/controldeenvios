@@ -54,7 +54,7 @@ def validarusuaro():
         session['User'] = data[3]
         session['FcName'] = data[4]
         session['SiteName'] = data[5]
-        session['Rango'] = data[7]
+        session['Rango'] = data[6]
         return redirect('/home')
       else:
         return render_template('index.html')    
