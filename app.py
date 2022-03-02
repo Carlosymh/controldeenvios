@@ -23,6 +23,9 @@ from app.app.connect import connectBD
 
 app = Blueprint("app",__name__)
 
+UPLOAD_FOLDER = 'app/app/file/'
+
+#FUNCIONES
 
 #Direccion Principal 
 @app.route('/')
@@ -47,9 +50,6 @@ def validarusuaro():
       if validar:
         link = connectBD()
         db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
-        
-        link = connectBD()
-        db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
         cur= db_connection.cursor()
         # Read a single record
         cur.execute("SELECT * FROM roles WHERE Usuario= \'{}\' Limit 1".format(usuario))
@@ -68,9 +68,10 @@ def validarusuaro():
       else:
         flash('Usuario o Clave Incorreto')
         return redirect('/')
+
   except Exception as error:
     flash(str(error))
-    return redirect('/')   
+    return redirect('/')  
 
 #Pagina Principal
 @app.route('/home',methods=['POST','GET'])
@@ -640,9 +641,9 @@ def registro_o():
         mes = meses[now.month]
         Responsable =  session['FullName']
         
-      link = connectBD()
-      db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
-      cur= db_connection.cursor()
+        link = connectBD()
+        db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
+        cur= db_connection.cursor()
         # Read a single record
         sql = "SELECT * FROM ordenes_no_procesables WHERE orden = %s AND estatus_orden = %s LIMIT 1 "
         cur.execute(sql, (orden,estatus_orden,))
@@ -652,9 +653,9 @@ def registro_o():
           return render_template('form.html',Datos = session)
         elif len(orden)>0 :
           
-      link = connectBD()
-      db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
-      cur= db_connection.cursor()
+          link = connectBD()
+          db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
+          cur= db_connection.cursor()
           # Create a new record
           sql = "INSERT INTO ordenes_no_procesables (usuario_wms, paquetera, orden, pallet, tipo, fulfillment_origen, estatus, service_center, region, estatus_orden, semana, mes, responsable, fecha_hora, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
           cur.execute(sql,(usuario,Paquetera,orden,Pallet,Tipo,cdt,Estatus,Service_Center,region,estatus_orden,semana[1],mes,Responsable,now,now,))
@@ -1271,7 +1272,6 @@ def Reporte_entradas_service(rowi):
               return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
             else:
               session.pop('datefilter_t_e_s')
-              
               link = connectBD()
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
@@ -1282,7 +1282,6 @@ def Reporte_entradas_service(rowi):
               cur.close()
               return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
           else:
-            
             link = connectBD()
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
@@ -1317,7 +1316,6 @@ def Reporte_ordenes_no_procesables(rowi):
                 daterangef=request.form['datefilter']
                 daterange="'"+daterangef.replace("-", "' AND '")+"'"
                 session['datefilter_t_n_p']=daterange
-                
                 link = connectBD()
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
@@ -5005,5 +5003,4 @@ def Registrar_Ticket(orden):
         db_connection.commit()
         cur.close()
         return redirect('/ticket')
-
 
