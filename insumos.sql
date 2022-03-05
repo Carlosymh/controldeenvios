@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-01-2022 a las 04:05:22
+-- Tiempo de generación: 05-03-2022 a las 20:18:50
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 8.0.12
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `insumos`
 --
+CREATE DATABASE IF NOT EXISTS `insumos` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `insumos`;
 
 -- --------------------------------------------------------
 
@@ -27,6 +29,7 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `entrada_svcs`
 --
 
+DROP TABLE IF EXISTS `entrada_svcs`;
 CREATE TABLE `entrada_svcs` (
   `ID_E_svcs` bigint(100) NOT NULL,
   `Centro_de_trabajo_donde_te_encuentras` varchar(255) NOT NULL,
@@ -48,6 +51,7 @@ CREATE TABLE `entrada_svcs` (
 -- Estructura de tabla para la tabla `ordenes_no_procesables`
 --
 
+DROP TABLE IF EXISTS `ordenes_no_procesables`;
 CREATE TABLE `ordenes_no_procesables` (
   `id_orden` bigint(100) NOT NULL,
   `usuario_wms` varchar(255) NOT NULL,
@@ -78,6 +82,7 @@ CREATE TABLE `ordenes_no_procesables` (
 -- Estructura de tabla para la tabla `planing`
 --
 
+DROP TABLE IF EXISTS `planing`;
 CREATE TABLE `planing` (
   `id_planing` varchar(100) NOT NULL,
   `Fecha_agendada` date NOT NULL,
@@ -106,6 +111,7 @@ CREATE TABLE `planing` (
 -- Estructura de tabla para la tabla `prealert`
 --
 
+DROP TABLE IF EXISTS `prealert`;
 CREATE TABLE `prealert` (
   `ID_Prealert` bigint(255) NOT NULL,
   `ID_Envio_Prealert` varchar(255) DEFAULT NULL,
@@ -130,6 +136,7 @@ CREATE TABLE `prealert` (
 -- Estructura de tabla para la tabla `recibo_cc`
 --
 
+DROP TABLE IF EXISTS `recibo_cc`;
 CREATE TABLE `recibo_cc` (
   `id_recibo_cc` bigint(20) DEFAULT NULL,
   `paquetera` varchar(255) NOT NULL,
@@ -149,6 +156,7 @@ CREATE TABLE `recibo_cc` (
 -- Estructura de tabla para la tabla `recibo_fc`
 --
 
+DROP TABLE IF EXISTS `recibo_fc`;
 CREATE TABLE `recibo_fc` (
   `ID_Recibo` bigint(50) NOT NULL,
   `ID_Envio_Prealert` varchar(255) DEFAULT NULL,
@@ -166,27 +174,11 @@ CREATE TABLE `recibo_fc` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `salida_svcs`
+-- Estructura de tabla para la tabla `roles`
 --
 
-CREATE TABLE `salida_svcs` (
-  `ID_S_svcs` bigint(100) NOT NULL,
-  `Centro_de_trabajo_donde_te_encuentras` varchar(255) NOT NULL,
-  `Tarimas_enviadas` bigint(100) NOT NULL,
-  `Gaylord_Enviados` bigint(100) NOT NULL,
-  `Cross_Dock` varchar(250) NOT NULL,
-  `Responsable` varchar(250) NOT NULL,
-  `Fecha_Creación` date NOT NULL,
-  `Fecha_Hora` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
-
-CREATE TABLE `usuarios` (
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE `roles` (
   `ID` bigint(100) NOT NULL,
   `Nombre` varchar(250) NOT NULL,
   `Apellido` varchar(255) NOT NULL,
@@ -197,11 +189,29 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Volcado de datos para la tabla `usuarios`
+-- Volcado de datos para la tabla `roles`
 --
 
-INSERT INTO `usuarios` (`ID`, `Nombre`, `Apellido`, `Usuario`, `ltrabajo`, `cdt`, `Rango`) VALUES
+INSERT INTO `roles` (`ID`, `Nombre`, `Apellido`, `Usuario`, `ltrabajo`, `cdt`, `Rango`) VALUES
 (0, 'Administrador', '01', 'admin', 'Fulfillment', 'Odonnell', 'Administrador');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `salida_svcs`
+--
+
+DROP TABLE IF EXISTS `salida_svcs`;
+CREATE TABLE `salida_svcs` (
+  `ID_S_svcs` bigint(100) NOT NULL,
+  `Centro_de_trabajo_donde_te_encuentras` varchar(255) NOT NULL,
+  `Tarimas_enviadas` bigint(100) NOT NULL,
+  `Gaylord_Enviados` bigint(100) NOT NULL,
+  `Cross_Dock` varchar(250) NOT NULL,
+  `Responsable` varchar(250) NOT NULL,
+  `Fecha_Creación` date NOT NULL,
+  `Fecha_Hora` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Índices para tablas volcadas
@@ -238,16 +248,16 @@ ALTER TABLE `recibo_fc`
   ADD PRIMARY KEY (`ID_Recibo`);
 
 --
+-- Indices de la tabla `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Indices de la tabla `salida_svcs`
 --
 ALTER TABLE `salida_svcs`
   ADD PRIMARY KEY (`ID_S_svcs`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`ID`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -278,16 +288,16 @@ ALTER TABLE `recibo_fc`
   MODIFY `ID_Recibo` bigint(50) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `ID` bigint(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+
+--
 -- AUTO_INCREMENT de la tabla `salida_svcs`
 --
 ALTER TABLE `salida_svcs`
   MODIFY `ID_S_svcs` bigint(100) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `ID` bigint(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
