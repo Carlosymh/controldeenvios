@@ -1,13 +1,7 @@
 import os
 import subprocess
 from os.path import join, dirname, realpath
-
-# -*- coding: utf-8 -*-
-subprocess.call("apt-get update",shell=True)
-subprocess.call("apt-get -y install libsasl2-dev python-dev libldap2-dev libssl-dev",shell=True)
-subprocess.call("pip install python-ldap pyopenssl",shell=True)
-
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session, make_response, Response, jsonify
+from flask import *
 import io
 import csv
 import json
@@ -20,6 +14,10 @@ import pymysql
 import ldap
 from app.app.connect import connectBD
 
+# -*- coding: utf-8 -*-
+subprocess.call("apt-get update",shell=True)
+subprocess.call("apt-get -y install libsasl2-dev python-dev libldap2-dev libssl-dev",shell=True)
+subprocess.call("pip install python-ldap pyopenssl",shell=True)
 
 app = Blueprint("app",__name__)
 
@@ -27,7 +25,7 @@ UPLOAD_FOLDER = 'app/app/file/'
 
 #FUNCIONES
 
-#Direccion Principal 
+#Direccion Principal (Login)
 @app.route('/')
 def Index():
   try:
@@ -73,7 +71,7 @@ def validarusuaro():
     flash(str(error))
     return redirect('/')  
 
-#Pagina Principal
+#Pagina de Binenvenida 
 @app.route('/home',methods=['POST','GET'])
 def home():
   if 'FullName' in session:
@@ -82,7 +80,7 @@ def home():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#Formulario de Registro
+#Recibo Fulfilment
 @app.route('/f_r_f',methods=['POST','GET'])
 def Recibo_full_form():
   if 'FullName' in session:
@@ -90,7 +88,7 @@ def Recibo_full_form():
   else:
     return render_template('index.html')
 
-#formulario de Prealert
+#Prealert
 @app.route('/f_p',methods=['POST','GET'])
 def Prealert_form():
   if 'FullName' in session:
@@ -98,7 +96,7 @@ def Prealert_form():
   else:
     return render_template('index.html')
 
-#formulario de ordenes Prealert
+#Registro Prealert 
 @app.route('/f_r_p_s',methods=['POST','GET'])
 def Registr_Prealert_service_form():
   if 'FullName' in session:
@@ -113,7 +111,7 @@ def Registr_Prealert_service_form():
   else:
     return render_template('index.html')
 
-#formulario Planning Fulfillment
+#Planning Fulfillment
 @app.route('/f_p_f',methods=['POST','GET'])
 def Planning_full_form():
   if 'FullName' in session:
@@ -122,7 +120,7 @@ def Planning_full_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#formulario ordenes no Procesables 
+#Ordenes no Procesables 
 @app.route('/f_n_p',methods=['POST','GET'])
 def No_procesable_form():
   if 'FullName' in session:
@@ -131,7 +129,7 @@ def No_procesable_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#formulario entradas Service Center
+#Entradas Service Center
 @app.route('/f_e_s',methods=['POST','GET'])
 def Entradas_Service_form():
   if 'FullName' in session:
@@ -140,7 +138,7 @@ def Entradas_Service_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#fomulari salidas Service Center
+#Salidas Service Center
 @app.route('/f_s_s',methods=['POST','GET'])
 def Salidas_Service_form():
   if 'FullName' in session:
@@ -149,7 +147,7 @@ def Salidas_Service_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#formulario Planning
+#Planning
 @app.route('/f_planning',methods=['POST','GET'])
 def Planning_form():
   if 'FullName' in session:
@@ -158,7 +156,7 @@ def Planning_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#formulario Planning Cross Dock 
+#Planning Cross Dock 
 @app.route('/f_p_xd',methods=['POST','GET'])
 def Planning_Cross_form():
   if 'FullName' in session:
@@ -167,7 +165,7 @@ def Planning_Cross_form():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#formulario Actualizacion de estatus ordenes no Procesables 
+#Actualizacion de estatus ordenes no Procesables 
 @app.route('/f_a_o',methods=['POST','GET'])
 def Actualizacion_ordenes_noprocesables():
   if 'FullName' in session:
@@ -176,7 +174,7 @@ def Actualizacion_ordenes_noprocesables():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-#Redirigie a el Formulario de Registro de Usuarios 
+#Formulario de Registro de Usuarios 
 @app.route('/registro',methods=['POST','GET'])
 def registro():
   try:
@@ -265,7 +263,7 @@ def registro_s_e():
     flash(str(error))
     return render_template('form/f_e_s.html',Datos = session)
 
-# Registro de Salidas Service Center
+#Registro de Salidas Service Center
 @app.route('/registro_svcs_salida',methods=['POST'])
 def registro_s_s():
   try:
@@ -299,7 +297,7 @@ def registro_s_s():
     flash(str(error))
     return render_template('form/f_s_s.html',Datos = session)
 
-# Registro Prealert ordenes 
+#Registro Prealert ordenes 
 @app.route('/registro_prealert_ordenes',methods=['POST'])
 def registroPrealertOrdenes():
   try:
@@ -332,7 +330,7 @@ def registroPrealertOrdenes():
     flash(str(error))
     return render_template('form/home.html',Datos = session)
 
-#registro Envio Prealert Prealert
+#Registro Envio Prealert 
 @app.route('/registro_prealert',methods=['POST'])
 def registroPrealert():
   try:
@@ -371,7 +369,7 @@ def registroPrealert():
     flash(str(error))
     return render_template('form/f_p.html',Datos = session)
 
-#confirmacionde Finalizacion Prealert
+#Confirmacion de Finalización Prealert
 @app.route("/FinalizarPrealert",methods=['POST','GET'])
 def finalizarPallet():
   try:
@@ -380,7 +378,7 @@ def finalizarPallet():
   except:  
     return render_template("home.html",Datos=session)
 
-#confirmacionde Finalizacion Prealert Ordenes 
+#Confirmacionde Finalización Prealert Ordenes 
 @app.route("/FinalizarPrealertOrdenes",methods=['POST','GET'])
 def finalizarPalletOrdenes():
   try:
@@ -389,7 +387,7 @@ def finalizarPalletOrdenes():
     flash("No has enviado un registro")
     return render_template('form/finalizar.html',Datos = session)
 
-
+#Registro Recibo Fulfilment
 @app.route('/registro_fcs_recibo',methods=['POST'])
 def registro_fcs_r():
   try:
@@ -423,7 +421,7 @@ def registro_fcs_r():
     flash(str(error))
     return render_template('form/f_r_f.html',Datos = session)
 
-
+#Registro Ordenes no Procesables 
 @app.route('/registro_ordenes',methods=['POST'])
 def registro_o():
   try:
@@ -675,7 +673,7 @@ def registro_o():
         flash("No has enviado un registro")
         return render_template('form/f_n_p.html',Datos = session)
 
-
+#Registro Planning
 @app.route('/registro_planing',methods=['POST'])
 def registro_p():
   try:
@@ -717,7 +715,7 @@ def registro_p():
     flash(str(error))
     return render_template('form/f_planning.html',Datos = session)
 
-
+#Actualización Planning fulfilment
 @app.route('/a_p_f',methods=['POST'])
 def actualizacion_planning_full():
   try:
@@ -744,7 +742,7 @@ def actualizacion_planning_full():
     flash(str(error))
     return render_template('home.html',Datos = session)
 
-
+#Actualización Planning cross dock
 @app.route('/a_p_xd',methods=['POST'])
 def actualizacion_planning_cross():
   try:
@@ -786,7 +784,7 @@ def actualizacion_planning_cross():
     flash(str(error))
     return render_template('home.html',Datos = session)
 
-
+#Actualización ordenes no procesables
 @app.route('/a_o_np',methods=['POST'])
 def actualizacion_ordenes_no_procesables():
   try:
@@ -814,7 +812,7 @@ def actualizacion_ordenes_no_procesables():
     flash(str(error))
     return render_template('home.html',Datos = session)
 
-
+#Registro actualización planning fulfilment
 @app.route('/r_a_p_f',methods=['POST'])
 def registro_actalizacion_planning_full():
   try:
@@ -843,7 +841,7 @@ def registro_actalizacion_planning_full():
     flash(str(error))
     return render_template('form/f_p_f.html',Datos = session)
 
-
+#Registro actualización planning cross dock
 @app.route('/r_a_p_xd',methods=['POST'])
 def registro_actalizacion_planning_cross():
   try:
@@ -873,7 +871,7 @@ def registro_actalizacion_planning_cross():
     flash(str(error))
     return render_template('form/f_p_xd.html',Datos = session)
 
-
+#Registro actualización ordenes no procesables 
 @app.route('/r_a_o_np',methods=['POST'])
 def registro_actalizacion_ordenes_no_procesables():
   try:
@@ -909,7 +907,7 @@ def Cerrar_session():
   session.clear()
   return redirect('/')
 
-
+#Reporte entradas cervice center
 @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
 def Reporte_entradas_service(rowi):
   try:
@@ -935,7 +933,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -946,7 +944,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+                sql= "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -959,7 +957,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+              sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -977,7 +975,7 @@ def Reporte_entradas_service(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
+                    sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -990,7 +988,7 @@ def Reporte_entradas_service(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM entrada_svcs WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+                    sql = "SELECT * FROM entrada_svcs WHERE  Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -1001,7 +999,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1017,7 +1015,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1033,7 +1031,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1048,7 +1046,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
+                  sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1060,7 +1058,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+                  sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1071,7 +1069,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1086,7 +1084,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1097,7 +1095,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1108,7 +1106,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1121,7 +1119,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE  Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1133,7 +1131,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1149,7 +1147,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
+                  sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1160,7 +1158,7 @@ def Reporte_entradas_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM entrada_svcs LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1171,7 +1169,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1193,7 +1191,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1204,7 +1202,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1215,7 +1213,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+              sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -1230,7 +1228,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+                sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1241,7 +1239,7 @@ def Reporte_entradas_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM entrada_svcs LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1252,7 +1250,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1265,7 +1263,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
+              sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_e_s'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1276,7 +1274,7 @@ def Reporte_entradas_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1286,7 +1284,7 @@ def Reporte_entradas_service(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -1295,7 +1293,7 @@ def Reporte_entradas_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
+#Reporte ordenes no procesables
 @app.route('/t_n_p/<rowi>',methods=['POST','GET'])
 def Reporte_ordenes_no_procesables(rowi):
   try:
@@ -1320,7 +1318,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1331,7 +1329,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+                sql= "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1344,7 +1342,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1362,7 +1360,7 @@ def Reporte_ordenes_no_procesables(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
+                    sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -1375,7 +1373,7 @@ def Reporte_ordenes_no_procesables(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM ordenes_no_procesables WHERE  fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+                    sql = "SELECT * FROM ordenes_no_procesables WHERE  fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -1386,7 +1384,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1402,7 +1400,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1418,7 +1416,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1433,7 +1431,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1445,7 +1443,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1456,7 +1454,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1471,7 +1469,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1482,7 +1480,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1493,7 +1491,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1506,7 +1504,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE  fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE  fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1518,7 +1516,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1534,7 +1532,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1545,7 +1543,7 @@ def Reporte_ordenes_no_procesables(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1556,7 +1554,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1578,7 +1576,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1589,7 +1587,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1600,7 +1598,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -1615,7 +1613,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1626,7 +1624,7 @@ def Reporte_ordenes_no_procesables(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1637,7 +1635,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1650,7 +1648,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables WHERE fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['datefilter_t_n_p'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1662,7 +1660,7 @@ def Reporte_ordenes_no_procesables(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1673,7 +1671,7 @@ def Reporte_ordenes_no_procesables(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -1682,7 +1680,7 @@ def Reporte_ordenes_no_procesables(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
+#Reporte prealert
 @app.route('/t_p/<rowi>',methods=['POST','GET'])
 def Reporte_prealert(rowi):
   try:
@@ -1708,7 +1706,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1719,7 +1717,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                sql= "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1732,7 +1730,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1750,7 +1748,7 @@ def Reporte_prealert(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                    sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -1763,7 +1761,7 @@ def Reporte_prealert(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                    sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -1774,7 +1772,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1790,7 +1788,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1806,7 +1804,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -1821,7 +1819,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1833,7 +1831,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                  sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1844,7 +1842,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1859,7 +1857,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1870,7 +1868,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1881,7 +1879,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1894,7 +1892,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE  Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1906,7 +1904,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1922,7 +1920,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+                  sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['datefilter'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1933,7 +1931,7 @@ def Reporte_prealert(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -1944,7 +1942,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1966,7 +1964,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1977,7 +1975,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -1988,7 +1986,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+              sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -2003,7 +2001,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+                sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2014,7 +2012,7 @@ def Reporte_prealert(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2025,7 +2023,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2038,7 +2036,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter'],row1,row2)
+              sql = "SELECT * FROM prealert WHERE Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['datefilter'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2050,7 +2048,7 @@ def Reporte_prealert(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2061,7 +2059,7 @@ def Reporte_prealert(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -2070,7 +2068,7 @@ def Reporte_prealert(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
+#Reporte planning
 @app.route('/t_planning/<rowi>',methods=['POST','GET'])
 def Reporte_planning(rowi):
   try:
@@ -2096,7 +2094,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2107,7 +2105,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+                sql= "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2120,7 +2118,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2138,7 +2136,7 @@ def Reporte_planning(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
+                    sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2151,7 +2149,7 @@ def Reporte_planning(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+                    sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2162,7 +2160,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2178,7 +2176,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2194,7 +2192,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2209,7 +2207,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
+                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2221,7 +2219,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+                  sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2232,7 +2230,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {} ".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2247,7 +2245,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2258,7 +2256,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2269,7 +2267,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2282,7 +2280,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE  Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2294,7 +2292,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2310,7 +2308,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
+                  sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2321,7 +2319,7 @@ def Reporte_planning(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2332,7 +2330,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2354,7 +2352,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2365,7 +2363,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2376,7 +2374,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
+              sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_planning'],session['valor_t_planning'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -2391,7 +2389,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+                sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2402,7 +2400,7 @@ def Reporte_planning(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2413,7 +2411,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2426,7 +2424,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
+              sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['datefilter_t_planning'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2438,7 +2436,7 @@ def Reporte_planning(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2449,7 +2447,7 @@ def Reporte_planning(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -2457,7 +2455,7 @@ def Reporte_planning(rowi):
   except:
     return redirect('/')
 
-
+#Reporte recibo comercial carrier
 @app.route('/t_r_cc/<rowi>',methods=['POST','GET'])
 def Reporte_recibo_Comercial(rowi):
   try:
@@ -2483,7 +2481,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2494,7 +2492,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+                sql= "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2507,7 +2505,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+              sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2525,7 +2523,7 @@ def Reporte_recibo_Comercial(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
+                    sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2538,7 +2536,7 @@ def Reporte_recibo_Comercial(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM recibo_cc WHERE  fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+                    sql = "SELECT * FROM recibo_cc WHERE  fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2549,7 +2547,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2565,7 +2563,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2581,7 +2579,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2596,7 +2594,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
+                  sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2608,7 +2606,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+                  sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2619,7 +2617,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2634,7 +2632,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2645,7 +2643,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2656,7 +2654,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2669,7 +2667,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE  fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE  fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2681,7 +2679,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2697,7 +2695,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
+                  sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2708,7 +2706,7 @@ def Reporte_recibo_Comercial(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_cc LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2719,7 +2717,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2741,7 +2739,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2752,7 +2750,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2763,7 +2761,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+              sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -2778,7 +2776,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+                sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2789,7 +2787,7 @@ def Reporte_recibo_Comercial(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_cc LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2800,7 +2798,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2813,7 +2811,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
+              sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['datefilter_t_r_cc'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2825,7 +2823,7 @@ def Reporte_recibo_Comercial(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2836,7 +2834,7 @@ def Reporte_recibo_Comercial(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -2845,6 +2843,7 @@ def Reporte_recibo_Comercial(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
+#Reporte recibo fulfilment
 @app.route('/t_r_f/<rowi>',methods=['POST','GET'])
 def Reporte_recibo_full(rowi):
   try:
@@ -2870,7 +2869,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2881,7 +2880,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+                sql= "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2894,7 +2893,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+              sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2912,7 +2911,7 @@ def Reporte_recibo_full(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
+                    sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2925,7 +2924,7 @@ def Reporte_recibo_full(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM recibo_fc WHERE  dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+                    sql = "SELECT * FROM recibo_fc WHERE  dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -2936,7 +2935,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2952,7 +2951,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -2968,7 +2967,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -2983,7 +2982,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
+                  sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -2995,7 +2994,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+                  sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3006,7 +3005,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3021,7 +3020,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3032,7 +3031,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3043,7 +3042,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3056,7 +3055,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE  dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE  dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3068,7 +3067,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3084,7 +3083,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
+                  sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3095,7 +3094,7 @@ def Reporte_recibo_full(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM recibo_fc LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3106,7 +3105,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3128,7 +3127,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3139,7 +3138,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3150,7 +3149,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+              sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -3165,7 +3164,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+                sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3176,7 +3175,7 @@ def Reporte_recibo_full(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM recibo_fc LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3187,7 +3186,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3200,7 +3199,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
+              sql = "SELECT * FROM recibo_fc WHERE dia BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['datefilter_t_r_f'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3212,7 +3211,7 @@ def Reporte_recibo_full(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3223,7 +3222,7 @@ def Reporte_recibo_full(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -3232,7 +3231,7 @@ def Reporte_recibo_full(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
+#Reporte salidas service center
 @app.route('/t_s_s/<rowi>',methods=['POST','GET'])
 def Reporte_salida_service(rowi):
   try:
@@ -3258,7 +3257,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3269,7 +3268,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql= "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+                sql= "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3282,7 +3281,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+              sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3300,7 +3299,7 @@ def Reporte_salida_service(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
+                    sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -3313,7 +3312,7 @@ def Reporte_salida_service(rowi):
                     db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                     cur= db_connection.cursor()
                     # Read a single record
-                    sql = "SELECT * FROM salida_svcs WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+                    sql = "SELECT * FROM salida_svcs WHERE  Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
                     cur.execute(sql)
                     data = cur.fetchall()
                     cur.close()
@@ -3324,7 +3323,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3340,7 +3339,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3356,7 +3355,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3371,7 +3370,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
+                  sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3383,7 +3382,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+                  sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3394,7 +3393,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3409,7 +3408,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3420,7 +3419,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+                  sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3431,7 +3430,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3444,7 +3443,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE  Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE  Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3456,7 +3455,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs  LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3472,7 +3471,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
+                  sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3483,7 +3482,7 @@ def Reporte_salida_service(rowi):
                   db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                   cur= db_connection.cursor()
                   # Read a single record
-                  sql = "SELECT * FROM salida_svcs LIMIT {}, {} ".format(row1,row2)
+                  sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(row1,row2)
                   cur.execute(sql)
                   data = cur.fetchall()
                   cur.close()
@@ -3494,7 +3493,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+                sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3516,7 +3515,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3527,7 +3526,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3538,7 +3537,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+              sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
               cur.execute(sql, )
               data = cur.fetchall()
               cur.close()
@@ -3553,7 +3552,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+                sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3564,7 +3563,7 @@ def Reporte_salida_service(rowi):
                 db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
                 cur= db_connection.cursor()
                 # Read a single record
-                sql = "SELECT * FROM salida_svcs LIMIT {}, {} ".format(row1,row2)
+                sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(row1,row2)
                 cur.execute(sql)
                 data = cur.fetchall()
                 cur.close()
@@ -3575,7 +3574,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs LIMIT {}, {} ".format(row1,row2)
+              sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3588,7 +3587,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
+              sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['datefilter_t_s_s'],row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3600,7 +3599,7 @@ def Reporte_salida_service(rowi):
               db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
               cur= db_connection.cursor()
               # Read a single record
-              sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+              sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
               cur.execute(sql)
               data = cur.fetchall()
               cur.close()
@@ -3611,7 +3610,7 @@ def Reporte_salida_service(rowi):
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -3620,7 +3619,7 @@ def Reporte_salida_service(rowi):
     flash("Inicia Secion")
     return render_template('index.html')
 
-
+#Validacion Recibo
 @app.route('/validacion_recibo',methods=['Post'])
 def Verificacion_orden_recibo():
   try:
@@ -3647,7 +3646,7 @@ def Verificacion_orden_recibo():
     flash(str(error))
     return render_template('home.html',Datos = session)
 
-
+#Registro Recibo
 @app.route('/registro_recibo',methods=['POST'])
 def registroRecibo():
   try:
@@ -3683,7 +3682,7 @@ def registroRecibo():
     flash(str(error))
     return render_template('form/f_r_f.html',Datos = session)
 
-
+#PDF prealert
 @app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
         Key =  session['key_pa']
@@ -3839,7 +3838,7 @@ def pdf_template():
          #Atachment or inline 
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
 
-
+#Finalizar recibo
 @app.route("/FinalizarRecibo",methods=['POST','GET'])
 def finalizarRecibo():
   try:
@@ -3871,7 +3870,7 @@ def finalizarRecibo():
   except:  
     return render_template("home.html",Datos=session)
 
-
+#Track in ordenes 
 @app.route("/trackinOrden",methods=['POST','GET'])
 def Track_Inorden():
   try:
@@ -3880,7 +3879,7 @@ def Track_Inorden():
   except:  
     return render_template("home.html",Datos=session)
 
-
+#segimiento track in
 @app.route("/Trackin_ordenes",methods=['POST','GET'])
 def Track_in_ordenes():
   try:
@@ -3935,7 +3934,7 @@ def Track_in_ordenes():
   except:  
     return render_template("form/trackinorden.html",Datos=session)
 
-
+#CSV prealert
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
     site=session['SiteName']
@@ -3950,7 +3949,7 @@ def crear_csvPrealert():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Prealert DESC LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_p'],session['datefilter'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -3960,7 +3959,7 @@ def crear_csvPrealert():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+            sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -3970,7 +3969,7 @@ def crear_csvPrealert():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
+          sql = "SELECT * FROM prealert WHERE {} LIKE \'%{}%\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_p'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -3982,7 +3981,7 @@ def crear_csvPrealert():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+            sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['datefilter'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -3992,7 +3991,7 @@ def crear_csvPrealert():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4002,7 +4001,7 @@ def crear_csvPrealert():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4014,7 +4013,7 @@ def crear_csvPrealert():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter'],row1,row2)
+          sql = "SELECT * FROM prealert WHERE Fecha BETWEEN \'{}\' ORDER BY ID_Prealert DESC LIMIT {}, {}".format(session['datefilter'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4024,7 +4023,7 @@ def crear_csvPrealert():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM prealert LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4034,7 +4033,7 @@ def crear_csvPrealert():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM prealert  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM prealert ORDER BY ID_Prealert DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4060,7 +4059,7 @@ def crear_csvPrealert():
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
     return response
 
-
+#CSV entrada service center
 @app.route('/csve_s',methods=['POST','GET'])
 def crear_csve_s():
     site=session['SiteName']
@@ -4075,7 +4074,7 @@ def crear_csve_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
+            sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_E_svcs DESC LIMIT {}, {} ".format(session['filtro_t_e_s'],session['valor_t_e_s'],session['datefilter_t_e_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4085,7 +4084,7 @@ def crear_csve_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+            sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4095,7 +4094,7 @@ def crear_csve_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
+          sql = "SELECT * FROM entrada_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['filtro_t_e_s'],session['valor_t_e_s'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4107,7 +4106,7 @@ def crear_csve_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
+            sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN \'{}\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4117,7 +4116,7 @@ def crear_csve_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4127,7 +4126,7 @@ def crear_csve_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM entrada_svcs  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4139,7 +4138,7 @@ def crear_csve_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
+          sql = "SELECT * FROM entrada_svcs WHERE Fecha_Creación BETWEEN \'{}\' ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(session['datefilter_t_e_s'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4149,7 +4148,7 @@ def crear_csve_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM entrada_svcs LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4159,7 +4158,7 @@ def crear_csve_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM entrada_svcs  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM entrada_svcs ORDER BY ID_E_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4182,7 +4181,7 @@ def crear_csve_s():
     response.headers["Content-Disposition"] = "attachment; filename="+"entrada_svcs"+str(datetime.today())+".csv"; 
     return response
 
-
+# CSV ordenes no procesable 
 @app.route('/csvn_p',methods=['POST','GET'])
 def crear_csvn_p():
     site=session['SiteName']
@@ -4197,7 +4196,7 @@ def crear_csvn_p():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
+            sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY id_orden DESC LIMIT {}, {} ".format(session['filtro_t_n_p'],session['valor_t_n_p'],session['datefilter_t_n_p'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4207,7 +4206,7 @@ def crear_csvn_p():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+            sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4217,7 +4216,7 @@ def crear_csvn_p():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
+          sql = "SELECT * FROM ordenes_no_procesables WHERE {} LIKE \'%{}%\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['filtro_t_n_p'],session['valor_t_n_p'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4229,7 +4228,7 @@ def crear_csvn_p():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM ordenes_no_procesables WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
+            sql = "SELECT * FROM ordenes_no_procesables WHERE Fecha BETWEEN \'{}\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4239,7 +4238,7 @@ def crear_csvn_p():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4249,7 +4248,7 @@ def crear_csvn_p():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM ordenes_no_procesables  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4261,7 +4260,7 @@ def crear_csvn_p():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM ordenes_no_procesables WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
+          sql = "SELECT * FROM ordenes_no_procesables WHERE Fecha BETWEEN \'{}\' ORDER BY id_orden DESC LIMIT {}, {}".format(session['datefilter_t_n_p'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4271,7 +4270,7 @@ def crear_csvn_p():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM ordenes_no_procesables LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4281,7 +4280,7 @@ def crear_csvn_p():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM ordenes_no_procesables  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM ordenes_no_procesables ORDER BY id_orden DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4312,7 +4311,7 @@ def crear_csvn_p():
     response.headers["Content-Disposition"] = "attachment; filename="+"ordenes_no_procesables"+str(datetime.today())+".csv"; 
     return response
 
-
+#CSV planeacion
 @app.route('/csvplaneacion',methods=['POST','GET'])
 def crear_csvplaneacion():
     site=session['SiteName']
@@ -4327,7 +4326,7 @@ def crear_csvplaneacion():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
+            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {} ".format(session['filtro_t_p'],session['valor_t_planning'],session['datefilter_t_planning'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4337,7 +4336,7 @@ def crear_csvplaneacion():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_planning'],row1,row2)
+            sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_planning'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4347,7 +4346,7 @@ def crear_csvplaneacion():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_planning'],row1,row2)
+          sql = "SELECT * FROM planing WHERE {} LIKE \'%{}%\' ORDER BY id_planing DESC LIMIT {}, {}".format(session['filtro_t_p'],session['valor_t_planning'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4359,7 +4358,7 @@ def crear_csvplaneacion():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
+            sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4369,7 +4368,7 @@ def crear_csvplaneacion():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4379,7 +4378,7 @@ def crear_csvplaneacion():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4391,7 +4390,7 @@ def crear_csvplaneacion():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {}  LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
+          sql = "SELECT * FROM planing WHERE Fecha_Creación BETWEEN {} ORDER BY id_planing DESC LIMIT {}, {}".format(session['datefilter_t_planning'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4401,7 +4400,7 @@ def crear_csvplaneacion():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM planing LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4411,7 +4410,7 @@ def crear_csvplaneacion():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM planing  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM planing ORDER BY id_planing DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4441,7 +4440,7 @@ def crear_csvplaneacion():
     response.headers["Content-Disposition"] = "attachment; filename="+"planing"+str(datetime.today())+".csv"; 
     return response
 
-
+#CSV recibo comercial carrier 
 @app.route('/csvr_cc',methods=['POST','GET'])
 def crear_csvr_cc():
     site=session['SiteName']
@@ -4456,7 +4455,7 @@ def crear_csvr_cc():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
+            sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' AND fecha BETWEEN {} ORDER BY id_recibo_cc DESC LIMIT {}, {} ".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],session['datefilter_t_r_cc'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4466,7 +4465,7 @@ def crear_csvr_cc():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+            sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4476,7 +4475,7 @@ def crear_csvr_cc():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
+          sql = "SELECT * FROM recibo_cc WHERE {} LIKE \'%{}%\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['filtro_t_r_cc'],session['valor_t_r_cc'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4488,7 +4487,7 @@ def crear_csvr_cc():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
+            sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN \'{}\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4498,7 +4497,7 @@ def crear_csvr_cc():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4508,7 +4507,7 @@ def crear_csvr_cc():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_cc  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4520,7 +4519,7 @@ def crear_csvr_cc():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
+          sql = "SELECT * FROM recibo_cc WHERE fecha BETWEEN \'{}\' ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(session['datefilter_t_r_cc'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4530,7 +4529,7 @@ def crear_csvr_cc():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_cc LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4540,7 +4539,7 @@ def crear_csvr_cc():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_cc  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_cc ORDER BY id_recibo_cc DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4561,7 +4560,7 @@ def crear_csvr_cc():
     response.headers["Content-Disposition"] = "attachment; filename="+"recibo_cc"+str(datetime.today())+".csv"; 
     return response
 
-
+#CSV recibo fulfilment
 @app.route('/csvr_f',methods=['POST','GET'])
 def crear_csvr_f():
     site=session['SiteName']
@@ -4576,7 +4575,7 @@ def crear_csvr_f():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
+            sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' AND Fecha BETWEEN {} ORDER BY ID_Recibo DESC LIMIT {}, {} ".format(session['filtro_t_r_f'],session['valor_t_r_f'],session['datefilter_t_r_f'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4586,7 +4585,7 @@ def crear_csvr_f():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+            sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4596,7 +4595,7 @@ def crear_csvr_f():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
+          sql = "SELECT * FROM recibo_fc WHERE {} LIKE \'%{}%\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['filtro_t_r_f'],session['valor_t_r_f'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4608,7 +4607,7 @@ def crear_csvr_f():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_fc WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
+            sql = "SELECT * FROM recibo_fc WHERE Fecha BETWEEN \'{}\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4618,7 +4617,7 @@ def crear_csvr_f():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4628,7 +4627,7 @@ def crear_csvr_f():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_fc  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4640,7 +4639,7 @@ def crear_csvr_f():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_fc WHERE Fecha BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
+          sql = "SELECT * FROM recibo_fc WHERE Fecha BETWEEN \'{}\' ORDER BY ID_Recibo DESC LIMIT {}, {}".format(session['datefilter_t_r_f'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4650,7 +4649,7 @@ def crear_csvr_f():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_fc LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4660,7 +4659,7 @@ def crear_csvr_f():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM recibo_fc  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM recibo_fc ORDER BY ID_Recibo DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4682,7 +4681,7 @@ def crear_csvr_f():
     response.headers["Content-Disposition"] = "attachment; filename="+"recibo_fc"+str(datetime.today())+".csv"; 
     return response
 
-
+#CSV salir service center
 @app.route('/csvs_s',methods=['POST','GET'])
 def crear_csvs_s():
     site=session['SiteName']
@@ -4697,7 +4696,7 @@ def crear_csvs_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {}  LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
+            sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' AND Fecha_Creación BETWEEN {} ORDER BY ID_S_svcs DESC LIMIT {}, {} ".format(session['filtro_t_s_s'],session['valor_t_s_s'],session['datefilter_t_s_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4707,7 +4706,7 @@ def crear_csvs_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+            sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4717,7 +4716,7 @@ def crear_csvs_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\'  LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
+          sql = "SELECT * FROM salida_svcs WHERE {} LIKE \'%{}%\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['filtro_t_s_s'],session['valor_t_s_s'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4729,7 +4728,7 @@ def crear_csvs_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
+            sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN \'{}\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4739,7 +4738,7 @@ def crear_csvs_s():
             db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
             cur= db_connection.cursor()
             # Read a single record
-            sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+            sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
@@ -4749,7 +4748,7 @@ def crear_csvs_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM salida_svcs  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4761,7 +4760,7 @@ def crear_csvs_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN \'{}\'  LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
+          sql = "SELECT * FROM salida_svcs WHERE Fecha_Creación BETWEEN \'{}\' ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(session['datefilter_t_s_s'],row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4771,7 +4770,7 @@ def crear_csvs_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM salida_svcs LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4781,7 +4780,7 @@ def crear_csvs_s():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Read a single record
-          sql = "SELECT * FROM salida_svcs  LIMIT {}, {}".format(row1,row2)
+          sql = "SELECT * FROM salida_svcs ORDER BY ID_S_svcs DESC LIMIT {}, {}".format(row1,row2)
           cur.execute(sql)
           data = cur.fetchall()
           cur.close()
@@ -4800,7 +4799,7 @@ def crear_csvs_s():
     response.headers["Content-Disposition"] = "attachment; filename="+"salida_svcs"+str(datetime.today())+".csv"; 
     return response
 
-
+#Insumos 
 @app.route('/insumos',methods=['GET'])
 def insumos():
   if 'FullName' in session:
@@ -4809,7 +4808,7 @@ def insumos():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-
+#Paquetes
 @app.route('/paquetes',methods=['GET'])
 def paquetes():
   if 'FullName' in session:
@@ -4818,7 +4817,7 @@ def paquetes():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-
+#Gestion de paquetes 
 @app.route('/gestiondepaquetes',methods=['GET'])
 def gestiondepaquetes():
   if 'FullName' in session:
@@ -4827,7 +4826,7 @@ def gestiondepaquetes():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-
+#Comercial carrier 
 @app.route('/comercialcarrier',methods=['GET'])
 def comercialcarrier():
   if 'FullName' in session:
@@ -4836,7 +4835,7 @@ def comercialcarrier():
     flash("Inicia Sesion")
     return render_template('index.html')
 
-
+#Logistic
 @app.route('/logistic',methods=['GET'])
 def logistic():
   if 'FullName' in session:
@@ -4844,7 +4843,7 @@ def logistic():
   else:
     return render_template('index.html')
 
-
+#Problem
 @app.route('/problem',methods=['GET'])
 def Problem():
   if 'FullName' in session:
@@ -4852,7 +4851,7 @@ def Problem():
   else:
     return render_template('index.html')
 
-
+#Recibo comercial carrier 
 @app.route('/f_r_cc',methods=['GET'])
 def Recibo_cc():
   if 'FullName' in session:
@@ -4860,7 +4859,7 @@ def Recibo_cc():
   else:
     return render_template('index.html')
 
-
+#registro recibo comercial carrier
 @app.route('/Recibocomercialcarrier',methods=['POST','GET'])
 def ReciboComercialCarrier():
   try:  
@@ -4870,7 +4869,7 @@ def ReciboComercialCarrier():
   except:
     return render_templateI('comercialcarrier.html',Datos=session)
 
-
+#Entrada y salidas de insumos 
 @app.route('/EntradasSalidasInsumos',methods=['GET'])
 def entradasSalidasInsumos():
   if 'FullName' in session:
@@ -4878,7 +4877,7 @@ def entradasSalidasInsumos():
   else:
     return render_template('index.html')
 
-
+#Despacho y arribo
 @app.route('/DespachoArribo',methods=['GET'])
 def despachoArribo():
   if 'FullName' in session:
@@ -4886,7 +4885,7 @@ def despachoArribo():
   else:
     return render_template('index.html')
 
-
+#Planning
 @app.route('/Planning',methods=['GET'])
 def planning():
   if 'FullName' in session:
@@ -4894,7 +4893,7 @@ def planning():
   else:
     return render_template('index.html')
 
-
+#Validar comercial carrier 
 @app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
 def validar_comercialcarrier(paquetera):
   try:
@@ -4924,7 +4923,7 @@ def validar_comercialcarrier(paquetera):
   except:
     return render_templates('comercialcarrier.html',Datos=session)  
 
-
+#Rechazar Recibo comercial carrier 
 @app.route('/Rechazar/<paquetera>/<orden>/<accion>/<Recibo>',methods=['POST','GET'])
 def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
   try:
@@ -4966,7 +4965,7 @@ def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
     else:
       return render_template('form/f_recibo.html',Datos = session)
 
-
+#ticket ordenes no procesables 
 @app.route('/ticket',methods=['POST','GET'])
 def Tiket_Orden():
   if 'FullName' in session:
@@ -4974,7 +4973,7 @@ def Tiket_Orden():
   else:
     redirect('/')
 
-
+#aplicar ticket 
 @app.route('/aplicarticket',methods=['Post','GET'])
 def aplicarticket_Orden():
   if 'FullName' in session:
@@ -4983,7 +4982,7 @@ def aplicarticket_Orden():
   else:
     return redirect('/')
 
-
+#registra ticket 
 @app.route('/registrarTicket/<orden>',methods=['POST','GET'])
 def Registrar_Ticket(orden):
     if request.method == 'POST':
@@ -4992,7 +4991,6 @@ def Registrar_Ticket(orden):
         Comentario =  request.form['Comentario']
         usuario = session['FullName']
         now = datetime.now()
-        
         link = connectBD()
         db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
         cur= db_connection.cursor()
