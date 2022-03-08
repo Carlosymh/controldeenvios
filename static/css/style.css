@@ -11,46 +11,56 @@ body{
 section{
     background: #fff159 ;
     margin: 0;
+    padding: 0.1rem 0;
+    font-size: 3vh;
     color: #2f3476;
     height: 40vh;
     display: flex;
     justify-content: center;
 }
 section img{
-    width: 150px;
-    height: 100px;
-    margin-top: 30PX;
-    right: 10px;
+    width: 15vh;
+    height: 10vh;
+    margin-top: 8vh;
+    right: 1vh;
 }
-section .titulo p{
-    width: 500px;
-    font-size: 50PX;
-    margin-top: 30PX;
-    margin-left: 10px;
+section h1{
+    text-align: left;
+    width: 80%;
+    font-size: 9vh;
+    margin-top: 8vh;
+    margin-left: 1vh;
     font-family: 'Harabara',Verdana;
 }
-.container-contraseña{
-    position: relative;
-    margin: auto;
-    margin-top: -15vh;
-    background: #fff;
-    width: 55VH;
-    height: 50VH;
-    display:flexbox;
-    box-shadow: 0 0 0.2vh  #000;
-    border-radius: 5px;
-    text-align: center;
-}
+
 .container{
     position: relative;
     margin: auto;
     margin-top: -15vh;
     background: #fff;
-    width: 50VH;
-    height: 45VH;
+    width: 400px;
+    height: 325px;
     display:flexbox;
     box-shadow: 0 0 0.2vh  #000;
-    border-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    text-align: center;
+}
+.container-validacion{
+    position: relative;
+    margin: auto;
+    margin-top: -15vh;
+    background: #fff;
+    width: 400px;
+    height: 400px;
+    display:flexbox;
+    box-shadow: 0 0 0.2vh  #000;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     text-align: center;
 }
 
@@ -62,10 +72,39 @@ form{
     justify-content: center;
 
 }
+.container-validacion form div{
+
+    width: 95%;
+    height: 55px;
+    display: flex;
+    margin: auto;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px ;
+    box-shadow: 0 0 2px #000;
+    border-radius: 5px;
+    color: #bbb;
+    margin-bottom: 10px;
+
+}
+
+.container-validacion form div p{
+    color: #bbb;
+
+}
+.container-validacion form div a {
+
+    color: #bbb;
+    text-decoration: none;
+    padding: 5px;
+    box-shadow: 0 0 3px #aaa;
+    border-radius: 50% ;
+
+}
 
 form p{
     font-family: Verdana, Tahoma, sans-serif;
-    font-size: 4vh;
+    font-size: 3vh;
     color: #000;
 
 }
@@ -77,13 +116,13 @@ form label{
 }
 
 input{
-    margin-bottom: 3vh;
+    margin-bottom: 2.5vh;
     margin-top: 1vh;
     font-size: 2vh;
 }
 
 input.user_inicio{
-    margin-bottom: 3vh;
+    margin-bottom: 2.5vh;
     margin-top: 1vh;
     font-size: 2vh;
     padding: 2vh;
@@ -121,16 +160,17 @@ input.user_inicio:focus{
 }
 
 a.linkedin{
-    display: block;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Harabara',Verdana;
     text-decoration: none;
-    color: rgb(177, 175, 175);
-    font-size: 2vh;
-    margin: 8vh auto auto auto;
+    color: rgb(214, 206, 206);
+    font-size: 1.5vh;
+    margin-top: 4vh;
+    margin: auto;
     transition: 0.5s;
 }
 a.linkedin:hover{
-    color: rgb(82, 100, 129);
+    font-family: 'Harabara',Verdana;
+    color: rgb(132, 181, 255);
     transition: 0.5s;
 }
 a.crearcuenta{
@@ -175,72 +215,21 @@ a.help:hover{
     background: rgba(238, 238, 238, 0.521);
     transition: 0.5s;
 }
-.user_content{
-    display: flex;
-    width: 100%;
-    height: 4vh;
-    margin: auto auto 2vh auto  ;
-    box-shadow: 0 0 0.2vh #000;
-    border-radius: 15px;
-    padding: 0.5vh 1vh;
-    justify-content: space-between;
-}
-.user_content p{
-    margin: auto auto auto 1vh;
-    font-size: 2vh;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-.user_content i{
-    background: #ddd;
-    color: #000;
-    margin:auto 0;
-    font-size: 2.5vh;
-    padding: 0.7vh;
-    border-radius: 50%;
-}
 
-.user_content  a{
-    margin:auto 0 auto auto;
-    color: #000;
-    text-decoration: none;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 2vh;
-    padding: 0.7vh;
-    border-radius: 50%;
-}
-.user_content  a:hover{
-    background: #eee;
-}
-@media (max-width: 1800px ){
-    section img{
-        width: 120px;
-        height: 80px;
-        margin-top: 3rem;
-        right: 1vh;
-    }
-    section h1{
-        text-align: left;
-        width: 70%;
-        font-size: 6vh;
-        margin-top: 8vh;
-        margin-left: 1vh;
-        font-family: 'Harabara',Verdana;
-    }
-    }
-@media (max-width: 505px ){
-section img{
-    width: 120px;
-    height: 80px;
-    margin-top: 3rem;
-    margin-left: 2vh;
-    right: 1vh;
-}
-section .titulo p{
-    text-align: left;
-    width: 90%;
+@media screen and (max-width: 1000px) {
+    
+section h1{
     font-size: 4vh;
-    margin-top: 8vh;
-    margin-left: 1vh;
-    font-family: 'Harabara',Verdana;
+}
+   
+.container{
+    width: 300px;
+    height: 225px;
+} 
+
+
+.container-validacion{
+    width: 300px;
+    height: 300px;
 }
 }
