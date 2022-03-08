@@ -38,35 +38,6 @@ def Index():
     return render_template('index.html')
 
 #Valida de usuario
-@app.route('/validar_usuario', methods=['POST'])
-def validarusuaro():
-  try:
-    if request.method == 'POST':
-      usuario =  request.form['user']
-      clave = request.form['clave']
-      validar = check_credentials( usuario, clave )
-      if validar:
-        link = connectBD()
-        db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
-        cur= db_connection.cursor()
-        # Read a single record
-        cur.execute("SELECT * FROM roles WHERE Usuario= \'{}\' Limit 1".format(usuario))
-        data = cur.fetchone()
-        cur.close()
-        if data != None :
-          session['UserName'] = data[1]
-          session['FullName'] = data[1] +" "+ data[2]
-          session['User'] = data[3]
-          session['FcName'] = data[4]
-          session['SiteName'] = data[5]
-          session['Rango'] = data[6]
-          return redirect('/home')
-        else:
-          return redirect('/')
-      else:
-        flash('Usuario o Clave Incorreto')
-        return redirect('/')
-
   except Exception as error:
     flash(str(error))
     return redirect('/')  
