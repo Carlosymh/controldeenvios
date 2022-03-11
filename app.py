@@ -44,7 +44,16 @@ def validarusuaro():
       usuario =  request.form['user']
       return render_template('inicio.html',username=usuario,user=usuario) 
  
-
+@app.route('/cambiar', methods=['POST'])
+def cambiarfacility():
+  try:
+    if request.method == 'POST':
+      facility = request.form['facility']
+      session['SiteName']=facility
+      return redirect('/home')
+  except:
+    return redirect('/home')
+    
 #Valida de usuario
 @app.route('/validar/<usuario>', methods=['POST'])
 def validarcontrasena(usuario):
