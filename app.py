@@ -40,9 +40,13 @@ def Index():
 #Valida el Acceso a la Plataforma 
 @app.route('/inicio', methods=['POST'])
 def validarusuaro():
+  try:
     if request.method == 'POST':
       usuario =  request.form['user']
-      return render_template('inicio.html',username=usuario,user=usuario) 
+      return render_template('inicio.html',username=usuario,user=usuario)
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
  
 @app.route('/cambiar', methods=['POST'])
 def cambiarfacility():
@@ -51,7 +55,8 @@ def cambiarfacility():
       facility = request.form['facility']
       session['SiteName']=facility
       return redirect('/home')
-  except:
+  except Exception as error:
+    flash(str(error))
     return redirect('/home')
     
 #Valida de usuario
@@ -88,105 +93,149 @@ def validarcontrasena(usuario):
 #Pagina de Binenvenida 
 @app.route('/home',methods=['POST','GET'])
 def home():
-  if 'FullName' in session:
-    return render_template('home.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('home.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Recibo Fulfilment
 @app.route('/f_r_f',methods=['POST','GET'])
 def Recibo_full_form():
-  if 'FullName' in session:
-    return render_template('form/f_r_f.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_r_f.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Prealert
 @app.route('/f_p',methods=['POST','GET'])
 def Prealert_form():
-  if 'FullName' in session:
-    return render_template('form/f_p.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_p.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Registro Prealert 
 @app.route('/f_r_p_s',methods=['POST','GET'])
 def Registr_Prealert_service_form():
-  if 'FullName' in session:
-    now1 = datetime.now()
-    prealert_key = "CE"+str(now1)+"P"
-    key = prealert_key.replace(" ","")
-    key_ = key.replace(":","")
-    key_p = key_.replace(".","")
-    key_pa = key_p.replace("-","")
-    session['key_pa']= key_pa
-    return render_template('form/f_r_p_s.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      now1 = datetime.now()
+      prealert_key = "CE"+str(now1)+"P"
+      key = prealert_key.replace(" ","")
+      key_ = key.replace(":","")
+      key_p = key_.replace(".","")
+      key_pa = key_p.replace("-","")
+      session['key_pa']= key_pa
+      return render_template('form/f_r_p_s.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Planning Fulfillment
 @app.route('/f_p_f',methods=['POST','GET'])
 def Planning_full_form():
-  if 'FullName' in session:
-    return render_template('form/f_p_f.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_p_f.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Ordenes no Procesables 
 @app.route('/f_n_p',methods=['POST','GET'])
 def No_procesable_form():
-  if 'FullName' in session:
-    return render_template('form/f_n_p.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_n_p.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Entradas Service Center
 @app.route('/f_e_s',methods=['POST','GET'])
 def Entradas_Service_form():
-  if 'FullName' in session:
-    return render_template('form/f_e_s.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_e_s.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Salidas Service Center
 @app.route('/f_s_s',methods=['POST','GET'])
 def Salidas_Service_form():
-  if 'FullName' in session:
-    return render_template('form/f_s_s.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_s_s.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Planning
 @app.route('/f_planning',methods=['POST','GET'])
 def Planning_form():
-  if 'FullName' in session:
-    return render_template('form/f_planning.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_planning.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Planning Cross Dock 
 @app.route('/f_p_xd',methods=['POST','GET'])
 def Planning_Cross_form():
-  if 'FullName' in session:
-    return render_template('form/f_p_xd.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_p_xd.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Actualizacion de estatus ordenes no Procesables 
 @app.route('/f_a_o',methods=['POST','GET'])
 def Actualizacion_ordenes_noprocesables():
-  if 'FullName' in session:
-    return render_template('form/f_a_o.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_a_o.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Formulario de Registro de Usuarios 
 @app.route('/registro',methods=['POST','GET'])
@@ -197,9 +246,9 @@ def registro():
     else:
       flash("Acseso Denegado")
     return render_template('index.html')
-  except:
-    flash("Inicia Secion")
-    return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Registro de Usuarios 
 @app.route('/registrar',methods=['POST'])
@@ -236,8 +285,9 @@ def registrar():
           cur.close()
           flash("Registro Correcto")
           return render_template('registro.html',Datos =session)
-  except:
-    return render_template('registro.html',Datos =session)
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Registros entradas Service Center
 @app.route('/registro_svcs_entrada',methods=['POST'])
@@ -388,7 +438,8 @@ def finalizarPallet():
   try:
     if 'FullName' in session:
       return render_template("form/finalizar.html", Datos =session)
-  except:  
+  except Exception as error:
+    flash(str(error))
     return render_template("home.html",Datos=session)
 
 #Confirmacionde Finalización Prealert Ordenes 
@@ -396,8 +447,8 @@ def finalizarPallet():
 def finalizarPalletOrdenes():
   try:
     return render_template('actualizacion/finalizado.html',Datos = session)
-  except:
-    flash("No has enviado un registro")
+  except Exception as error:
+    flash(str(error))
     return render_template('form/finalizar.html',Datos = session)
 
 #Registro Recibo Fulfilment
@@ -682,8 +733,8 @@ def registro_o():
       else:
         flash("No has enviado un registro")
         return render_template('form/f_n_p.html',Datos = session)
-  except:
-        flash("No has enviado un registro")
+  except Exception as error:
+    flash(str(error))
         return render_template('form/f_n_p.html',Datos = session)
 
 #Registro Planning
@@ -917,8 +968,12 @@ def registro_actalizacion_ordenes_no_procesables():
 #Cerrar Session
 @app.route('/logout')
 def Cerrar_session():
-  session.clear()
-  return redirect('/')
+  try:
+    session.clear()
+    return redirect('/')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Reporte entradas cervice center
 @app.route('/t_e_s/<rowi>',methods=['POST','GET'])
@@ -1301,9 +1356,9 @@ def Reporte_entradas_service(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_e_s.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_e_s.html',Datos = session,Infos =data)
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Reporte ordenes no procesables
@@ -1688,9 +1743,9 @@ def Reporte_ordenes_no_procesables(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_n_p.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_n_p.html',Datos = session,Infos =data)
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Reporte prealert
@@ -2076,9 +2131,9 @@ def Reporte_prealert(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_p.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_p.html',Datos = session,Infos =data)
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Reporte planning
@@ -2464,8 +2519,9 @@ def Reporte_planning(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_planning.html',Datos = session,Infos =data)         
-  except:
+            return render_template('reportes/t_planning.html',Datos = session,Infos =data)    
+  except Exception as error:
+    flash(str(error))
     return redirect('/')
 
 #Reporte recibo comercial carrier
@@ -2851,9 +2907,9 @@ def Reporte_recibo_Comercial(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_r_cc.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_r_cc.html',Datos = session,Infos =data)    
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Reporte recibo fulfilment
@@ -3239,9 +3295,9 @@ def Reporte_recibo_full(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_r_f.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_r_f.html',Datos = session,Infos =data)
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Reporte salidas service center
@@ -3627,9 +3683,9 @@ def Reporte_salida_service(rowi):
             cur.execute(sql)
             data = cur.fetchall()
             cur.close()
-            return render_template('reportes/t_s_s.html',Datos = session,Infos =data)         
-  except:
-    flash("Inicia Secion")
+            return render_template('reportes/t_s_s.html',Datos = session,Infos =data)       
+  except Exception as error:
+    flash(str(error))
     return render_template('index.html')
 
 #Validacion Recibo
@@ -3698,6 +3754,7 @@ def registroRecibo():
 #PDF prealert
 @app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
+  try:
         Key =  session['key_pa']
         img =qrcode.make(Key)
         file =open('tatic/img/qr.png','wb')
@@ -3850,13 +3907,14 @@ def pdf_template():
           pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
          #Atachment or inline 
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
+  except Exception as error:
+    flash(str(error))
 
 #Finalizar recibo
 @app.route("/FinalizarRecibo",methods=['POST','GET'])
 def finalizarRecibo():
   try:
     if 'FullName' in session:
-      
       link = connectBD()
       db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
       cur= db_connection.cursor()
@@ -3865,7 +3923,6 @@ def finalizarRecibo():
       cur.execute(sql, (session['key_pa'],))
       numOrdenCross = cur.fetchall()
       cur.close()
-      
       link = connectBD()
       db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
       cur= db_connection.cursor()
@@ -3880,7 +3937,8 @@ def finalizarRecibo():
       else:
         flash("Recibo Finalizado")
         return render_template("form/f_r_f.html", Datos =session)
-  except:  
+  except Exception as error:
+    flash(str(error))
     return render_template("home.html",Datos=session)
 
 #Track in ordenes 
@@ -3889,7 +3947,8 @@ def Track_Inorden():
   try:
     if 'FullName' in session:
         return render_template("form/trackinorden.html", Datos =session)
-  except:  
+  except Exception as error:
+    flash(str(error)) 
     return render_template("home.html",Datos=session)
 
 #segimiento track in
@@ -3898,7 +3957,6 @@ def Track_in_ordenes():
   try:
     if 'FullName' in session:
       Orden= request.form['Orden']
-      
       link = connectBD()
       db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
       cur= db_connection.cursor()
@@ -3907,7 +3965,6 @@ def Track_in_ordenes():
       cur.execute(sql, (Orden,))
       Servicedata = cur.fetchall()
       cur.close()
-      
       link = connectBD()
       db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
       cur= db_connection.cursor()
@@ -3944,12 +4001,14 @@ def Track_in_ordenes():
       reciboFulldata = cur.fetchall()
       cur.close()
       return render_template("actualizacion/trackin_ordenes.html", Datos =session,Servicedata = Servicedata,Crossdata=Crossdata,Fulldata=Fulldata,Orden=Orden,reciboCrossdata=reciboCrossdata,reciboFulldata=reciboFulldata)
-  except:  
+  except Exception as error:
+    flash(str(error)) 
     return render_template("form/trackinorden.html",Datos=session)
 
 #CSV prealert
 @app.route('/csvPrealert',methods=['POST','GET'])
 def crear_csvPrealert():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_p'])
     row2 =50
@@ -4071,10 +4130,14 @@ def crear_csvPrealert():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #CSV entrada service center
 @app.route('/csve_s',methods=['POST','GET'])
 def crear_csve_s():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_e_s'])
     row2 =50
@@ -4193,10 +4256,14 @@ def crear_csve_s():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"entrada_svcs"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 # CSV ordenes no procesable 
 @app.route('/csvn_p',methods=['POST','GET'])
 def crear_csvn_p():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_n_p'])
     row2 =50
@@ -4323,10 +4390,14 @@ def crear_csvn_p():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"ordenes_no_procesables"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #CSV planeacion
 @app.route('/csvplaneacion',methods=['POST','GET'])
 def crear_csvplaneacion():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_planning'])
     row2 =50
@@ -4452,10 +4523,14 @@ def crear_csvplaneacion():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"planing"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #CSV recibo comercial carrier 
 @app.route('/csvr_cc',methods=['POST','GET'])
 def crear_csvr_cc():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_r_cc'])
     row2 =50
@@ -4572,10 +4647,14 @@ def crear_csvr_cc():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"recibo_cc"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #CSV recibo fulfilment
 @app.route('/csvr_f',methods=['POST','GET'])
 def crear_csvr_f():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_r_f'])
     row2 =50
@@ -4693,10 +4772,14 @@ def crear_csvr_f():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"recibo_fc"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #CSV salir service center
 @app.route('/csvs_s',methods=['POST','GET'])
 def crear_csvs_s():
+  try:
     site=session['SiteName']
     row1 = int(session['rowi_t_s_s'])
     row2 =50
@@ -4811,66 +4894,97 @@ def crear_csvs_s():
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"salida_svcs"+str(datetime.today())+".csv"; 
     return response
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Insumos 
 @app.route('/insumos',methods=['GET'])
 def insumos():
-  if 'FullName' in session:
-    return render_template('insumos.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('insumos.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Paquetes
 @app.route('/paquetes',methods=['GET'])
 def paquetes():
-  if 'FullName' in session:
-    return render_template('paquetes.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('paquetes.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Gestion de paquetes 
 @app.route('/gestiondepaquetes',methods=['GET'])
 def gestiondepaquetes():
-  if 'FullName' in session:
-    return render_template('gestiondepaquetes.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('gestiondepaquetes.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Comercial carrier 
 @app.route('/comercialcarrier',methods=['GET'])
 def comercialcarrier():
-  if 'FullName' in session:
-    return render_template('comercialcarrier.html',Datos = session)
-  else:
-    flash("Inicia Sesion")
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('comercialcarrier.html',Datos = session)
+    else:
+      flash("Inicia Sesion")
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Logistic
 @app.route('/logistic',methods=['GET'])
 def logistic():
-  if 'FullName' in session:
-    return render_template('logistic.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('logistic.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Problem
 @app.route('/problem',methods=['GET'])
 def Problem():
-  if 'FullName' in session:
-    return render_template('ProblemSolver.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('ProblemSolver.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Recibo comercial carrier 
 @app.route('/f_r_cc',methods=['GET'])
 def Recibo_cc():
-  if 'FullName' in session:
-    return render_template('form/f_r_cc.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('form/f_r_cc.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #registro recibo comercial carrier
 @app.route('/Recibocomercialcarrier',methods=['POST','GET'])
@@ -4879,32 +4993,45 @@ def ReciboComercialCarrier():
     if request.method == 'POST':
       paquetera = request.form['Paquetera']
       return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
-  except:
+  except Exception as error:
+    flash(str(error))
     return render_templateI('comercialcarrier.html',Datos=session)
 
 #Entrada y salidas de insumos 
 @app.route('/EntradasSalidasInsumos',methods=['GET'])
 def entradasSalidasInsumos():
-  if 'FullName' in session:
-    return render_template('entradasalidainsumos.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('entradasalidainsumos.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Despacho y arribo
 @app.route('/DespachoArribo',methods=['GET'])
 def despachoArribo():
-  if 'FullName' in session:
-    return render_template('despachoarribo.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('despachoarribo.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Planning
 @app.route('/Planning',methods=['GET'])
 def planning():
-  if 'FullName' in session:
-    return render_template('Planning.html',Datos = session)
-  else:
-    return render_template('index.html')
+  try:
+    if 'FullName' in session:
+      return render_template('Planning.html',Datos = session)
+    else:
+      return render_template('index.html')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #Validar comercial carrier 
 @app.route('/validar_cc/<paquetera>',methods=['POST','GET'])
@@ -4933,7 +5060,8 @@ def validar_comercialcarrier(paquetera):
         db_connection.commit()
         cur.close()
         return render_template('form/recibocomercialcarrier.html',Datos = session, paquetera=paquetera)
-  except:
+  except Exception as error:
+    flash(str(error))
     return render_templates('comercialcarrier.html',Datos=session)  
 
 #Rechazar Recibo comercial carrier 
@@ -4972,7 +5100,8 @@ def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
           db_connection.commit()
           cur.close()
           return render_template('form/f_recibo.html',Datos = session)
-  except:
+  except Exception as error:
+    flash(str(error))
     if Recibo == '3PL':
       return render_template('comercialcarrier.html',Datos=session) 
     else:
@@ -4981,23 +5110,32 @@ def Rechazar_comercialcarrier(paquetera,orden,accion,Recibo):
 #ticket ordenes no procesables 
 @app.route('/ticket',methods=['POST','GET'])
 def Tiket_Orden():
-  if 'FullName' in session:
-    return render_template('form/ticket.html',Datos=session)
-  else:
-    redirect('/')
+  try:
+    if 'FullName' in session:
+      return render_template('form/ticket.html',Datos=session)
+    else:
+      redirect('/')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
 #aplicar ticket 
 @app.route('/aplicarticket',methods=['Post','GET'])
 def aplicarticket_Orden():
-  if 'FullName' in session:
-    orden= request.form['orden']
-    return render_template('form/aplicarticket.html',Datos=session,orden=orden)
-  else:
+  try:
+    if 'FullName' in session:
+      orden= request.form['orden']
+      return render_template('form/aplicarticket.html',Datos=session,orden=orden)
+    else:
+      return redirect('/')
+  except Exception as error:
+    flash(str(error))
     return redirect('/')
 
 #registra ticket 
 @app.route('/registrarTicket/<orden>',methods=['POST','GET'])
 def Registrar_Ticket(orden):
+  try:
     if request.method == 'POST':
         Ticket =  request.form['Ticket']
         status='Pendiente'
@@ -5014,4 +5152,7 @@ def Registrar_Ticket(orden):
         db_connection.commit()
         cur.close()
         return redirect('/ticket')
+  except Exception as error:
+    flash(str(error))
+    return redirect('/')
 
