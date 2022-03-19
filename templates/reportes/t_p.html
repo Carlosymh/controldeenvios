@@ -47,6 +47,9 @@
                         <th> Trasportista </th>
                         <th> Placas </th>
                         <th> Orden </th>
+                        <th> Ultimo movimiento </th>
+                        <th> ultimo site  </th>
+                        <th> ultimo usuario </th>
                         <th> Paquetera </th>
                         <th> Marchamo </th>
                         <th> Responsable </th>
@@ -69,11 +72,14 @@
                         <td>{{Info.10}}</td>
                         <td>{{Info.11}}</td>
                         <td>{{Info.12}}</td>
+                        <td>{{Info.13}}</td>
                         <td>{{Info.14}}</td>
+                        <td>{{Info.15}}</td>
+                        <td>{{Info.17}}</td>
                     </tr>
                     {%endfor%}
                     <tr class="Pag">
-                        <td colspan="14" class="Pag">
+                        <td colspan="17" class="Pag">
                             {%set row= Datos['rowi_t_p'] |int%}
                             {%if row==0%}
                             <a href="/t_p/0" class="after">

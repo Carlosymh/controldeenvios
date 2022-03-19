@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-03-2022 a las 20:18:50
+-- Tiempo de generación: 19-03-2022 a las 23:26:31
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 8.0.12
 
@@ -123,6 +123,9 @@ CREATE TABLE `prealert` (
   `Transportista` varchar(255) DEFAULT NULL,
   `Placas` varchar(255) DEFAULT NULL,
   `Orden` bigint(255) DEFAULT NULL,
+  `Ultimo_movimiento` datetime DEFAULT NULL,
+  `site_ultimo_movimiento` varchar(255) DEFAULT NULL,
+  `usuario_ultimo_mov` varchar(255) DEFAULT NULL,
   `Paquetera` varchar(255) DEFAULT NULL,
   `Marchamo` varchar(255) DEFAULT NULL,
   `Responsable` varchar(255) DEFAULT NULL,

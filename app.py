@@ -361,6 +361,7 @@ def registro_s_s():
     return render_template('form/f_s_s.html',Datos = session)
 
 #Registro Prealert ordenes 
+
 @app.route('/registro_prealert_ordenes',methods=['POST'])
 def registroPrealertOrdenes():
   try:
@@ -372,18 +373,35 @@ def registroPrealertOrdenes():
         Paquetera = request.form['Paquetera']
         reponsable = session['FullName']
         now = datetime.now()
-        
-        link = connectBD()
-        db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
-        cur= db_connection.cursor()
-        # Create a new record
-        sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        cur.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now,))
 
-        # connection is not autocommit by default. So you must commit to save
-        # your changes.
-        db_connection.commit()
-        cur.close()
+        link = connectBD()
+        db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+        cur= db_connection.cursor()
+        # Read a single record
+        sql = "SELECT Facility,SiteName,Responsable,Fecha_Hora  FROM recibo_fc WHERE Orden =%s LIMIT 1 "
+        cur.execute(sql, (Orden,))
+        data = cur.fetchone()
+        if data != None:
+          Ult_mov=data[3]
+          site_ult_mov=str(data[0])+" | "+str(data[1])
+          usuario_ultimo_mov=data[2]
+
+          link = connectBD()
+          db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+          cur= db_connection.cursor()
+          # Create a new record
+          sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Ultimo_movimiento, site_ultimo_movimiento, usuario_ultimo_mov,  Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Ult_mov, site_ult_mov, usuario_ultimo_mov, Paquetera, reponsable, now, now,))
+          db_connection.commit()
+          cur.close()
+        else:
+          db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+          cur= db_connection.cursor()
+          # Create a new record
+          sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Paquetera, reponsable, now, now,))
+          db_connection.commit()
+          cur.close()
         flash("Registro Exitoso")
         return render_template('form/f_r_p_s.html',Datos = session,now=now)
       else:
@@ -391,7 +409,7 @@ def registroPrealertOrdenes():
         return render_template('form/f_r_p_s.html',Datos = session)
   except Exception as error:
     flash(str(error))
-    return render_template('form/home.html',Datos = session)
+    return render_template('home.html',Datos = session)
 
 #Registro Envio Prealert 
 @app.route('/registro_prealert',methods=['POST'])
@@ -735,7 +753,7 @@ def registro_o():
         return render_template('form/f_n_p.html',Datos = session)
   except Exception as error:
     flash(str(error))
-        return render_template('form/f_n_p.html',Datos = session)
+    return render_template('form/f_n_p.html',Datos = session)
 
 #Registro Planning
 @app.route('/registro_planing',methods=['POST'])
@@ -4126,6 +4144,9 @@ def crear_csvPrealert():
       datos+=","+str(res[12])
       datos+=","+str(res[13])
       datos+=","+str(res[14])
+      datos+=","+str(res[13])
+      datos+=","+str(res[14])
+      datos+=","+str(res[15])
       datos+="\n"
     response = make_response(datos)
     response.headers["Content-Disposition"] = "attachment; filename="+"Prealert"+str(datetime.today())+".csv"; 
