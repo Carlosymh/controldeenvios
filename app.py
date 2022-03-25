@@ -268,6 +268,7 @@ def registrar():
         sql = "SELECT * FROM roles WHERE Usuario =%s LIMIT 1 "
         cur.execute(sql, (usuario,))
         data = cur.fetchone()
+        cur.close()
         if data != None:
           flash("El Usuario Ya Existe")
           return render_template('registro.html',Datos =session)
@@ -277,8 +278,8 @@ def registrar():
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Create a new record
-          sql = "INSERT INTO roles (Nombre,Apellido, Usuario, ltrabajo, cdt, contraseña, Rango) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-          cur.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,password,rango,))
+          sql = "INSERT INTO roles (Nombre,Apellido, Usuario, ltrabajo, cdt,  Rango) VALUES (%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(nombre,apellido,usuario,ltrabajo,cdt,rango,))
           # connection is not autocommit by default. So you must commit to save
           # your changes.
           db_connection.commit()
