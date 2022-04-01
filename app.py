@@ -6,6 +6,7 @@ import io
 import csv
 import json
 from fpdf import FPDF
+from PIL import Image
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 import hashlib
@@ -312,8 +313,8 @@ def registro_s_e():
         db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
         cur= db_connection.cursor()
         # Create a new record
-        sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Cajas, Costales, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cur.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,cajas,costales,Centro_de_Origen,usuario,now,now,))
+        sql = "INSERT INTO entrada_svcs (Centro_de_trabajo_donde_te_encuentras, Pallets_Totales_Recibidos, Pallets_en_buen_estado, Pallets_en_mal_estado, Gaylords_Totales_Recibidos, Gaylords_en_buen_estado, Gaylords_en_mal_estado, Centro_de_Origen, Responsable, Fecha_Creación, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cur.execute(sql,(cdt,Pallets_Totales_Recibidos,Pallets_en_buen_estado,Pallets_en_mal_estado,Gaylords_Totales_Recibidos,Gaylords_en_buen_estado,Gaylords_en_mal_estado,Centro_de_Origen,usuario,now,now,))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
@@ -335,8 +336,6 @@ def registro_s_s():
         cdt =  session['SiteName']
         Tarimas_enviadas = request.form['Tarimas_enviadas']
         Gaylord_Enviados =  request.form['Gaylord_Enviados']
-        cajas = request.form['cajas']
-        costales =  request.form['costales']
         Cross_Dock = request.form['Cross_Dock']
         usuario =  session['FullName']
         now = datetime.now()
@@ -345,8 +344,8 @@ def registro_s_s():
         db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
         cur= db_connection.cursor()
         # Create a new record
-        sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, cajas, costales, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cur.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,cajas,costales,Cross_Dock,usuario,now,now,))
+        sql = "INSERT INTO salida_svcs (Centro_de_trabajo_donde_te_encuentras, Tarimas_enviadas, Gaylord_Enviados, Cross_Dock, Responsable, Fecha_Creación	, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        cur.execute(sql,(cdt,Tarimas_enviadas,Gaylord_Enviados,Cross_Dock,usuario,now,now,))
 
         # connection is not autocommit by default. So you must commit to save
         # your changes.
@@ -362,7 +361,6 @@ def registro_s_s():
     return render_template('form/f_s_s.html',Datos = session)
 
 #Registro Prealert ordenes 
-
 @app.route('/registro_prealert_ordenes',methods=['POST'])
 def registroPrealertOrdenes():
   try:
@@ -376,27 +374,30 @@ def registroPrealertOrdenes():
         now = datetime.now()
 
         link = connectBD()
-        db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+        db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4])  
         cur= db_connection.cursor()
+        cur.close()
         # Read a single record
         sql = "SELECT Facility,SiteName,Responsable,Fecha_Hora  FROM recibo_fc WHERE Orden =%s LIMIT 1 "
         cur.execute(sql, (Orden,))
         data = cur.fetchone()
+        cur.close()
         if data != None:
           Ult_mov=data[3]
           site_ult_mov=str(data[0])+" | "+str(data[1])
           usuario_ultimo_mov=data[2]
-
           link = connectBD()
-          db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+          db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4])  
           cur= db_connection.cursor()
+          cur.close()
           # Create a new record
           sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Ultimo_movimiento, site_ultimo_movimiento, usuario_ultimo_mov,  Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
           cur.execute(sql,(key_pa, OrigenFc, OrigenSite, Orden, Ult_mov, site_ult_mov, usuario_ultimo_mov, Paquetera, reponsable, now, now,))
           db_connection.commit()
           cur.close()
         else:
-          db_connection = pymysql.connect(host=link[0], user=link[1], passwd="", db=link[2]) 
+          link = connectBD()
+          db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4])  
           cur= db_connection.cursor()
           # Create a new record
           sql = "INSERT INTO prealert (ID_Envio_Prealert, Origen, SiteName, Orden, Paquetera, Responsable, Fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -3773,10 +3774,9 @@ def registroRecibo():
 #PDF prealert
 @app.route('/pdf',methods=['POST','GET'])
 def pdf_template():
-  try:
         Key =  session['key_pa']
         img =qrcode.make(Key)
-        file =open('tatic/img/qr.png','wb')
+        file =open('static/img/qr.png','wb')
         img.save(file)
         lugar = 'De: '+session['FcName']+' | '+session['SiteName']
         facility = session['FcName']
@@ -3926,8 +3926,6 @@ def pdf_template():
           pdf.cell(page_width, 8.0, '_______________________________________________________________________', align='C')
          #Atachment or inline 
         return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf', headers={'Content-Disposition':'inline;filename=Prealert'+Key+'.pdf'})
-  except Exception as error:
-    flash(str(error))
 
 #Finalizar recibo
 @app.route("/FinalizarRecibo",methods=['POST','GET'])

@@ -291,6 +291,12 @@ ALTER TABLE `recibo_fc`
   MODIFY `ID_Recibo` bigint(50) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `recibo_fc`
+--
+ALTER TABLE `recibo_cc`
+  MODIFY `id_recibo_cc` bigint(50) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`

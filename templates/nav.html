@@ -45,7 +45,8 @@
         <div class="panel">
             {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Fulfillment' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Fulfillment' or  Datos['Rango'] == 'Administrador'%}
                     <a href='/t_r_f/0' class='link_menu'>  Recibo</a>
-                    <a href='/t_n_p/0' class='link_menu'>  No Prosesable</a>
+                    <a href='/t_r_cc/0' class='link_menu'> Recibo CC</a>
+                    <a href='/t_n_p/0' class='link_menu'>  No Procesable</a>
             {%endif%}
             {%if Datos['Rango'] == 'Representante' and Datos['FcName'] == 'Cross Dock' or Datos['Rango'] == 'Auxiliar' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Team Leader' and Datos['FcName'] == 'Cross Dock' or  Datos['Rango'] == 'Administrador'%}
             <a href='/t_p/0' class='link_menu'>  Prealert</a>
