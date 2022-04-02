@@ -303,8 +303,6 @@ def registro_s_e():
         Gaylords_en_buen_estado = request.form['Gaylords_en_buen_estado']
         Gaylords_en_mal_estado =  request.form['Gaylords_en_mal_estado']
         Gaylords_Totales_Recibidos = int(Gaylords_en_buen_estado)+int(Gaylords_en_mal_estado)
-        cajas = request.form['cajas']
-        costales =  request.form['costales']
         Centro_de_Origen = request.form['Centro_de_Origen']
         usuario =  session['FullName']
         now = datetime.now()
@@ -3748,14 +3746,15 @@ def registroRecibo():
         status = request.form['status']
         responsable = session['FullName']
         now = datetime.now()
+        Comentario="Sin comentarios"
         if status == 'Aceptar':
           
           link = connectBD()
           db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
           cur= db_connection.cursor()
           # Create a new record
-          sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-          cur.execute(sql,(key_pa, Orden, Paquetera, status, facility, siteName, responsable, now, now,))
+          sql = "INSERT INTO recibo_fc (ID_Envio_Prealert, Orden, Paquetera, status, Comentario, Facility, SiteName, Responsable, Fecha, Fecha_Hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+          cur.execute(sql,(key_pa, Orden, Paquetera, status, Comentario, facility, siteName, responsable, now, now,))
           # connection is not autocommit by default. So you must commit to save
           # your changes.
           db_connection.commit()
@@ -5065,6 +5064,7 @@ def validar_comercialcarrier(paquetera):
       facility = session['FcName']
       Site = session['SiteName']
       now= datetime.now()
+      Comentario="Sin comentarios "
       if accion == 'Rechazar':
         return render_template('form/rechazar.html',Datos=session,paquetera=paquetera,orden=orden,accion=accion,Recibo='3PL')
       elif accion == 'Aceptar':
@@ -5073,8 +5073,8 @@ def validar_comercialcarrier(paquetera):
         db_connection = pymysql.connect(host=link[0], port=link[1], user=link[2], passwd=link[3], db=link[4]) 
         cur= db_connection.cursor()
         # Create a new record
-        sql = "INSERT INTO recibo_cc (paquetera, Orden, accion, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        cur.execute(sql,(paquetera,orden,accion,facility,Site,responsable,now,now))
+        sql = "INSERT INTO recibo_cc (paquetera, Orden, accion, Comentario, facility, site, Responsable, fecha, fecha_hora) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cur.execute(sql,(paquetera,orden,accion, Comentario,facility,Site,responsable,now,now))
         # connection is not autocommit by default. So you must commit to save
         # your changes.
         db_connection.commit()
